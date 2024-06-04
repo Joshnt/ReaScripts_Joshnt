@@ -1,4 +1,4 @@
--- @description Regions per overlapping item bundle in selection
+-- @description Unique Region per overlapping item bundle in selection (with Mother Region over them) - Game Audio/ SD Use
 -- @version 1.0
 -- @author Joshnt
 -- @about 

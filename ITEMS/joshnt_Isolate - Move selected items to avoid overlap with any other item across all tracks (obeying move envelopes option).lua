@@ -1,4 +1,4 @@
--- @description Regions per overlapping item bundle in selection
+-- @description Move selected items to avoid overlaps (obeying move envelope toggle)
 -- @version 1.0
 -- @author Joshnt
 -- @about

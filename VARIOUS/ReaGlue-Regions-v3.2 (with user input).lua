@@ -1,4 +1,4 @@
--- @description ReaGlue adaption to Regions
+-- @description ReaGlue adaption to Regions (with user input)
 -- @version 3.2
 -- @changelog 
 --    Now uses ripple-Edit to move envelopes with items (even parent envelopes, if toggled) and properly move later items
