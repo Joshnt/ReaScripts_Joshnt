@@ -1,10 +1,6 @@
 -- @description ReaGlue adaption to Regions
--- @author Aaron Cendan
 -- @version 1.1
--- @metapackage
--- @provides
---   [main] . > acendan_Set nearest regions edges to selected media items.lua
--- @link https://aaroncendan.me
+-- Credits to Aaron Cendan https://aaroncendan.me, David Arnoldy, Joshua Hank
 
 r = reaper
 

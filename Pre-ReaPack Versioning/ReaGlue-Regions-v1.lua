@@ -1,10 +1,6 @@
 -- @description Nearest Regions Edges To Items
--- @author Aaron Cendan
 -- @version 1.0
--- @metapackage
--- @provides
---   [main] . > acendan_Set nearest regions edges to selected media items.lua
--- @link https://aaroncendan.me
+-- Credits to Aaron Cendan https://aaroncendan.me, David Arnoldy, Joshua Hank
 
 
 -- Function to adjust item positions to 1000ms
