@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<index version="1" name="Joshnt_ReaScripts" commit="08c3bc7b9093826b95fa200df6cbb847f45f4543">
+  <category name="ITEMS">
+    <reapack name="joshnt_Isolate - Move selected items to avoid overlap with any other item across all tracks (obeying move envelopes option).lua" type="script" desc="Regions per overlapping item bundle in selection">
+      <version name="1.0" author="Joshnt" time="2024-06-04T18:09:06Z">
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/08c3bc7b9093826b95fa200df6cbb847f45f4543/ITEMS/joshnt_Isolate%20-%20Move%20selected%20items%20to%20avoid%20overlap%20with%20any%20other%20item%20across%20all%20tracks%20(obeying%20move%20envelopes%20option).lua</source>
+      </version>
+    </reapack>
+    <reapack name="joshnt_Isolate - Move selected items to avoid overlap with any other item across all tracks (with envelopes and parent envelopes if existing).lua" type="script" desc="Regions per overlapping item bundle in selection">
+      <version name="1.0" author="Joshnt" time="2024-06-04T18:09:06Z">
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/08c3bc7b9093826b95fa200df6cbb847f45f4543/ITEMS/joshnt_Isolate%20-%20Move%20selected%20items%20to%20avoid%20overlap%20with%20any%20other%20item%20across%20all%20tracks%20(with%20envelopes%20and%20parent%20envelopes%20if%20existing).lua</source>
+      </version>
+    </reapack>
+    <reapack name="joshnt_Toggle change selected items fade to S- or Log-Shape (fade in or out depending on mouse position).lua" type="script" desc="Change Fade of selected item depending on mouse cursor">
+      <version name="1.0" author="joshnt -- credits to me2beats" time="2024-06-04T18:09:06Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/08c3bc7b9093826b95fa200df6cbb847f45f4543/ITEMS/joshnt_Toggle%20change%20selected%20items%20fade%20to%20S-%20or%20Log-Shape%20(fade%20in%20or%20out%20depending%20on%20mouse%20position).lua</source>
+      </version>
+    </reapack>
+  </category>
+  <category name="Pre-ReaPack Versioning">
+    <reapack name="ReaGlue-Regions-v1.1.lua" type="script" desc="ReaGlue adaption to Regions">
+      <metadata>
+        <link rel="website">https://aaroncendan.me</link>
+      </metadata>
+      <version name="1.1" author="Aaron Cendan" time="2024-06-04T18:09:06Z">
+        <source main="main" file="acendan_Set nearest regions edges to selected media items.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/08c3bc7b9093826b95fa200df6cbb847f45f4543/Pre-ReaPack%20Versioning/ReaGlue-Regions-v1.1.lua</source>
+      </version>
+    </reapack>
+    <reapack name="ReaGlue-Regions-v3 (with user input).lua" type="script" desc="ReaGlue adaption to Regions">
+      <version name="3.0" author="Joshnt" time="2024-06-04T18:09:06Z">
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/08c3bc7b9093826b95fa200df6cbb847f45f4543/Pre-ReaPack%20Versioning/ReaGlue-Regions-v3%20(with%20user%20input).lua</source>
+      </version>
+    </reapack>
+    <reapack name="ReaGlue-Regions-v3.lua" type="script" desc="ReaGlue adaption to Regions">
+      <version name="3.0" author="Joshnt" time="2024-06-04T18:09:06Z">
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/08c3bc7b9093826b95fa200df6cbb847f45f4543/Pre-ReaPack%20Versioning/ReaGlue-Regions-v3.lua</source>
+      </version>
+    </reapack>
+  </category>
+  <category name="VARIOUS">
+    <reapack name="joshnt_Create unique regions for each group of overlapping items of the selected items avoiding overlap with non-selected items (with mother region).lua" type="script" desc="Regions per overlapping item bundle in selection">
+      <version name="1.0" author="Joshnt" time="2024-06-04T18:09:06Z">
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/08c3bc7b9093826b95fa200df6cbb847f45f4543/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items%20of%20the%20selected%20items%20avoiding%20overlap%20with%20non-selected%20items%20(with%20mother%20region).lua</source>
+      </version>
+    </reapack>
+    <reapack name="joshnt_Create unique regions for each group of overlapping items of the selected items avoiding overlap with non-selected items.lua" type="script" desc="Regions per overlapping item bundle in selection">
+      <version name="1.0" author="Joshnt" time="2024-06-04T18:09:06Z">
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/08c3bc7b9093826b95fa200df6cbb847f45f4543/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items%20of%20the%20selected%20items%20avoiding%20overlap%20with%20non-selected%20items.lua</source>
+      </version>
+    </reapack>
+    <reapack name="ReaGlue-Regions-v3.2 (with user input).lua" type="script" desc="ReaGlue adaption to Regions">
+      <version name="3.0" author="Joshnt" time="2024-06-04T18:09:06Z">
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/08c3bc7b9093826b95fa200df6cbb847f45f4543/VARIOUS/ReaGlue-Regions-v3.2%20(with%20user%20input).lua</source>
+      </version>
+    </reapack>
+    <reapack name="ReaGlue-Regions-v3.2.lua" type="script" desc="ReaGlue adaption to Regions">
+      <version name="3.0" author="Joshnt" time="2024-06-04T18:09:06Z">
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/08c3bc7b9093826b95fa200df6cbb847f45f4543/VARIOUS/ReaGlue-Regions-v3.2.lua</source>
+      </version>
+    </reapack>
+  </category>
+</index>
