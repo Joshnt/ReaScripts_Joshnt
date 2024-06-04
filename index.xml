@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Joshnt_ReaScripts" commit="3877c726a864c71756115735c8e3f3f25735ab0b">
+<index version="1" name="Joshnt_ReaScripts" commit="b5ad9ded1b3fa23b8e457bf0eb7b32a624fc1aa4">
   <category name="ITEMS">
     <reapack name="joshnt_Isolate - Move selected items to avoid overlap with any other item across all tracks (obeying move envelopes option).lua" type="script" desc="Move selected items to avoid overlaps (obeying move envelope toggle)">
       <metadata>
@@ -42,6 +42,10 @@
       <version name="1.0" author="joshnt -- credits to me2beats" time="2024-06-04T18:09:06Z">
         <changelog><![CDATA[+ init]]></changelog>
         <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/08c3bc7b9093826b95fa200df6cbb847f45f4543/ITEMS/joshnt_Toggle%20change%20selected%20items%20fade%20to%20S-%20or%20Log-Shape%20(fade%20in%20or%20out%20depending%20on%20mouse%20position).lua</source>
+      </version>
+      <version name="1.1" author="Joshnt" time="2024-06-04T19:29:02Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b5ad9ded1b3fa23b8e457bf0eb7b32a624fc1aa4/ITEMS/joshnt_Toggle%20change%20selected%20items%20fade%20to%20S-%20or%20Log-Shape%20(fade%20in%20or%20out%20depending%20on%20mouse%20position).lua</source>
       </version>
     </reapack>
   </category>
