@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Joshnt_ReaScripts" commit="6af11f0fc10cbd5b5d76fea28a1072a2b9c3c969">
+<index version="1" name="Joshnt_ReaScripts" commit="d348e735006dbed72191f4881d00a4a3678b5b4d">
   <category name="ITEMS">
-    <reapack name="joshnt_Isolate - Move selected items to avoid overlap with any other item across all tracks (obeying move envelopes option).lua" type="script" desc="Regions per overlapping item bundle in selection">
+    <reapack name="joshnt_Isolate - Move selected items to avoid overlap with any other item across all tracks (obeying move envelopes option).lua" type="script" desc="Move selected items to avoid overlaps (obeying move envelope toggle)">
       <metadata>
         <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
 {\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
@@ -15,7 +15,7 @@
         <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/08c3bc7b9093826b95fa200df6cbb847f45f4543/ITEMS/joshnt_Isolate%20-%20Move%20selected%20items%20to%20avoid%20overlap%20with%20any%20other%20item%20across%20all%20tracks%20(obeying%20move%20envelopes%20option).lua</source>
       </version>
     </reapack>
-    <reapack name="joshnt_Isolate - Move selected items to avoid overlap with any other item across all tracks (with envelopes and parent envelopes if existing).lua" type="script" desc="Regions per overlapping item bundle in selection">
+    <reapack name="joshnt_Isolate - Move selected items to avoid overlap with any other item across all tracks (with envelopes and parent envelopes if existing).lua" type="script" desc="Move selected items to avoid overlaps (with parent envelopes)">
       <metadata>
         <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
 {\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
@@ -46,7 +46,7 @@
     </reapack>
   </category>
   <category name="VARIOUS">
-    <reapack name="joshnt_Create unique regions for each group of overlapping items of the selected items avoiding overlap with non-selected items (with mother region).lua" type="script" desc="Regions per overlapping item bundle in selection">
+    <reapack name="joshnt_Create unique regions for each group of overlapping items of the selected items avoiding overlap with non-selected items (with mother region).lua" type="script" desc="Unique Region per overlapping item bundle in selection (with Mother Region over them) - Game Audio/ SD Use">
       <metadata>
         <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
 {\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
@@ -60,7 +60,7 @@
         <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/08c3bc7b9093826b95fa200df6cbb847f45f4543/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items%20of%20the%20selected%20items%20avoiding%20overlap%20with%20non-selected%20items%20(with%20mother%20region).lua</source>
       </version>
     </reapack>
-    <reapack name="joshnt_Create unique regions for each group of overlapping items of the selected items avoiding overlap with non-selected items.lua" type="script" desc="Regions per overlapping item bundle in selection">
+    <reapack name="joshnt_Create unique regions for each group of overlapping items of the selected items avoiding overlap with non-selected items.lua" type="script" desc="Unique Region per overlapping item bundle in selection - Game Audio/ SD Use">
       <metadata>
         <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
 {\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
@@ -74,7 +74,7 @@
         <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/08c3bc7b9093826b95fa200df6cbb847f45f4543/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items%20of%20the%20selected%20items%20avoiding%20overlap%20with%20non-selected%20items.lua</source>
       </version>
     </reapack>
-    <reapack name="ReaGlue-Regions-v3.2 (with user input).lua" type="script" desc="ReaGlue adaption to Regions">
+    <reapack name="ReaGlue-Regions-v3.2 (with user input).lua" type="script" desc="ReaGlue adaption to Regions (with user input)">
       <metadata>
         <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
 {\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
@@ -93,7 +93,7 @@
         <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/6af11f0fc10cbd5b5d76fea28a1072a2b9c3c969/VARIOUS/ReaGlue-Regions-v3.2%20(with%20user%20input).lua</source>
       </version>
     </reapack>
-    <reapack name="ReaGlue-Regions-v3.2.lua" type="script" desc="ReaGlue adaption to Regions">
+    <reapack name="ReaGlue-Regions-v3.2.lua" type="script" desc="ReaGlue adaption to Regions (no Input box)">
       <metadata>
         <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
 {\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
