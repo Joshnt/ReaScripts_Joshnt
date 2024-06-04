@@ -1,12 +1,12 @@
 -- @description Regions per overlapping item bundle in selection
 -- @version 1.0
 -- @author Joshnt
--- Credits to Aaron Cendan https://aaroncendan.me, David Arnoldy, Joshua Hank
-
---
--- Usecase: 
--- multiple Multi-Track Recordings or Sounddesigns across multiple tracks which needs to be exported to a single variation file.
--- Script creates region across those selected items (including beginning and end silence), adjusting the space between them, moving other non selected items away
+-- @about
+--    Credits to Aaron Cendan https://aaroncendan.me, David Arnoldy, Joshua Hank
+--    Basically the isolate option of my ReaGlue - Regions script without a region around it;
+--    Usecase: 
+--    multiple Multi-Track Recordings or Sounddesigns across multiple tracks which needs to be exported to a single variation file.
+--    Script creates region across those selected items (including beginning and end silence), adjusting the space between them, moving other non selected items away
 
 r = reaper
 

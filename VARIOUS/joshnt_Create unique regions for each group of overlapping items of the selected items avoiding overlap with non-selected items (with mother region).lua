@@ -1,12 +1,11 @@
 -- @description Regions per overlapping item bundle in selection
 -- @version 1.0
 -- @author Joshnt
--- Credits to Aaron Cendan https://aaroncendan.me, David Arnoldy, Joshua Hank
-
---
--- Usecase: 
--- creating incremental numbered regions for single layered sounds (for e.g. game audio) - mother region possibly useful for reapers region render dialog and naming via $region(=name) 
--- Script creates regions for overlapping selected items (including beginning and end silence), adjusting the space between them, moving other non selected items away
+-- @about 
+--    Credits to Aaron Cendan https://aaroncendan.me, David Arnoldy, Joshua Hank, Yannick Winter
+--    Usecase: 
+--    creating incremental numbered regions for single layered sounds (for e.g. game audio) - mother region possibly useful for reapers region render dialog and naming via $region(=name) 
+--    Script creates regions for overlapping selected items (including beginning and end silence), adjusting the space between them, moving other non selected items away.
 
 r = reaper
 

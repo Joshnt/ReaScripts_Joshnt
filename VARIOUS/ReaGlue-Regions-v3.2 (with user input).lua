@@ -1,12 +1,14 @@
 -- @description ReaGlue adaption to Regions
--- @version 3.0
+-- @version 3.2
+-- @changelog 
+--    Now uses ripple-Edit to move envelopes with items (even parent envelopes, if toggled) and properly move later items
 -- @author Joshnt
--- Credits to Aaron Cendan https://aaroncendan.me, David Arnoldy, Joshua Hank
-
+-- @about 
+--    Credits to Aaron Cendan (for acendan_Set nearest regions edges to selected media items.lua; https://aaroncendan.me), David Arnoldy, Joshua Hank
 --
--- Usecase: 
--- multiple Multi-Track Recordings or Sounddesigns across multiple tracks which needs to be exported to a single variation file.
--- Script creates region across those selected items (including beginning and end silence), adjusting the space between them, moving other non selected items away
+--    Usecase: 
+--    multiple Multi-Track Recordings or Sounddesigns across multiple tracks which needs to be exported to a single variation file.
+--    Script creates region across those selected items (including beginning and end silence), adjusting the space between them, moving other non selected items away
 
 r = reaper
 

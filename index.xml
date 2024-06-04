@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Joshnt_ReaScripts" commit="08c3bc7b9093826b95fa200df6cbb847f45f4543">
+<index version="1" name="Joshnt_ReaScripts" commit="17d67f839eae8ef1b5e883113571b4a4501653ff">
   <category name="ITEMS">
     <reapack name="joshnt_Isolate - Move selected items to avoid overlap with any other item across all tracks (obeying move envelopes option).lua" type="script" desc="Regions per overlapping item bundle in selection">
       <version name="1.0" author="Joshnt" time="2024-06-04T18:09:06Z">

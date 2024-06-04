@@ -1,6 +1,8 @@
 -- @description Change Fade of selected item depending on mouse cursor
 -- @version 1.0
 -- @author joshnt -- credits to me2beats
+-- @about
+--    Changes Fade closest to mouse on selected item to S-Shape or Log-Shape
 -- @changelog
 --  + init
 
