@@ -29,15 +29,27 @@ GUI.req("Classes/Class - Options.lua")()
 GUI.req("Classes/Class - Label.lua")()
 GUI.req("Classes/Class - Button.lua")()
 GUI.req("Classes/Class - Frame.lua")()
+GUI.req("Classes/Class - Textbox.lua")()
+GUI.req("Classes/Class - Tabs.lua")()
 -- If any of the requested libraries weren't found, abort the script.
----@diagnostic disable-next-line: undefined-global
 if missing_lib then return 0 end
 
+-- key input dependet
+local tabNumber = 4
+local selectedIndex;
+local keyInputActive = true;
+local sliderBeforeMin, sliderBeforeDefaults = -10, 100
+local sliderAfterMax = 10
+local sliderAfterVal, sliderBeforeVal = 0, sliderBeforeDefaults;
+local guiW, guiH = 500, 240
 
 
 GUI.name = "joshnt_Copy/ Cut with envelopes"
-GUI.x, GUI.y, GUI.w, GUI.h = 0, 0, 500, 240
-GUI.anchor, GUI.corner = "mouse", "C"
+GUI.x, GUI.y, GUI.w, GUI.h = 0, 0, guiW, guiH
+GUI.anchor, GUI.corner = "screen", "TL"
+
+
+
 
 -- variables
 local startSelItems, endSelItems;
@@ -49,6 +61,7 @@ local function checkOptionDefaults()
         table.insert(defaultsTable,reaper.GetExtState("joshnt_Easy-ItemCopy_Interface", "Close_On_Execute")=="true")
         table.insert(defaultsTable,reaper.GetExtState("joshnt_Easy-ItemCopy_Interface", "other_items_TimeSame")=="true")
         GUI.Val("Options",defaultsTable)
+        GUI.Val("isolateTab",tonumber(reaper.GetExtState("joshnt_Easy-ItemCopy_Interface","selectedTab")))
     end
 end
 
@@ -57,37 +70,79 @@ local function saveOptions()
     reaper.SetExtState("joshnt_Easy-ItemCopy_Interface", "ripple_paste", tostring(optionsBoolTable[1]), true)
     reaper.SetExtState("joshnt_Easy-ItemCopy_Interface", "Close_On_Execute", tostring(optionsBoolTable[2]), true)
     reaper.SetExtState("joshnt_Easy-ItemCopy_Interface", "other_items_TimeSame", tostring(optionsBoolTable[3]), true)
+    reaper.SetExtState("joshnt_Easy-ItemCopy_Interface", "selectedTab", GUI.Val("isolateTab"), true)
+    reaper.SetExtState("joshnt_Easy-ItemCopy_Interface", "GUI_h", GUI.cur_h, true)
+    reaper.SetExtState("joshnt_Easy-ItemCopy_Interface", "GUI_w", GUI.cur_w, true)
 end
 
-local function cutAndPaste_Pressed()
-    local cursorPos = reaper.GetCursorPosition()
-    joshnt.isolate_MoveSelectedItems_InsertToInput(GUI.Val("timeBefore"),GUI.Val("timeAfter"),cursorPos, GUI.Val("Options")[1],false)
+local function Isolate_Pressed()
+    reaper.PreventUIRefresh(1)
+    reaper.Undo_BeginBlock()
+    local itemSelOrig = joshnt.saveItemSelection()
+    local itemSelTemp;
+
+    if GUI.Val("Options")[3] then
+        _, itemSelTemp = joshnt.isolate_MoveSelectedItems_InsertAtNextSilentPointInProject(GUI.Val("timeBefore"),GUI.Val("timeAfter"),GUI.Val("timeAfter"))
+    else
+        _, itemSelTemp = joshnt.isolate_MoveSelectedItems_InsertAtNextSilentPointInProject(GUI.Val("timeBefore"),GUI.Val("timeAfter"),0)
+    end
 
     if GUI.Val("Options")[2] then
         GUI.quit = true
     end
+    if itemSelTemp == nil then
+        joshnt.reselectItems(itemSelOrig)
+    else
+        joshnt.reselectItems(itemSelTemp)
+    end
+    reaper.Undo_EndBlock("Isolate selected items", 0)
+    reaper.PreventUIRefresh(-1)
     saveOptions()
 end
 
-local function copyAndPaste_Pressed()
+local function copyAndPaste_noIsolation_Pressed()
     local cursorPos = reaper.GetCursorPosition()
-    joshnt.isolate_MoveSelectedItems_InsertToInput(GUI.Val("timeBefore"),GUI.Val("timeAfter"),cursorPos, GUI.Val("Options")[1],true)
+    reaper.PreventUIRefresh(1)
+    local itemSelTemp = joshnt.saveItemSelection()
+    reaper.Undo_BeginBlock()
+    joshnt.isolate_MoveSelectedItems_InsertToInput(GUI.Val("timeBefore"),GUI.Val("timeAfter"),cursorPos, GUI.Val("Options")[1],true,true)
 
     if GUI.Val("Options")[2] then
         GUI.quit = true
     end
+    reaper.SelectAllMediaItems(0, false)
+    joshnt.reselectItems(itemSelTemp)
+    reaper.Undo_EndBlock("Copy and paste selected items to cursor", 0)
+    reaper.PreventUIRefresh(-1)
+    saveOptions()
+end
+
+local function cutAndPaste_noIsolation_Pressed()
+    local cursorPos = reaper.GetCursorPosition()
+    reaper.PreventUIRefresh(1)
+    reaper.Undo_BeginBlock()
+    joshnt.isolate_MoveSelectedItems_InsertToInput(GUI.Val("timeBefore"),GUI.Val("timeAfter"),cursorPos, GUI.Val("Options")[1],false, true)
+
+    if GUI.Val("Options")[2] then
+        GUI.quit = true
+    end
+    reaper.Undo_EndBlock("Cut and paste selected items to cursor", 0)
+    reaper.PreventUIRefresh(-1)
     saveOptions()
 end
 
 local function moveOther_Pressed()
     reaper.PreventUIRefresh(1)
     reaper.Undo_BeginBlock()
+    local itemSelTemp = joshnt.saveItemSelection()
+
     if GUI.Val("Options")[3] then
         joshnt.isolate_MoveOtherItems_ToEndOfSelectedItems(GUI.Val("timeBefore"),GUI.Val("timeAfter"),GUI.Val("timeBefore"),GUI.Val("timeAfter"))
     else
         joshnt.isolate_MoveOtherItems_ToEndOfSelectedItems(GUI.Val("timeBefore"),GUI.Val("timeAfter"),0,0)
     end
     reaper.Undo_EndBlock("Move Other items to end of selected items", 0)
+    joshnt.reselectItems(itemSelTemp)
     reaper.PreventUIRefresh(-1)
 
     if GUI.Val("Options")[2] then
@@ -97,23 +152,114 @@ local function moveOther_Pressed()
 end
 
 local function updateTimeSelection()
-    reaper.GetSet_LoopTimeRange(true, false, startSelItems+GUI.Val("timeBefore"), endSelItems+GUI.Val("timeAfter"), false)
+    local selStart = startSelItems+GUI.Val("timeBefore")
+    local selEnd = endSelItems+GUI.Val("timeAfter")
+    if reaper.GetToggleCommandState(1157) == 1 then
+        if selStart ~= startSelItems then
+            selStart = math.min(startSelItems,reaper.SnapToGrid(0,selStart))
+        end
+        if selEnd ~= endSelItems then
+            selEnd = math.max(endSelItems,reaper.SnapToGrid(0,selEnd))
+        end
+
+    end
+    reaper.GetSet_LoopTimeRange(true, false, selStart, selEnd, false)
+end
+
+local function setView(selTab)
+    if selTab == 1 then
+        GUI.elms.moveOther.z = 11
+        GUI.elms.ExecuteIsolate.z = 11
+        GUI.elms.ExecuteCopy_noIsolation.z = 5
+        GUI.elms.executeCut_noIsolation.z = 5
+    else
+        GUI.elms.ExecuteIsolate.z = 5
+        GUI.elms.moveOther.z = 5
+        GUI.elms.ExecuteCopy_noIsolation.z = 11
+        GUI.elms.executeCut_noIsolation.z = 11
+    end
+end
+
+local function selectElement()
+    -- unselect all
+    GUI.elms.inputBox_TimeBefore.focus = false
+    GUI.elms.inputBox_TimeAfter.focus = false
+    GUI.elms.selectFrame.z = 5
+    GUI.redraw_z[0] = true
+    
+    if selectedIndex == 1 then
+        keyInputActive = false
+        GUI.Val("inputBox_TimeBefore",tostring(-1*GUI.Val("timeBefore")))
+        GUI.elms.inputBox_TimeBefore.focus = true
+    elseif selectedIndex == 2 then
+        keyInputActive = false
+        GUI.Val("inputBox_TimeAfter",tostring(GUI.Val("timeAfter")))
+        GUI.elms.inputBox_TimeAfter.focus = true
+    elseif selectedIndex == 3  then
+        GUI.elms.selectFrame.y = 53
+        GUI.elms.selectFrame.z = 15
+    elseif selectedIndex == 4  then
+        GUI.elms.selectFrame.y = 109
+        GUI.elms.selectFrame.z = 15
+    elseif selectedIndex == 5  then
+        GUI.elms.selectFrame.y = 165
+        GUI.elms.selectFrame.z = 15
+    end
+end
+
+local function executeElement()
+    if GUI.elms.isolateTab.state == 1 then
+        if selectedIndex == 3 then Isolate_Pressed()
+        elseif selectedIndex == 4 then moveOther_Pressed()
+        end
+    else
+        if selectedIndex == 3 then copyAndPaste_noIsolation_Pressed()
+        elseif selectedIndex == 4 then cutAndPaste_noIsolation_Pressed()
+        end
+    end
+end
+
+local function checkKeyInput()
+    if keyInputActive then
+        local inputChar = gfx.getchar()
+        if GUI.quit or inputChar == -1 then return 0 end
+        if reaper.CountSelectedMediaItems(0) > 0 then 
+            local modifier = GUI.modifier.NONE
+            if GUI.mouse.cap & 8 == 8 then modifier = GUI.modifier.SHIFT end
+
+            if inputChar == GUI.chars.TAB then
+                if not selectedIndex then selectedIndex = 1 else
+                    if modifier == GUI.modifier.SHIFT then
+                        selectedIndex = (selectedIndex-2)%tabNumber +1
+                    else 
+                        selectedIndex = (selectedIndex)%tabNumber + 1
+                    end
+                end
+                selectElement()
+            elseif inputChar == GUI.chars.RETURN then
+                executeElement()
+            end
+        end
+    end
+
+    reaper.defer(checkKeyInput)
 end
 
 local function Loop()
     startSelItems, endSelItems = joshnt.startAndEndOfSelectedItems()
     updateTimeSelection()
+    
     if reaper.CountSelectedMediaItems(0) > 0 then 
 
         -- Save a bit of CPU by only doing this if we need to
 		if GUI.elms.lbl_noSel.z == 1 then
 
 			GUI.elms.lbl_noSel.z = 5
+            
+            GUI.elms.isolateTab.z = 11
 			GUI.elms_hide[GUI.elms.frm_track.z] = true
             GUI.elms_freeze[GUI.elms.timeBefore.z] = false
-            GUI.elms_freeze[GUI.elms.ExecuteCopy.z] = false
             GUI.elms_freeze[GUI.elms.timeAfter.z] = false
-            GUI.elms_freeze[GUI.elms.executeCut.z] = false
 			
 			-- Force a redraw of every layer
 			GUI.redraw_z[0] = true
@@ -125,11 +271,11 @@ local function Loop()
         if GUI.elms.lbl_noSel.z == 5 then
                 
             GUI.elms.lbl_noSel.z = 1
+
+            GUI.elms.isolateTab.z = 5
             GUI.elms_hide[GUI.elms.frm_track.z] = false
             GUI.elms_freeze[GUI.elms.timeBefore.z] = true
-            GUI.elms_freeze[GUI.elms.ExecuteCopy.z] = true
             GUI.elms_freeze[GUI.elms.timeAfter.z] = true
-            GUI.elms_freeze[GUI.elms.executeCut.z] = true
 
             GUI.redraw_z[0] = true
             
@@ -138,160 +284,332 @@ local function Loop()
     end
 end
 
--- Objects
-GUI.New("timeBefore", "Slider", {
-    z = 11,
-    x = 8,
-    y = 64,
-    w = 300,
-    caption = "Time before selected item(s) (sec)",
-    min = -10,
-    max = 0,
-    defaults = {100},
-    inc = 0.1,
-    dir = "h",
-    font_a = 3,
-    font_b = 4,
-    col_txt = "txt",
-    col_fill = "elm_fill",
-    bg = "wnd_bg",
-    show_handles = true,
-    show_values = true,
-    cap_x = 0,
-    cap_y = 0
-})
+local function redrawAll()
+    
+    -- Objects
+    GUI.New("timeBefore", "Slider", {
+        z = 11,
+        x = 8,
+        y = 64,
+        w = 300,
+        caption = "Time before selected item(s) (sec)",
+        min = sliderBeforeMin,
+        max = 0,
+        defaults = {sliderBeforeDefaults},
+        inc = 0.1,
+        dir = "h",
+        font_a = 3,
+        font_b = 4,
+        col_txt = "txt",
+        col_fill = "elm_fill",
+        bg = "wnd_bg",
+        show_handles = true,
+        show_values = true,
+        cap_x = 0,
+        cap_y = 0
+    })
 
-GUI.New("Easy Cut/ Copy with envelopes (Interface)", "Label", {
-    z = 11,
-    x = 0,
-    y = 0,
-    caption = "Easy Cut/ Copy with envelopes (Interface)",
-    font = 2,
-    color = "txt",
-    bg = "wnd_bg",
-    shadow = false
-})
+    GUI.New("Easy Cut/ Copy with envelopes (Interface)", "Label", {
+        z = 11,
+        x = 0,
+        y = 0,
+        caption = "Easy Cut/ Copy with envelopes (Interface)",
+        font = 2,
+        color = "txt",
+        bg = "wnd_bg",
+        shadow = false
+    })
 
-GUI.New("ExecuteCopy", "Button", {
-    z = 11,
-    x = 336,
-    y = 56,
-    w = 150,
-    h = 24,
-    caption = "Copy & Paste to Cursor",
-    font = 3,
-    col_txt = "txt",
-    col_fill = "elm_frame",
-    func = copyAndPaste_Pressed
-})
+    GUI.New("ExecuteIsolate", "Button", {
+        z = 11,
+        x = 336,
+        y = 56,
+        w = 150,
+        h = 24,
+        caption = "Move sel. items",
+        font = 3,
+        col_txt = "txt",
+        col_fill = "elm_frame",
+        func = Isolate_Pressed
+    })
 
-GUI.New("lbl_noSel", "Label",	1,	180, 110, "No item(s) selected!", true, 2, "red")
-GUI.New("frm_track", "Frame",	2,	0, 20, 500, 300, false, true, "faded", 0)
+    GUI.New("lbl_noSel", "Label",	1,	180, 110, "No item(s) selected!", true, 2, "red")
+    GUI.New("frm_track", "Frame",	2,	0, 20, 500, 300, false, true, "faded", 0)
+    GUI.New("selectFrame", "Frame",	5,	333, 109, 156, 30, false, false, "red", 0)
+    GUI.New("tabFrame", "Frame",	20,	320, 18, 350, 250, false, true, "elm_bg", 0)
 
-GUI.New("timeAfter", "Slider", {
-    z = 11,
-    x = 8,
-    y = 120,
-    w = 300,
-    caption = "Time after selected item(s) (sec)",
-    min = 0,
-    max = 10,
-    defaults = {0},
-    inc = 0.1,
-    dir = "h",
-    font_a = 3,
-    font_b = 4,
-    col_txt = "txt",
-    col_fill = "elm_fill",
-    bg = "wnd_bg",
-    show_handles = true,
-    show_values = true,
-    cap_x = 0,
-    cap_y = 0
-})
+    GUI.New("timeAfter", "Slider", {
+        z = 11,
+        x = 8,
+        y = 120,
+        w = 300,
+        caption = "Time after selected item(s) (sec)",
+        min = 0,
+        max = sliderAfterMax,
+        defaults = {0},
+        inc = 0.1,
+        dir = "h",
+        font_a = 3,
+        font_b = 4,
+        col_txt = "txt",
+        col_fill = "elm_fill",
+        bg = "wnd_bg",
+        show_handles = true,
+        show_values = true,
+        cap_x = 0,
+        cap_y = 0
+    })
 
-GUI.New("executeCut", "Button", {
-    z = 11,
-    x = 336,
-    y = 112,
-    w = 150,
-    h = 24,
-    caption = "Cut & Paste to Cursor",
-    font = 3,
-    col_txt = "txt",
-    col_fill = "elm_frame",
-    func = cutAndPaste_Pressed
-})
+    GUI.New("moveOther", "Button", {
+        z = 11,
+        x = 336,
+        y = 112,
+        w = 150,
+        h = 24,
+        caption = "Move other items",
+        font = 3,
+        col_txt = "txt",
+        col_fill = "elm_frame",
+        func = moveOther_Pressed
+    })
 
-GUI.New("moveOther", "Button", {
-    z = 11,
-    x = 336,
-    y = 168,
-    w = 150,
-    h = 24,
-    caption = "Move other items",
-    font = 3,
-    col_txt = "txt",
-    col_fill = "elm_frame",
-    func = moveOther_Pressed
-})
+    GUI.New("executeCut_noIsolation", "Button", {
+        z = 11,
+        x = 336,
+        y = 112,
+        w = 150,
+        h = 24,
+        caption = "Cut & Paste to Cursor",
+        font = 3,
+        col_txt = "txt",
+        col_fill = "elm_frame",
+        func = cutAndPaste_noIsolation_Pressed
+    })
 
-GUI.New("Options", "Checklist", {
-    z = 11,
-    x = 8,
-    y = 160,
-    w = 220,
-    h = 80,
-    caption = "",
-    optarray = {"Ripple Paste", "close after execution", "use same times for other items"},
-    dir = "v",
-    pad = 4,
-    font_a = 2,
-    font_b = 3,
-    col_txt = "txt",
-    col_fill = "elm_fill",
-    bg = "wnd_bg",
-    frame = true,
-    shadow = true,
-    swap = false,
-    opt_size = 20
-})
+    GUI.New("ExecuteCopy_noIsolation", "Button", {
+        z = 11,
+        x = 336,
+        y = 56,
+        w = 150,
+        h = 24,
+        caption = "Copy & Paste to Cursor",
+        font = 3,
+        col_txt = "txt",
+        col_fill = "elm_frame",
+        func = copyAndPaste_noIsolation_Pressed
+    })
 
--- Layer 5 will never be shown or updated
--- (See the Main function below)
-GUI.elms_hide[5] = true
-GUI.Val("Options", {true})
+    GUI.New("Options", "Checklist", {
+        z = 11,
+        x = 8,
+        y = 160,
+        w = 220,
+        h = 80,
+        caption = "",
+        optarray = {"Ripple Paste", "close after execution", "use same times for other items"},
+        dir = "v",
+        pad = 4,
+        font_a = 2,
+        font_b = 3,
+        col_txt = "txt",
+        col_fill = "elm_fill",
+        bg = "wnd_bg",
+        frame = true,
+        shadow = true,
+        swap = false,
+        opt_size = 20
+    })
 
-function GUI.elms.timeBefore:onmousedown()
-	GUI.Slider.onmousedown(self)
-	updateTimeSelection()
+    GUI.New("inputBox_TimeBefore", "Textbox", {
+        z = 12,
+        x = 255,
+        y = 38,
+        w = 40,
+        h = 20,
+        caption = "",
+        cap_pos = "top",
+        font_a = 3,
+        font_b = "monospace",
+        color = "txt",
+        bg = "wnd_bg",
+        shadow = true,
+        pad = 4,
+        undo_limit = 20
+    })
+
+    GUI.New("inputBox_TimeAfter", "Textbox", {
+        z = 12,
+        x = 255,
+        y = 94,
+        w = 40,
+        h = 20,
+        caption = "",
+        cap_pos = "top",
+        font_a = 3,
+        font_b = "monospace",
+        color = "txt",
+        bg = "wnd_bg",
+        shadow = true,
+        pad = 4,
+        undo_limit = 20
+    })
+
+    GUI.New("isolateTab", "Tabs", {
+        z = 5,
+        x = 320,
+        y = 0,
+        w = 180,
+        caption = "isolateTab",
+        optarray = {"avoid overlaps", "normal"},
+        tab_w = 80,
+        tab_h = 18,
+        pad = 5,
+        font_a = 3,
+        font_b = 4,
+        col_txt = "txt",
+        col_tab_a = "wnd_bg",
+        col_tab_b = "tab_bg",
+        bg = "elm_bg",
+        fullwidth = false
+    })
+
+    function GUI.elms.isolateTab:onmousedown()
+        GUI.Tabs.onmousedown(self)
+        setView(GUI.elms.isolateTab.state)
+    end
+
+    -- Layer 5 will never be shown or updated
+    -- (See the Main function below)
+    GUI.elms_hide[5] = true
+
+    -- tooltips
+    GUI.elms.Options.tooltip = "'Ripple Paste moves' later items after paste point.\n\n'Use same times for other items' uses the time before and after the selected items as well for the cutting and pasting of other items.\n(only relevant for 'Move other items')"
+    GUI.elms.isolateTab.tooltip = "Changes available actions\n\n'Avoid overlaps' works like joshnt's isolate scripts, avoiding overlaps with nonselected items.\n\n'Normal' copies or pastes items regardless of potential overlaps"
+
+    function GUI.elms.timeBefore:onmousedown()
+        GUI.Slider.onmousedown(self)
+        updateTimeSelection()
+    end
+    function GUI.elms.timeBefore:ondrag()
+        GUI.Slider.ondrag(self)
+        updateTimeSelection()
+    end
+    function GUI.elms.timeBefore:ondoubleclick()
+        GUI.Slider.ondrag(self)
+        updateTimeSelection()
+    end
+    function GUI.elms.timeAfter:onmousedown()
+        GUI.Slider.onmousedown(self)
+        updateTimeSelection()
+    end
+    function GUI.elms.timeAfter:ondrag()
+        GUI.Slider.ondrag(self)
+        updateTimeSelection()
+    end
+    function GUI.elms.timeAfter:ondoubleclick()
+        GUI.Slider.ondrag(self)
+        updateTimeSelection()
+    end
+
+    function GUI.elms.inputBox_TimeBefore:ontype()
+        GUI.Textbox.ontype(self)
+    end
+
+    function GUI.elms.inputBox_TimeBefore:onmousedown()
+        GUI.Textbox.onmousedown(self)
+        keyInputActive = false
+    end
+
+    function GUI.elms.inputBox_TimeBefore:lostfocus()
+        keyInputActive = true
+        GUI.Textbox.lostfocus(self)
+        local tb_to_num = tonumber(GUI.Val("inputBox_TimeBefore"))
+        if tb_to_num then
+            tb_to_num = math.abs(tb_to_num)
+            if -tb_to_num < GUI.elms.timeBefore.min or GUI.elms.timeBefore.min < -10 then
+                sliderBeforeMin = math.min(-tb_to_num,-10)
+                sliderBeforeDefaults = -(sliderBeforeMin/GUI.elms.timeBefore.inc)
+                --sliderAfterVal = (GUI.Val("timeAfter")-GUI.elms.timeAfter.min)/GUI.elms.timeAfter.inc
+                redrawAll()
+            end
+            local newVal = (-tb_to_num-GUI.elms.timeBefore.min)/GUI.elms.timeBefore.inc
+            sliderBeforeVal = newVal
+            GUI.Val("timeBefore",{newVal})
+        end
+    end
+
+    function GUI.elms.inputBox_TimeAfter:ontype()
+        GUI.Textbox.ontype(self)
+    end
+
+    function GUI.elms.inputBox_TimeAfter:lostfocus()
+        keyInputActive = true
+        GUI.Textbox.lostfocus(self)
+        local tb_to_num = tonumber(GUI.Val("inputBox_TimeAfter"))
+        if tb_to_num then
+            tb_to_num = math.max(0, tb_to_num)
+            if tb_to_num > GUI.elms.timeAfter.max or GUI.elms.timeAfter.max > 10 then
+                sliderAfterMax = math.max(tb_to_num,10)
+                --sliderBeforeVal = (GUI.Val("timeBefore")-GUI.elms.timeBefore.min)/GUI.elms.timeBefore.inc
+                redrawAll()
+            end
+            local newVal = (tb_to_num-GUI.elms.timeAfter.min)/GUI.elms.timeAfter.inc
+            sliderAfterVal = newVal
+            GUI.Val("timeAfter",{newVal})
+        end
+    end
+
+    function GUI.elms.inputBox_TimeAfter:onmousedown()
+        GUI.Textbox.onmousedown(self)
+        keyInputActive = false
+    end
+
+    GUI.Val("timeBefore",{sliderBeforeVal})
+    GUI.Val("timeAfter",{sliderAfterVal})
+    setView(GUI.elms.isolateTab.state)
+
+    if GUI.cur_w == nil then 
+        gfx.quit()
+        gfx.init(GUI.name, guiW, guiH, GUI.dock, GUI.x, GUI.y)
+    end
 end
-function GUI.elms.timeBefore:ondrag()
-	GUI.Slider.ondrag(self)
-	updateTimeSelection()
-end
-function GUI.elms.timeBefore:ondoubleclick()
-	GUI.Slider.ondrag(self)
-	updateTimeSelection()
-end
-function GUI.elms.timeAfter:onmousedown()
-	GUI.Slider.onmousedown(self)
-	updateTimeSelection()
-end
-function GUI.elms.timeAfter:ondrag()
-	GUI.Slider.ondrag(self)
-	updateTimeSelection()
-end
-function GUI.elms.timeAfter:ondoubleclick()
-	GUI.Slider.ondrag(self)
-	updateTimeSelection()
-end
 
 
 
+---------------------
+-- Key Input - Tables
+---------------------
+GUI.chars = {
+    RETURN = 13,
+    BACKSPACE = 8,
+    TAB = 9,
+    -- middle block
+    LEFT = 1818584692,
+    RIGHT = 1919379572,
+    -- numbers
+    N0 = 48, 
+    N1 = 49,
+    N2 = 50,
+    N3 = 51,
+    N4 = 52,
+    N5 = 53,
+    N6 = 54,
+    N7 = 55,
+    N8 = 56,
+    N9 = 57
+  }
+GUI.modifier = {
+SHIFT = 2
+}
+
+redrawAll()
 GUI.Init()
 checkOptionDefaults()
+setView(GUI.elms.isolateTab.state)
 GUI.func = Loop
+GUI.onresize = redrawAll
 GUI.freq = 0
+selectElement()
+checkKeyInput()
 GUI.exit = saveOptions
 GUI.Main()

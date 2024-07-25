@@ -9,6 +9,7 @@
 ---------------------------------------
 
 local showMessageBox = false -- show a message box with the number of items; if false, use tooltip at mouse
+local touchingItemsCountAsGroup = false -- if true, an item starting at the exact end of the previous group gets counted to it
 
 ---------------------------------------
 ---------- USER CONFIG END ------------
@@ -31,7 +32,12 @@ local numItems = reaper.CountSelectedMediaItems(0)
 if numItems == 0 then joshnt.TooltipAtMouse("No items selected") return end
 
 reaper.PreventUIRefresh(1)
-local _, itemStarts = joshnt.getOverlappingItemGroupsOfSelectedItems()
+local itemStarts;
+if touchingItemsCountAsGroup then
+  _, itemStarts = joshnt.getOverlappingItemGroupsOfSelectedItems(0.001)
+else
+  _, itemStarts = joshnt.getOverlappingItemGroupsOfSelectedItems()
+end
 reaper.PreventUIRefresh(-1)
 
 if itemStarts then

@@ -61,8 +61,11 @@ local function main()
     for i = 0, numItems -1 do
         local item = reaper.GetSelectedMediaItem(0, i)
         if item then
-            local itemVolInDB = joshnt.getVolumeAsDB(joshnt.getItemPropertyVolume(item))
-            volTable[item] = itemVolInDB
+            local itemVol = joshnt.getItemPropertyVolume(item)
+            if itemVol ~= nil then
+                local itemVolInDB = joshnt.getVolumeAsDB(itemVol)
+                volTable[item] = itemVolInDB
+            end
         end
     end
 
@@ -73,13 +76,16 @@ local function main()
 
     -- compare previous item volume values to new ones and adjust
     for item, volInDB in pairs(volTable) do
-        local newVolInDB = joshnt.getVolumeAsDB(joshnt.getItemPropertyVolume(item))
-        local diff = newVolInDB - volInDB
+        local itemVol = joshnt.getItemPropertyVolume(item)
+        if itemVol ~= nil then
+            local newVolInDB = joshnt.getVolumeAsDB(itemVol)
+            local diff = newVolInDB - volInDB
 
-        if diff < maxDecrease then
-            joshnt.setItemPropertyVolume(item, joshnt.getDBAsVolume(volInDB+maxDecrease))
-        elseif diff > maxIncrease then
-            joshnt.setItemPropertyVolume(item, joshnt.getDBAsVolume(volInDB+maxIncrease))
+            if diff < maxDecrease then
+                joshnt.setItemPropertyVolume(item, joshnt.getDBAsVolume(volInDB+maxDecrease))
+            elseif diff > maxIncrease then
+                joshnt.setItemPropertyVolume(item, joshnt.getDBAsVolume(volInDB+maxIncrease))
+            end
         end
     end 
 

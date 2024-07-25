@@ -41,6 +41,26 @@ function joshnt.getItemPropertyVolume(item)
   return reaper.GetMediaItemTakeInfo_Value(take, "D_VOL")
 end
 
+-- get item property (f2) rate
+function joshnt.getItemPropertyRate(item)
+  local take = reaper.GetMediaItemTake(item, 0)
+  if not take then
+    return
+  end
+  -- Get the volume of the media item as a double value
+  return reaper.GetMediaItemTakeInfo_Value(take, "D_PLAYRATE")
+end
+
+-- get item property (f2) pitch
+function joshnt.getItemPropertyPitch(item)
+  local take = reaper.GetMediaItemTake(item, 0)
+  if not take then
+    return
+  end
+  -- Get the volume of the media item as a double value
+  return reaper.GetMediaItemTakeInfo_Value(take, "D_PITCH")
+end
+
 -- set item property (f2) volume
 function joshnt.setItemPropertyVolume(item, volume)
   local take = reaper.GetMediaItemTake(item, 0)
@@ -200,12 +220,14 @@ function joshnt.sortSelectedItemsByTrack()
 end
 
 -- Function to get overlapping item groups
-function joshnt.getOverlappingItemGroupsOfSelectedItems()
+-- includeCloserThan_Input (in seconds): if distance between items is equal or smaller than given value, items are included in the group (for e.g. splittet item with indiv. fades)
+function joshnt.getOverlappingItemGroupsOfSelectedItems(inlcudeCloserThan_Input)
   local itemGroups = {}
   local itemGroupsStartsArray = {}
   local itemGroupsEndArray = {}
   local itemByTrackTable = joshnt.sortSelectedItemsByTrack()
   local numItems = reaper.CountSelectedMediaItems(0)
+  local includeCloserThan = inlcudeCloserThan_Input or 0
 
   if numItems == 0 then return end
 
@@ -241,7 +263,7 @@ function joshnt.getOverlappingItemGroupsOfSelectedItems()
     local endTime = reaper.GetMediaItemInfo_Value(itemsOnTrack[startIndex], 'D_LENGTH') + startTime
     for i = startIndex+1, #itemsOnTrack do
       if itemsOnTrack[i] then 
-        if reaper.GetMediaItemInfo_Value(itemsOnTrack[i], "D_POSITION") < endTime then
+        if reaper.GetMediaItemInfo_Value(itemsOnTrack[i], "D_POSITION") + includeCloserThan < endTime then
          endTime = reaper.GetMediaItemInfo_Value(itemsOnTrack[i], "D_POSITION") + reaper.GetMediaItemInfo_Value(itemsOnTrack[i], 'D_LENGTH')
         else
           return i-1, endTime
@@ -282,7 +304,7 @@ function joshnt.getOverlappingItemGroupsOfSelectedItems()
           local itemPosition = reaper.GetMediaItemInfo_Value(items[itemIndexPerTrack[track]], "D_POSITION")
           local itemEnd = reaper.GetMediaItemInfo_Value(items[itemIndexPerTrack[track]], 'D_LENGTH') + itemPosition
 
-          if (itemPosition < itemGroupStart and itemEnd > itemGroupStart) or (itemEnd > itemGroupEnd and itemPosition < itemGroupEnd) or (itemPosition >= itemGroupStart and itemEnd <= itemGroupEnd) then 
+          if (itemPosition < itemGroupEnd + includeCloserThan and itemEnd > itemGroupStart - includeCloserThan) then 
             itemGroupStart = math.min(itemGroupStart,itemPosition)
             local indexTemp, overlapEnd = overlapOnTrack(items,itemIndexPerTrack[track])
             itemGroupEnd = math.max(itemGroupEnd,overlapEnd)
@@ -331,6 +353,7 @@ function joshnt.getOverlappingItemGroupsOfSelectedItems()
 end
 
 -- Function to get the first point before and after selected items with no item in project (obey regions, as pasting there would stretch them weirdly)
+-- obey Regions bool: if other items in region, recalulated from start/ end of region; startOffset/ endOffset = start and end silence for reaglue;
 function joshnt.getOverlapPointsFromSelection(obeyRegionsBool, startOffset, endOffset)
   if reaper.CountSelectedMediaItems(0) == 0 then return nil end
   local inputSelection = joshnt.saveItemSelection()
@@ -554,7 +577,7 @@ function joshnt.isolate_MoveSelectedItems_InsertAtNextSilentPointInProject(minSi
 
   local originalSelStart, originalSelEnd = joshnt.startAndEndOfSelectedItems()
   r.PreventUIRefresh(1) 
-  local overlappingItemsStart, overlappingItemsEnd = joshnt.getOverlapPointsFromSelection(true, 0,0)
+  local overlappingItemsStart, overlappingItemsEnd = joshnt.getOverlapPointsFromSelection(true, minSilenceAtStart,minSilenceAtEnd)
   if not overlappingItemsStart then r.PreventUIRefresh(-1) return 0 end -- if no overlap with other item or region, end here
   
   -- copy parent envelopes with empty items
@@ -618,6 +641,7 @@ function joshnt.isolate_MoveSelectedItems_InsertAtNextSilentPointInProject(minSi
     reaper.Main_OnCommand(40311, 0) -- Ripple editing all tracks 
   end
   reaper.Main_OnCommand(42398, 0) -- paste 
+  local tempPastedItems = joshnt.saveItemSelection()
 
   reaper.Main_OnCommand(40309, 0) -- Ripple editing off
   joshnt.setRippleEditingMode(originalRippleEditState)
@@ -626,13 +650,13 @@ function joshnt.isolate_MoveSelectedItems_InsertAtNextSilentPointInProject(minSi
   end
   r.PreventUIRefresh(-1)
   reaper.UpdateArrange()
-  return 1, joshnt.saveItemSelection()
+  return 1, tempPastedItems
 end
 
 -- move selected items to end of project - USE RETURNED ITEM-TABLE AS LINKS GET LOST BY CUT AND PASTE
 -- inputs: minSilence refer to selected items and how much you want to keep from the envelope before and after it (value in seconds)
 -- retval indicating success: -1 = no items selected/ unable to perform moving, 0 = no movement necessary, 1 = moved successfully; ret2 itemtable
-function joshnt.isolate_MoveSelectedItems_InsertToInput(minSilenceAtStart, minSilenceAtEnd, pasteTimeInput, boolRipplePaste, boolJustCopy)
+function joshnt.isolate_MoveSelectedItems_InsertToInput(minSilenceAtStart, minSilenceAtEnd, pasteTimeInput, boolRipplePaste, boolJustCopy, boolCopyEvenWithoutOverlaps)
   local numItems = r.CountSelectedMediaItems(0)
   if numItems == 0 then return -1 end
   minSilenceAtStart = math.abs(minSilenceAtStart) * -1
@@ -670,7 +694,7 @@ function joshnt.isolate_MoveSelectedItems_InsertToInput(minSilenceAtStart, minSi
   reaper.GetSet_LoopTimeRange(true, false, originalSelStart, originalSelEnd, false)
   reaper.Main_OnCommand(40717,0) -- select all items in teimeselection
   joshnt.unselectItems(originalSelection)
-  if (reaper.CountSelectedMediaItems(0) == 0) then r.PreventUIRefresh(-1) return 0 end
+  if (reaper.CountSelectedMediaItems(0) == 0) and boolCopyEvenWithoutOverlaps ~= true then r.PreventUIRefresh(-1) return 0 end
   
   -- copy parent envelopes with empty items
   r.GetSet_LoopTimeRange(true, false, originalSelStart+minSilenceAtStart, originalSelEnd+minSilenceAtEnd, false)
@@ -747,6 +771,7 @@ function joshnt.isolate_MoveSelectedItems_InsertToInput(minSilenceAtStart, minSi
   reaper.UpdateArrange()
   return 1, joshnt.saveItemSelection()
 end
+
 
 ----------------
 ----- TIME -----
@@ -1535,6 +1560,14 @@ function joshnt.tableToCSVString(table)
     else returnString = returnString .. ","..tostring(table[i]) end
   end
   return returnString
+end
+
+function joshnt.splitStringToTable(inputString)
+  local resultTable = {}
+  for value in string.gmatch(inputString, '([^,]+)') do
+      table.insert(resultTable, tonumber(value))
+  end
+  return resultTable
 end
 
 -----------------
