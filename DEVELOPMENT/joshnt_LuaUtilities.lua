@@ -1553,20 +1553,73 @@ function joshnt.getNumbersUntilDifferent(str, sequence)
 end
 
 -- create a string from a table (for e.g. user input)
-function joshnt.tableToCSVString(table)
-  local returnString = ""
-  for i = 1, #table do
-    if i == 1 then returnString = tostring(table[i])
-    else returnString = returnString .. ","..tostring(table[i]) end
+function joshnt.tableToCSVString(tableInput)
+  local function valueToString(value)
+    if type(value) == "table" then
+        return "{" .. joshnt.tableToCSVString(value) .. "}"
+    else
+        return tostring(value)
+    end
   end
-  return returnString
+
+  local result = {}
+  local maxIndex = 0
+
+  -- Find the maximum index in the table
+  for k in pairs(tableInput) do
+      if type(k) == "number" and k > maxIndex then
+          maxIndex = k
+      end
+  end
+
+  -- Build the string with values separated by commas
+  for i = 1, maxIndex do
+      if tableInput[i] ~= nil then
+          table.insert(result, valueToString(tableInput[i]))
+      else
+          table.insert(result, "")
+      end
+  end
+
+  return table.concat(result, ",")
 end
 
+
 function joshnt.splitStringToTable(inputString)
-  local resultTable = {}
-  for value in string.gmatch(inputString, '([^,]+)') do
-      table.insert(resultTable, tonumber(value))
+  local function parseValue(value)
+    if value:sub(1, 1) == "{" and value:sub(-1) == "}" then
+        return joshnt.splitStringToTable(value:sub(2, -2))
+    elseif value == "true" then
+        return true
+    elseif value == "false" then
+        return false
+    elseif tonumber(value) ~= nil then
+        return tonumber(value)
+    else
+        return value
+    end
   end
+
+  local resultTable = {}
+  local index = 1
+  local pattern = "%b{}"  -- Pattern to match balanced {}
+
+  -- Handle nested tables
+  inputString = inputString:gsub(pattern, function(c)
+      local placeholder = "__PLACEHOLDER" .. index .. "__"
+      resultTable[placeholder] = c
+      index = index + 1
+      return placeholder
+  end)
+
+  -- Split the string by commas
+  for value in string.gmatch(inputString, '([^,]*)') do
+      if value:find("__PLACEHOLDER") then
+          value = resultTable[value]
+      end
+      table.insert(resultTable, parseValue(value))
+  end
+
   return resultTable
 end
 

@@ -171,7 +171,7 @@ joshnt_autoColor.propertyColoring = {
                 local colorTEMP = joshnt_autoColor.colors["pitch"]
                 if colorTEMP == "brighter" then colorTEMP = joshnt_autoColor.getBrighter(item) 
                 elseif colorTEMP == "darker" then colorTEMP = joshnt_autoColor.getDarker(item) 
-                elseif type(colorTEMP) == "table" then colorTEMP = joshnt_autoColor.getColorFromRange(colorTEMP[1], colorTEMP[2],joshnt_autoColor.valueRanges["pitch"],pitch) end
+                elseif type(colorTEMP) == "table" then colorTEMP = joshnt_autoColor.getColorFromRange(colorTEMP[1], colorTEMP[2],joshnt_autoColor.valueRanges["pitch"],pitch,item) end
 
                 reaper.SetMediaItemInfo_Value(item, "I_CUSTOMCOLOR", colorTEMP | 0x1000000)  -- Set item color
                 return true
@@ -184,7 +184,7 @@ joshnt_autoColor.propertyColoring = {
                 local colorTEMP = joshnt_autoColor.colors["rate"]
                 if colorTEMP == "brighter" then colorTEMP = joshnt_autoColor.getBrighter(item) 
                 elseif colorTEMP == "darker" then colorTEMP = joshnt_autoColor.getDarker(item) 
-                elseif type(colorTEMP) == "table" then colorTEMP = joshnt_autoColor.getColorFromRange(colorTEMP[1], colorTEMP[2],joshnt_autoColor.valueRanges["rate"],rate) end
+                elseif type(colorTEMP) == "table" then colorTEMP = joshnt_autoColor.getColorFromRange(colorTEMP[1], colorTEMP[2],joshnt_autoColor.valueRanges["rate"],rate,item) end
 
                 reaper.SetMediaItemInfo_Value(item, "I_CUSTOMCOLOR", colorTEMP | 0x1000000)  -- Set item color
                 return true
@@ -198,7 +198,7 @@ joshnt_autoColor.propertyColoring = {
                 itemGain = joshnt.getVolumeAsDB(itemGain)
                 if colorTEMP == "brighter" then colorTEMP = joshnt_autoColor.getBrighter(item) 
                 elseif colorTEMP == "darker" then colorTEMP = joshnt_autoColor.getDarker(item)
-                elseif type(colorTEMP) == "table" then colorTEMP = joshnt_autoColor.getColorFromRange(colorTEMP[1], colorTEMP[2],joshnt_autoColor.valueRanges["gain"],itemGain) end
+                elseif type(colorTEMP) == "table" then colorTEMP = joshnt_autoColor.getColorFromRange(colorTEMP[1], colorTEMP[2],joshnt_autoColor.valueRanges["gain"],itemGain,item) end
 
                 reaper.SetMediaItemInfo_Value(item, "I_CUSTOMCOLOR", colorTEMP | 0x1000000)  -- Set item color
                 return true
@@ -212,7 +212,7 @@ joshnt_autoColor.propertyColoring = {
                 itemVol = joshnt.getVolumeAsDB(itemVol)
                 if colorTEMP == "brighter" then colorTEMP = joshnt_autoColor.getBrighter(item) 
                 elseif colorTEMP == "darker" then colorTEMP = joshnt_autoColor.getDarker(item) 
-                elseif type(colorTEMP) == "table" then colorTEMP = joshnt_autoColor.getColorFromRange(colorTEMP[1], colorTEMP[2],joshnt_autoColor.valueRanges["volume"],itemVol) end
+                elseif type(colorTEMP) == "table" then colorTEMP = joshnt_autoColor.getColorFromRange(colorTEMP[1], colorTEMP[2],joshnt_autoColor.valueRanges["volume"],itemVol,item) end
 
                 reaper.SetMediaItemInfo_Value(item, "I_CUSTOMCOLOR", colorTEMP | 0x1000000)  -- Set item color
                 return true
@@ -226,7 +226,7 @@ joshnt_autoColor.propertyColoring = {
                 itemVolSum = joshnt.getVolumeAsDB(itemVolSum)
                 if colorTEMP == "brighter" then colorTEMP = joshnt_autoColor.getBrighter(item) 
                 elseif colorTEMP == "darker" then colorTEMP = joshnt_autoColor.getDarker(item) 
-                elseif type(colorTEMP) == "table" then colorTEMP = joshnt_autoColor.getColorFromRange(colorTEMP[1], colorTEMP[2],joshnt_autoColor.valueRanges["combined"],itemVolSum) end
+                elseif type(colorTEMP) == "table" then colorTEMP = joshnt_autoColor.getColorFromRange(colorTEMP[1], colorTEMP[2],joshnt_autoColor.valueRanges["combined"],itemVolSum,item) end
 
                 reaper.SetMediaItemInfo_Value(item, "I_CUSTOMCOLOR", colorTEMP | 0x1000000)  -- Set item color
                 return true
@@ -240,8 +240,8 @@ joshnt_autoColor.propertyColoring = {
 
 joshnt_autoColor.defaultColorTrack, joshnt_autoColor.defaultColorTrack_Brighter, joshnt_autoColor.defaultColorTrack_Darker = {}, {},{}
 joshnt_autoColor.defaultColorTrack["r"], joshnt_autoColor.defaultColorTrack["g"], joshnt_autoColor.defaultColorTrack["b"] = reaper.ColorFromNative(reaper.GetThemeColor("col_seltrack2", 0))
-joshnt_autoColor.defaultColorTrack_Brighter["r"], joshnt_autoColor.defaultColorTrack_Brighter["g"], joshnt_autoColor.defaultColorTrack_Brighter["b"] = math.min(255,joshnt_autoColor.defaultColorTrack["r"] + 30), math.min(255,joshnt_autoColor.defaultColorTrack["g"] + 30), math.min(255, joshnt_autoColor.defaultColorTrack["b"] + 30)
-joshnt_autoColor.defaultColorTrack_Darker["r"], joshnt_autoColor.defaultColorTrack_Darker["g"], joshnt_autoColor.defaultColorTrack_Darker["b"] = math.max(0,joshnt_autoColor.defaultColorTrack["r"] - 30), math.max(0,joshnt_autoColor.defaultColorTrack["g"] - 30), math.max(0, joshnt_autoColor.defaultColorTrack["b"] - 30)
+joshnt_autoColor.defaultColorTrack_Brighter["r"], joshnt_autoColor.defaultColorTrack_Brighter["g"], joshnt_autoColor.defaultColorTrack_Brighter["b"] = math.min(255,joshnt_autoColor.defaultColorTrack["r"] + 60), math.min(255,joshnt_autoColor.defaultColorTrack["g"] + 60), math.min(255, joshnt_autoColor.defaultColorTrack["b"] + 60)
+joshnt_autoColor.defaultColorTrack_Darker["r"], joshnt_autoColor.defaultColorTrack_Darker["g"], joshnt_autoColor.defaultColorTrack_Darker["b"] = math.max(0,joshnt_autoColor.defaultColorTrack["r"] - 50), math.max(0,joshnt_autoColor.defaultColorTrack["g"] - 50), math.max(0, joshnt_autoColor.defaultColorTrack["b"] - 50)
 
 
 function joshnt_autoColor.getBrighter(item)
@@ -264,7 +264,7 @@ function joshnt_autoColor.getDarker(item)
     end
 end
 
-function joshnt_autoColor.getColorFromRange(colorRangeLow,colorRangeHigh, valueRangeArray, value)
+function joshnt_autoColor.getColorFromRange(colorRangeLow,colorRangeHigh, valueRangeArray, value, item)
     -- Normalize the value within the value range
     local valueRangeLow, valueRangeHigh = valueRangeArray[1], valueRangeArray[2]
     local normalizedVal = (value - valueRangeLow) / (valueRangeHigh - valueRangeLow)
@@ -273,8 +273,11 @@ function joshnt_autoColor.getColorFromRange(colorRangeLow,colorRangeHigh, valueR
     normalizedVal = math.max(0, math.min(1, normalizedVal))
     
     -- Interpolate between the two colors based on the normalized values
-    local r1, g1, b1 = reaper.ColorFromNative(colorRangeLow)
-    local r2, g2, b2 = reaper.ColorFromNative(colorRangeHigh)
+    local r1,g1,b1,r2,g2,b2;
+    if colorRangeLow == "darker" then r1, g1, b1 = reaper.ColorFromNative(joshnt_autoColor.getDarker(item))
+    else r1, g1, b1 = reaper.ColorFromNative(colorRangeLow) end
+    if colorRangeHigh == "brighter" or colorRangeHigh == "" or colorRangeHigh == nil then r2, g2, b2 = reaper.ColorFromNative(joshnt_autoColor.getBrighter(item))
+    else r2, g2, b2 = reaper.ColorFromNative(colorRangeHigh) end
 
     local r = r1 + (r2 - r1) * normalizedVal
     local g = g1 + (g2 - g1) * normalizedVal
@@ -406,7 +409,7 @@ function joshnt_autoColor.checkDefaultsSet()
         elseif joshnt_autoColor.colors[property] == nil then
             reaper.ShowMessageBox("Color for " .. property.." not defined.\n\nScript execution cancelled", "Auto-Coloring Error",0)
             return false
-        elseif type(joshnt_autoColor.colors[property]) == "table" and (joshnt_autoColor.colors[property][1] == nil or joshnt_autoColor.colors[property][2] == nil) then
+        elseif type(joshnt_autoColor.colors[property]) == "table" and (joshnt_autoColor.colors[property][1] == nil or joshnt_autoColor.colors[property][2] == nil ) then
             reaper.ShowMessageBox("Color for "..property.." is set to gradient, but no or only one color is defined.\n\nScript execution cancelled", "Auto-Coloring Error",0)
             return false
         elseif type(joshnt_autoColor.colors[property]) == "table" and (joshnt_autoColor.valueRanges[property] == nil or joshnt_autoColor.valueRanges[property][1] == nil or joshnt_autoColor.valueRanges[property][2] == nil) then
@@ -414,8 +417,8 @@ function joshnt_autoColor.checkDefaultsSet()
             return false
         elseif property:find("name") then
             local nameNum = tonumber(string.sub(property,5,5))
-            if not joshnt_autoColor.names[nameNum] or type(joshnt_autoColor.names[nameNum][1])~="string" or type(joshnt_autoColor.names[nameNum][2])~="string" then
-                reaper.ShowMessageBox("No Name-Setting for "..property.."found.\n\nScript execution cancelled", "Auto-Coloring Error",0)
+            if not joshnt_autoColor.names[nameNum] or joshnt_autoColor.names[nameNum][1]=="" or joshnt_autoColor.names[nameNum][2]=="" or type(joshnt_autoColor.names[nameNum][1])~="string" or type(joshnt_autoColor.names[nameNum][2])~="string" then
+                reaper.ShowMessageBox("No Name-Setting for "..property.." found.\n\nScript execution cancelled", "Auto-Coloring Error",0)
                 return false
             end
         end

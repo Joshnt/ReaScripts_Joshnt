@@ -50,6 +50,7 @@ local selectedValues = {
 }
 local verifiedVals = false
 local redrawOptions = 0
+local commandID = 0
 
 GUI.req("Classes/Class - Button.lua")()
 GUI.req("Classes/Class - Textbox.lua")()
@@ -62,6 +63,30 @@ GUI.req("Classes/Class - Frame.lua")()
 if missing_lib then return 0 end
 
 local function checkOptionDefaults()
+    joshnt_autoColor.priorityOrderArray = {}
+    joshnt_autoColor.colors = {
+        reverse = nil,
+        FX = nil,
+        pitch = nil,
+        rate = nil,
+        gain = nil,
+        volume = nil,
+        combined = nil,
+        name1 = nil,
+        name2 = nil,
+        name3 = nil,
+        name4 = nil,
+        name5 = nil
+    }
+    joshnt_autoColor.valueRanges = {
+        pitch = nil,
+        rate = nil,
+        gain = nil,
+        volume = nil,
+        combined = nil
+    }
+    joshnt_autoColor.names = {}
+
     if reaper.HasExtState("joshnt_Auto-Color_items", "priorityOrder") then
         selectedValues.selProperty = joshnt.splitStringToTable(reaper.GetExtState("joshnt_Auto-Color_items", "priorityOrder"))
         selectedValues.selColor1 = joshnt.splitStringToTable(reaper.GetExtState("joshnt_Auto-Color_items", "selColor1"))
@@ -69,6 +94,14 @@ local function checkOptionDefaults()
         selectedValues.selValRange = joshnt.splitStringToTable(reaper.GetExtState("joshnt_Auto-Color_items", "selValRange"))
         selectedValues.selGradToggle = joshnt.splitStringToTable(reaper.GetExtState("joshnt_Auto-Color_items", "selGradToggle"))
         selectedValues.selTextInput = joshnt.splitStringToTable(reaper.GetExtState("joshnt_Auto-Color_items", "selTextInput"))
+    end
+
+    for keys, subTable in pairs(selectedValues) do
+        for keys2, values in pairs(subTable) do
+            if values == "" then
+                values = nil
+            end
+        end
     end
 end
 
@@ -81,15 +114,31 @@ local function saveOptions()
     reaper.SetExtState("joshnt_Auto-Color_items", "selTextInput", joshnt.tableToCSVString(selectedValues.selTextInput), true)
 end
 
+local function turnBGActionOff()
+    commandID = reaper.NamedCommandLookup("_RS0766858291ab40254b7ea8fd557370b9ecae034a")
+    if commandID ~= 0 then
+        local intToggle = reaper.GetToggleCommandState(commandID)
+        if intToggle == 1 then
+            reaper.Main_OnCommand(commandID, 0)
+        end
+    end
+end
 
-
+local function turnBGActionOn()
+    if commandID ~= 0 then
+        local intToggle = reaper.GetToggleCommandState(commandID)
+        if intToggle == 0 then
+            reaper.Main_OnCommand(commandID, 1)
+        end
+    end
+end
 
 local function VerifyAndRun_Button()
     local counterInAutoColor = 1 -- count index in autocolor indepently from i for potential nothing between others
     local nameIndex = 1
     for i = 1, numPrios do
         local curSelProperty = selectedValues.selProperty[i]
-        if curSelProperty and curSelProperty ~= 17 then
+        if curSelProperty ~= nil and curSelProperty ~= "" and curSelProperty ~= 17 then
             if curSelProperty >= 4 and curSelProperty <= 7 then
                 joshnt_autoColor.priorityOrderArray[counterInAutoColor] = "name"..nameIndex
                 joshnt_autoColor.names[nameIndex] = {}
@@ -103,7 +152,10 @@ local function VerifyAndRun_Button()
             if selectedValues.selGradToggle[i] ~= true or GUI.elms[i.."_GradientToggle"]["z"] == 5 then
                 joshnt_autoColor.colors[joshnt_autoColor.priorityOrderArray[counterInAutoColor]] = selectedValues.selColor1[i]
                 joshnt_autoColor.valueRanges[joshnt_autoColor.priorityOrderArray[counterInAutoColor]] = nil
+                selectedValues.selGradToggle[i] = false
             else
+                if selectedValues.selColor1[i] == nil then selectedValues.selColor1[i] = "darker" end
+                if selectedValues.selColor2[i] == nil then selectedValues.selColor2[i] = "brighter" end
                 joshnt_autoColor.colors[joshnt_autoColor.priorityOrderArray[counterInAutoColor]] = {selectedValues.selColor1[i],selectedValues.selColor2[i]}
                 joshnt_autoColor.valueRanges[joshnt_autoColor.priorityOrderArray[counterInAutoColor]] = selectedValues.selValRange[i]
             end
@@ -115,12 +167,12 @@ local function VerifyAndRun_Button()
     local retval = joshnt_autoColor.checkDefaultsSet()
     verifiedVals = retval
     if verifiedVals == true then
-        GUI.elms.needToSave:fade(5, 7, 5, -0.2)
-        GUI.elms.unverified:fade(5, 5, 7, 0.2)
+        GUI.elms.unverified:fade(0.5, 5, 5, 0.2)
     else
-        GUI.elms.unverified:fade(5, 7, 5, -0.2)
-        GUI.elms.needToSave:fade(5, 5, 7, 0.2)
+        GUI.elms.unverified:fade(1, 7, 7, -0.2)
+        GUI.elms.needToSave:fade(1, 5, 5, 0.2)
     end
+
 end
 
 local function compareSafedVal_CurVal_SelBox(intPriority)
@@ -135,7 +187,10 @@ end
 local function refreshVisibleElementsForPriority(intPriority, boolRefreshSlider_Input)
     verifiedVals = false
     
-    local selVal = selectedValues.selProperty[intPriority] or 17
+    local selVal = selectedValues.selProperty[intPriority]
+    if selVal == "" or selVal == nil then
+        selVal = 17
+    end
 
     local gradientToggle = GUI.elms[intPriority.."_GradientToggle"]
     local color_GradLow = GUI.elms[intPriority.."_Color_GradLow"]
@@ -269,17 +324,21 @@ local function refreshPrioritySelectBoxes()
             local selValOther = GUI.Val(j.."_Select")
             if selVal == selValOther and (selVal < 4 or selVal > 7) and selVal ~= 17 or (selVal == 15 and (selValOther == 12 or selValOther == 13)) or (selVal == 12 and selValOther == 15) or (selVal == 13 and selValOther == 15) then -- exclude text & Nothing; block gain volume and combined crossovers
                 GUI.Val(j.."_Select", 17)
+                selectedValues.selProperty[j] = 17
                 refreshVisibleElementsForPriority(j)
             end
         end
 
         if selVal ~= 17  then
-            nextOptArray[selVal] = "#"..options[selVal]
-            if selVal == 15 then
-                nextOptArray[12] = "#"..options[12]
-                nextOptArray[13] = "#"..options[13]
-            elseif selVal == 12 or selVal == 13 then
-                nextOptArray[15] = "#"..options[15]
+            if selVal >= 4 and selVal <= 7 then -- if name input
+            else
+                nextOptArray[selVal] = "#"..options[selVal]
+                if selVal == 15 then
+                    nextOptArray[12] = "#"..options[12]
+                    nextOptArray[13] = "#"..options[13]
+                elseif selVal == 12 or selVal == 13 then
+                    nextOptArray[15] = "#"..options[15]
+                end
             end
         end 
     end
@@ -288,7 +347,7 @@ local function refreshPrioritySelectBoxes()
 end
 
 local function setOptionColors(intPriority)
-    if selectedValues.selColor1[intPriority] ~= nil and selectedValues.selColor1[intPriority] ~= "brighter" and selectedValues.selColor1[intPriority] ~= "darker" then 
+    if selectedValues.selColor1[intPriority] ~= nil and selectedValues.selColor1[intPriority] ~= "" and selectedValues.selColor1[intPriority] ~= "brighter" and selectedValues.selColor1[intPriority] ~= "darker" then 
         local r,g,b = reaper.ColorFromNative(selectedValues.selColor1[intPriority])
         r = r/255
         g = g/255
@@ -296,7 +355,7 @@ local function setOptionColors(intPriority)
         GUI.colors[intPriority.."_color1"] = {r,g,b,1}
     else GUI.colors[intPriority.."_color1"] = GUI.colors["neutralFill"] 
     end
-    if selectedValues.selColor2[intPriority] ~= nil and selectedValues.selColor2[intPriority] ~= "brighter" and selectedValues.selColor2[intPriority] ~= "darker" then 
+    if selectedValues.selColor2[intPriority] ~= nil and selectedValues.selColor2[intPriority] ~= "" and selectedValues.selColor2[intPriority] ~= "brighter" and selectedValues.selColor2[intPriority] ~= "darker" then 
         local r,g,b = reaper.ColorFromNative(selectedValues.selColor2[intPriority])
         r = r/255
         g = g/255
@@ -427,11 +486,11 @@ local function drawOptions(intPriority)
         end
 
         if k == 1 then
-            curColorOption.tooltip = "Custom Color/ Brighter/ Darker\nClick first box to open color wheel"
+            curColorOption.tooltip = "Custom Color/ Brighter/ Darker\nClick first box to open color wheel."
         elseif k == 2 then
-            curColorOption.tooltip = "Custom Color (low boundary) for gradient\nClick to open color wheel"
+            curColorOption.tooltip = "Custom Color (low boundary) for gradient.\nClick to open color wheel.\nIf no color set, defaults to 'darker'"
         else
-            curColorOption.tooltip = "Custom Color (high boundary) for gradient\nClick to open color wheel"
+            curColorOption.tooltip = "Custom Color (high boundary) for gradient.\nClick to open color wheel.\nIf no color set, defaults to 'brighter'"
         end
     end 
 end
@@ -440,6 +499,7 @@ local function SaveAndExit_Button()
     if verifiedVals == true then
         GUI.quit = true
         saveOptions()
+        turnBGActionOn()
     else
         reaper.MB("Please press 'Verify new Settings' to check if all your conditions work.","Auto-Color items - Error",0)
     end
@@ -527,7 +587,6 @@ local function redrawAll()
         shadow = false
     }) --]]
 
-    local nameIndex = 1
 
     for i = 1, numPrios do
         
@@ -647,16 +706,16 @@ local function redrawAll()
         })
 
         -- load values
-        if selectedValues.selProperty[i] ~= nil then
+        if selectedValues.selProperty[i] ~= nil and selectedValues.selProperty[i] ~= "" then
             GUI.Val(i.."_Select", selectedValues.selProperty[i])
 
-            if selectedValues.selTextInput[1] ~= nil and selectedValues.selProperty[i] >= 4 and selectedValues.selProperty[i] <= 7 then
-                GUI.Val(i.."_Textbox", selectedValues.selTextInput[nameIndex])
-                nameIndex = nameIndex +1
+            if selectedValues.selTextInput[i] ~= nil and selectedValues.selProperty[i] >= 4 and selectedValues.selProperty[i] <= 7 then
+                GUI.Val(i.."_Textbox", selectedValues.selTextInput[i])
             end
         else
             GUI.Val(i.."_Select", 17)
         end
+        GUI.Val(i.."_GradientToggle", selectedValues.selGradToggle[i])
 
 
         -- Functions on User input
@@ -770,6 +829,15 @@ local function redrawAll()
             selectedValues.selGradToggle[i] = GUI.Val(i.."_GradientToggle")
             verifiedVals = false
         end
+        function curToggleBox:init()
+            GUI.Checklist.init(self)
+            if curToggleBox.z == 5 then
+                selectedValues.selGradToggle[i] = false
+                GUI.Val(i.."_GradientToggle", false)
+            else
+                selectedValues.selGradToggle[i] = GUI.Val(i.."_GradientToggle")
+            end
+        end
         curToggleBox.tooltip = "Toggles Gradient for selected property"
 
         local curTextBox = GUI.elms[i.."_Textbox"]
@@ -793,10 +861,13 @@ local function Loop()
     -- show label or run function
     if verifiedVals == true then
         joshnt_autoColor.selItems()
+        if GUI.elms.needToSave.z == 5 then
+            GUI.elms.needToSave:fade(2, 7, 5, 3)
+        end
     else
-        if GUI.elms.unverified.z ~= 7 then
-            GUI.elms.unverified:fade(5, 7, 5, -0.2)
-            GUI.elms.needToSave:fade(5, 5, 7, 0.2)
+        if GUI.elms.unverified.z == 5 then
+            GUI.elms.unverified:fade(3, 7, 7, -0.2)
+            GUI.elms.needToSave:fade(3, 7, 5, 0.2)
         end
     end
 
@@ -814,11 +885,11 @@ local function init()
     refreshAllVisibleElements()
 end
 
-
 GUI.name = "Auto-Color items"
 GUI.x, GUI.y, GUI.w, GUI.h = 0, 0, 535, 560
 GUI.anchor, GUI.corner = "screen", "L"
 
+turnBGActionOff()
 GUI.Init()
 checkOptionDefaults()
 init()

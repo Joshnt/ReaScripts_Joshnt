@@ -53,7 +53,7 @@ local function getSavedSettings()
   local nameIndex = 1
   for i = 1, #selectedValues.selProperty do
       local curSelProperty = selectedValues.selProperty[i]
-      if curSelProperty and curSelProperty ~= 17 then
+      if curSelProperty and curSelProperty ~= "" and curSelProperty ~= 17 then
           if curSelProperty >= 4 and curSelProperty <= 7 then
               joshnt_autoColor.priorityOrderArray[counterInAutoColor] = "name"..nameIndex
               joshnt_autoColor.names[nameIndex] = {}
@@ -64,7 +64,7 @@ local function getSavedSettings()
               joshnt_autoColor.priorityOrderArray[counterInAutoColor] = optionsForMain[curSelProperty]
           end
 
-          if selectedValues.selGradToggle[i] ~= true or GUI.elms[i.."_GradientToggle"]["z"] == 5 then
+          if selectedValues.selGradToggle[i] ~= true then
               joshnt_autoColor.colors[joshnt_autoColor.priorityOrderArray[counterInAutoColor]] = selectedValues.selColor1[i]
               joshnt_autoColor.valueRanges[joshnt_autoColor.priorityOrderArray[counterInAutoColor]] = nil
           else
