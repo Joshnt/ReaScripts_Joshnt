@@ -35,8 +35,28 @@ end
 local yOffset = 64
 local yIncr = 50
 local numPrios = 10
-local options = {"Reverse", "FX", ">Item-Name", "is exactly", "contains", "is not", "<is not containing", ">Pitch/Rate", "Pitch", "<Rate", ">Volume/Gain", "Volume", "Gain", "", "<Combined", "", "Nothing"}
-local optionsForMain = {"reverse","FX","","is exactly","contains","is not","is not containing","","pitch","rate","","volume","gain","","combined"}
+local options = {"Reverse", ">Item FX","any FX","<named FX", ">Item-Name", "is exactly", "contains", "is not", "<is not containing", ">Pitch/Rate", "Pitch", "<Rate", ">Volume/Gain", "Volume", "Gain", "", "<Combined", "", "Nothing"}
+local optionsForMain = {"reverse","","FX","FXnamed","","is exactly","contains","is not","is not containing","","pitch","rate","","volume","gain","","combined"}
+--[[
+1 = "reverse",
+2 = "",
+3 = "FX",
+4 = "FXnamed",
+5 = "",
+6 = "is exactly",
+7 = "contains",
+8 = "is not",
+9 = "is not containing",
+10 = "",
+11 = "pitch",
+12 = "rate",
+13 = "",
+14 = "volume",
+15 = "gain",
+16 = "",
+17 = "combined"
+19 = "nothing"
+]]--
 GUI.colors["neutralFill"] = {140,140,140,255}
 
 -- content values; all as directly rewriteable to value
@@ -136,15 +156,20 @@ end
 local function VerifyAndRun_Button()
     local counterInAutoColor = 1 -- count index in autocolor indepently from i for potential nothing between others
     local nameIndex = 1
+    local FXnameIndex = 1
     for i = 1, numPrios do
         local curSelProperty = selectedValues.selProperty[i]
-        if curSelProperty ~= nil and curSelProperty ~= "" and curSelProperty ~= 17 then
-            if curSelProperty >= 4 and curSelProperty <= 7 then
+        if curSelProperty and curSelProperty ~= "" and curSelProperty ~= 19 then
+            if curSelProperty >= 6 and curSelProperty <= 9 then -- if names
                 joshnt_autoColor.priorityOrderArray[counterInAutoColor] = "name"..nameIndex
                 joshnt_autoColor.names[nameIndex] = {}
                 joshnt_autoColor.names[nameIndex][1] = selectedValues.selTextInput[i]
                 joshnt_autoColor.names[nameIndex][2] = optionsForMain[curSelProperty]
                 nameIndex = nameIndex +1
+            elseif curSelProperty == 4 then
+                joshnt_autoColor.priorityOrderArray[counterInAutoColor] = "FXnamed"..nameIndex
+                joshnt_autoColor.FXnames[FXnameIndex] = selectedValues.selTextInput[i]
+                FXnameIndex = FXnameIndex +1
             else
                 joshnt_autoColor.priorityOrderArray[counterInAutoColor] = optionsForMain[curSelProperty]
             end
@@ -189,7 +214,7 @@ local function refreshVisibleElementsForPriority(intPriority, boolRefreshSlider_
     
     local selVal = selectedValues.selProperty[intPriority]
     if selVal == "" or selVal == nil then
-        selVal = 17
+        selVal = 19
     end
 
     local gradientToggle = GUI.elms[intPriority.."_GradientToggle"]
@@ -198,7 +223,7 @@ local function refreshVisibleElementsForPriority(intPriority, boolRefreshSlider_
     local valRange = GUI.elms[intPriority.."_ValRange"]
     local color_Normal = GUI.elms[intPriority.."_Color_Normal"]
     local textbox = GUI.elms[intPriority.."_Textbox"]
-    if selVal <= 2 then -- check if reverse or fx
+    if selVal <= 3 then -- check if reverse or fx
         gradientToggle.z = 5
         GUI.Val(intPriority.."_GradientToggle",false)
         color_GradLow.z = 5
@@ -208,7 +233,8 @@ local function refreshVisibleElementsForPriority(intPriority, boolRefreshSlider_
         textbox.z = 5
 
         color_Normal.z = 20+intPriority
-    elseif selVal >= 4 and selVal <= 7 then -- check if name input
+
+    elseif selVal >= 4 and selVal <= 9 then -- check if name input
         gradientToggle.z = 5
         GUI.Val(intPriority.."_GradientToggle",false)
         color_GradLow.z = 5
@@ -218,7 +244,7 @@ local function refreshVisibleElementsForPriority(intPriority, boolRefreshSlider_
         textbox.z = 11
 
         color_Normal.z = 20+intPriority
-    elseif selVal >= 9 and selVal <= 15 then -- check if volume/ gain/rate/ pitch
+    elseif selVal >= 11 and selVal <= 17 then -- check if volume/ gain/rate/ pitch
         gradientToggle.z = 11
         local gradientToggleVal = GUI.Val(intPriority.."_GradientToggle")
         if gradientToggleVal == false or gradientToggleVal == nil then 
@@ -284,7 +310,7 @@ end
 -- to avoid double selected properties
 local function refreshPrioritySelectBoxes()
     local nextOptArray = {}
-    local nameConditionCounter = 0
+    local nameConditionCounter, nameFXConditionCounter = 0, 0
     joshnt.copyTableValues(options, nextOptArray)
 
     -- ! = selected, # = blocked from selection
@@ -310,34 +336,43 @@ local function refreshPrioritySelectBoxes()
 
         currSelBox.optarray = currOptArray
 
-        if selVal >= 4 and selVal <= 7 then -- check if name input
+        if selVal >= 6 and selVal <= 9 then -- check if name input
             nameConditionCounter = nameConditionCounter +1
             if nameConditionCounter > 5 then
-                GUI.Val(i.."_Select", 17)
+                GUI.Val(i.."_Select", 19)
                 refreshVisibleElementsForPriority(i)
                 joshnt.TooltipAtMouse("Max. Number of 5 Conditions with names reached.")
+            end
+        end
+
+        if selVal == 4 then -- check if named FX
+            nameFXConditionCounter = nameFXConditionCounter +1
+            if nameFXConditionCounter > 5 then
+                GUI.Val(i.."_Select", 19)
+                refreshVisibleElementsForPriority(i)
+                joshnt.TooltipAtMouse("Max. Number of 5 Conditions with FXnames reached.")
             end
         end
 
         
         for j = i+1, numPrios do
             local selValOther = GUI.Val(j.."_Select")
-            if selVal == selValOther and (selVal < 4 or selVal > 7) and selVal ~= 17 or (selVal == 15 and (selValOther == 12 or selValOther == 13)) or (selVal == 12 and selValOther == 15) or (selVal == 13 and selValOther == 15) then -- exclude text & Nothing; block gain volume and combined crossovers
-                GUI.Val(j.."_Select", 17)
-                selectedValues.selProperty[j] = 17
+            if selVal == selValOther and (selVal < 4 or selVal > 9) and selVal ~= 19 or (selVal == 17 and (selValOther == 14 or selValOther == 15)) or (selVal == 14 and selValOther == 17) or (selVal == 15 and selValOther == 17) then -- exclude text & Nothing; block gain volume and combined crossovers
+                GUI.Val(j.."_Select", 19)
+                selectedValues.selProperty[j] = 19
                 refreshVisibleElementsForPriority(j)
             end
         end
 
-        if selVal ~= 17  then
-            if selVal >= 4 and selVal <= 7 then -- if name input
+        if selVal ~= 19  then
+            if selVal >= 4 and selVal <= 9 then -- if name input
             else
                 nextOptArray[selVal] = "#"..options[selVal]
-                if selVal == 15 then
-                    nextOptArray[12] = "#"..options[12]
-                    nextOptArray[13] = "#"..options[13]
-                elseif selVal == 12 or selVal == 13 then
+                if selVal == 17 then
+                    nextOptArray[14] = "#"..options[14]
                     nextOptArray[15] = "#"..options[15]
+                elseif selVal == 14 or selVal == 15 then
+                    nextOptArray[17] = "#"..options[17]
                 end
             end
         end 
@@ -709,11 +744,11 @@ local function redrawAll()
         if selectedValues.selProperty[i] ~= nil and selectedValues.selProperty[i] ~= "" then
             GUI.Val(i.."_Select", selectedValues.selProperty[i])
 
-            if selectedValues.selTextInput[i] ~= nil and selectedValues.selProperty[i] >= 4 and selectedValues.selProperty[i] <= 7 then
+            if selectedValues.selTextInput[i] ~= nil and selectedValues.selProperty[i] >= 4 and selectedValues.selProperty[i] <= 9 then
                 GUI.Val(i.."_Textbox", selectedValues.selTextInput[i])
             end
         else
-            GUI.Val(i.."_Select", 17)
+            GUI.Val(i.."_Select", 19)
         end
         GUI.Val(i.."_GradientToggle", selectedValues.selGradToggle[i])
 

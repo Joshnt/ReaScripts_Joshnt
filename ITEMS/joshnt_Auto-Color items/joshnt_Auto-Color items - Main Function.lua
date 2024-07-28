@@ -15,7 +15,12 @@ joshnt_autoColor.colors = {
     name2 = nil,
     name3 = nil,
     name4 = nil,
-    name5 = nil
+    name5 = nil,
+    FXnamed1 = nil,
+    FXnamed2 = nil,
+    FXnamed3 = nil,
+    FXnamed4 = nil,
+    FXnamed5 = nil
 }
 -- if gradient, save low value bound and high value bound
 joshnt_autoColor.valueRanges = {
@@ -27,21 +32,22 @@ joshnt_autoColor.valueRanges = {
 }
 -- save names in synatx priority = {name, compare}; e.g. 1 = {"REC","contains"}
 joshnt_autoColor.names = {}
+joshnt_autoColor.FXnames = {}
 -- Define property detection/ coloring
 joshnt_autoColor.propertyColoring = {
     name1 = 
         function(item)
             local boolMatch = false
-            local comapreString = joshnt_autoColor.names[1][1]
+            local compareString = joshnt_autoColor.names[1][1]
             local compare = joshnt_autoColor.names[1][2]
             if compare == "contains" then
-                boolMatch = joshnt_autoColor.isStringInItemName(item,comapreString)
+                boolMatch = joshnt_autoColor.isStringInItemName(item,compareString)
             elseif compare == "is exactly" then
-                boolMatch = joshnt_autoColor.isStringExactlyItemName(item, comapreString)
+                boolMatch = joshnt_autoColor.isStringExactlyItemName(item, compareString)
             elseif compare == "is not containing" then
-                boolMatch = joshnt_autoColor.isStringInItemName(item, comapreString) == false
+                boolMatch = joshnt_autoColor.isStringInItemName(item, compareString) == false
             elseif compare == "is not" then
-                boolMatch = joshnt_autoColor.isStringExactlyItemName(item, comapreString) == false
+                boolMatch = joshnt_autoColor.isStringExactlyItemName(item, compareString) == false
             end
             if boolMatch == true then
                 local colorTEMP = joshnt_autoColor.colors["name1"]
@@ -55,16 +61,16 @@ joshnt_autoColor.propertyColoring = {
     name2 = 
         function(item)
             local boolMatch = false
-            local comapreString = joshnt_autoColor.names[2][1]
+            local compareString = joshnt_autoColor.names[2][1]
             local compare = joshnt_autoColor.names[2][2]
             if compare == "contains" then
-                boolMatch = joshnt_autoColor.isStringInItemName(item,comapreString)
+                boolMatch = joshnt_autoColor.isStringInItemName(item,compareString)
             elseif compare == "is exactly" then
-                boolMatch = joshnt_autoColor.isStringExactlyItemName(item, comapreString)
+                boolMatch = joshnt_autoColor.isStringExactlyItemName(item, compareString)
             elseif compare == "is not containing" then
-                boolMatch = joshnt_autoColor.isStringInItemName(item, comapreString) == false
+                boolMatch = joshnt_autoColor.isStringInItemName(item, compareString) == false
             elseif compare == "is not" then
-                boolMatch = joshnt_autoColor.isStringExactlyItemName(item, comapreString) == false
+                boolMatch = joshnt_autoColor.isStringExactlyItemName(item, compareString) == false
             end
             if boolMatch == true then
                 local colorTEMP = joshnt_autoColor.colors["name2"]
@@ -78,16 +84,16 @@ joshnt_autoColor.propertyColoring = {
     name3 = 
         function(item)
             local boolMatch = false
-            local comapreString = joshnt_autoColor.names[3][1]
+            local compareString = joshnt_autoColor.names[3][1]
             local compare = joshnt_autoColor.names[3][2]
             if compare == "contains" then
-                boolMatch = joshnt_autoColor.isStringInItemName(item,comapreString)
+                boolMatch = joshnt_autoColor.isStringInItemName(item,compareString)
             elseif compare == "is exactly" then
-                boolMatch = joshnt_autoColor.isStringExactlyItemName(item, comapreString)
+                boolMatch = joshnt_autoColor.isStringExactlyItemName(item, compareString)
             elseif compare == "is not containing" then
-                boolMatch = joshnt_autoColor.isStringInItemName(item, comapreString) == false
+                boolMatch = joshnt_autoColor.isStringInItemName(item, compareString) == false
             elseif compare == "is not" then
-                boolMatch = joshnt_autoColor.isStringExactlyItemName(item, comapreString) == false
+                boolMatch = joshnt_autoColor.isStringExactlyItemName(item, compareString) == false
             end
             if boolMatch == true then
                 local colorTEMP = joshnt_autoColor.colors["name3"]
@@ -101,16 +107,16 @@ joshnt_autoColor.propertyColoring = {
     name4 = 
         function(item)
             local boolMatch = false
-            local comapreString = joshnt_autoColor.names[4][1]
+            local compareString = joshnt_autoColor.names[4][1]
             local compare = joshnt_autoColor.names[4][2]
             if compare == "contains" then
-                boolMatch = joshnt_autoColor.isStringInItemName(item,comapreString)
+                boolMatch = joshnt_autoColor.isStringInItemName(item,compareString)
             elseif compare == "is exactly" then
-                boolMatch = joshnt_autoColor.isStringExactlyItemName(item, comapreString)
+                boolMatch = joshnt_autoColor.isStringExactlyItemName(item, compareString)
             elseif compare == "is not containing" then
-                boolMatch = joshnt_autoColor.isStringInItemName(item, comapreString) == false
+                boolMatch = joshnt_autoColor.isStringInItemName(item, compareString) == false
             elseif compare == "is not" then
-                boolMatch = joshnt_autoColor.isStringExactlyItemName(item, comapreString) == false
+                boolMatch = joshnt_autoColor.isStringExactlyItemName(item, compareString) == false
             end
             if boolMatch == true then
                 local colorTEMP = joshnt_autoColor.colors["name4"]
@@ -124,16 +130,16 @@ joshnt_autoColor.propertyColoring = {
     name5 = 
         function(item)
             local boolMatch = false
-            local comapreString = joshnt_autoColor.names[5][1]
+            local compareString = joshnt_autoColor.names[5][1]
             local compare = joshnt_autoColor.names[5][2]
             if compare == "contains" then
-                boolMatch = joshnt_autoColor.isStringInItemName(item,comapreString)
+                boolMatch = joshnt_autoColor.isStringInItemName(item,compareString)
             elseif compare == "is exactly" then
-                boolMatch = joshnt_autoColor.isStringExactlyItemName(item, comapreString)
+                boolMatch = joshnt_autoColor.isStringExactlyItemName(item, compareString)
             elseif compare == "is not containing" then
-                boolMatch = joshnt_autoColor.isStringInItemName(item, comapreString) == false
+                boolMatch = joshnt_autoColor.isStringInItemName(item, compareString) == false
             elseif compare == "is not" then
-                boolMatch = joshnt_autoColor.isStringExactlyItemName(item, comapreString) == false
+                boolMatch = joshnt_autoColor.isStringExactlyItemName(item, compareString) == false
             end
             if boolMatch == true then
                 local colorTEMP = joshnt_autoColor.colors["name5"]
@@ -164,6 +170,61 @@ joshnt_autoColor.propertyColoring = {
                 return true
             else return false end
         end,
+    FXnamed1 = 
+        function(item) 
+            local compareString = joshnt_autoColor.FXnames[1]
+            if joshnt_autoColor.itemHasnamedFX(item, compareString) then
+                local colorTEMP = joshnt_autoColor.colors["FXnamed1"]
+                if colorTEMP == "brighter" then colorTEMP = joshnt_autoColor.getBrighter(item) 
+                elseif colorTEMP == "darker" then colorTEMP = joshnt_autoColor.getDarker(item) end
+                reaper.SetMediaItemInfo_Value(item, "I_CUSTOMCOLOR", colorTEMP | 0x1000000)  -- Set item color
+                return true
+            else return false end
+        end,
+    FXnamed2 = 
+    function(item) 
+        local compareString = joshnt_autoColor.FXnames[2]
+        if joshnt_autoColor.itemHasnamedFX(item, compareString) then
+            local colorTEMP = joshnt_autoColor.colors["FXnamed2"]
+            if colorTEMP == "brighter" then colorTEMP = joshnt_autoColor.getBrighter(item) 
+            elseif colorTEMP == "darker" then colorTEMP = joshnt_autoColor.getDarker(item) end
+            reaper.SetMediaItemInfo_Value(item, "I_CUSTOMCOLOR", colorTEMP | 0x1000000)  -- Set item color
+            return true
+        else return false end
+    end,
+    FXnamed3 = 
+    function(item) 
+        local compareString = joshnt_autoColor.FXnames[3]
+        if joshnt_autoColor.itemHasnamedFX(item, compareString) then
+            local colorTEMP = joshnt_autoColor.colors["FXnamed3"]
+            if colorTEMP == "brighter" then colorTEMP = joshnt_autoColor.getBrighter(item) 
+            elseif colorTEMP == "darker" then colorTEMP = joshnt_autoColor.getDarker(item) end
+            reaper.SetMediaItemInfo_Value(item, "I_CUSTOMCOLOR", colorTEMP | 0x1000000)  -- Set item color
+            return true
+        else return false end
+    end,
+    FXnamed4 = 
+    function(item) 
+        local compareString = joshnt_autoColor.FXnames[4]
+        if joshnt_autoColor.itemHasnamedFX(item, compareString) then
+            local colorTEMP = joshnt_autoColor.colors["FXnamed4"]
+            if colorTEMP == "brighter" then colorTEMP = joshnt_autoColor.getBrighter(item) 
+            elseif colorTEMP == "darker" then colorTEMP = joshnt_autoColor.getDarker(item) end
+            reaper.SetMediaItemInfo_Value(item, "I_CUSTOMCOLOR", colorTEMP | 0x1000000)  -- Set item color
+            return true
+        else return false end
+    end,
+    FXnamed5 = 
+    function(item) 
+        local compareString = joshnt_autoColor.FXnames[5]
+        if joshnt_autoColor.itemHasnamedFX(item, compareString) then
+            local colorTEMP = joshnt_autoColor.colors["FXnamed5"]
+            if colorTEMP == "brighter" then colorTEMP = joshnt_autoColor.getBrighter(item) 
+            elseif colorTEMP == "darker" then colorTEMP = joshnt_autoColor.getDarker(item) end
+            reaper.SetMediaItemInfo_Value(item, "I_CUSTOMCOLOR", colorTEMP | 0x1000000)  -- Set item color
+            return true
+        else return false end
+    end,
     pitch = 
         function(item) 
             local pitch = joshnt.getItemPropertyPitch(item)
@@ -322,6 +383,28 @@ function joshnt_autoColor.itemHasFX(item)
     return false
 end
 
+function joshnt_autoColor.itemHasnamedFX(item, name)
+    if not item then
+        return false
+    end
+
+    local takeCount = reaper.CountTakes(item)
+    for i = 0, takeCount - 1 do
+        local take = reaper.GetTake(item, i)
+        if take then
+            local numFX = reaper.TakeFX_GetCount(take)
+            for j = 0, numFX -1 do
+                local retval, FXname = reaper.TakeFX_GetFXName(take, j)
+                if retval and FXname:find(name) then
+                    return true
+                end
+            end
+        end
+    end
+
+    return false
+end
+
 function joshnt_autoColor.isStringInItemName(item, searchString)
     if not item then
         return false
@@ -415,6 +498,12 @@ function joshnt_autoColor.checkDefaultsSet()
         elseif type(joshnt_autoColor.colors[property]) == "table" and (joshnt_autoColor.valueRanges[property] == nil or joshnt_autoColor.valueRanges[property][1] == nil or joshnt_autoColor.valueRanges[property][2] == nil) then
             reaper.ShowMessageBox("Color for "..property.." is set to gradient, but no value range is defined.\n\nScript execution cancelled", "Auto-Coloring Error",0)
             return false
+        elseif property:find("FXnamed") then
+            local nameNum = tonumber(string.sub(property,8,8))
+            if not joshnt_autoColor.FXnames[nameNum] or joshnt_autoColor.FXnames[nameNum]=="" or type(joshnt_autoColor.FXnames[nameNum])~="string" then
+                reaper.ShowMessageBox("No Name-Setting for "..property.." found.\n\nScript execution cancelled", "Auto-Coloring Error",0)
+                return false
+            end
         elseif property:find("name") then
             local nameNum = tonumber(string.sub(property,5,5))
             if not joshnt_autoColor.names[nameNum] or joshnt_autoColor.names[nameNum][1]=="" or joshnt_autoColor.names[nameNum][2]=="" or type(joshnt_autoColor.names[nameNum][1])~="string" or type(joshnt_autoColor.names[nameNum][2])~="string" then

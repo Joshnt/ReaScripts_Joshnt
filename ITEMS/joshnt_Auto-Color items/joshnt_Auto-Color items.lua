@@ -28,7 +28,7 @@ end
 
 
 local function getSavedSettings()
-  local optionsForMain = {"reverse","FX","","is exactly","contains","is not","is not containing","","pitch","rate","","volume","gain","","combined"}
+  local optionsForMain = {"reverse","","FX","FXnamed","","is exactly","contains","is not","is not containing","","pitch","rate","","volume","gain","","combined"}
   local selectedValues = {
     selProperty = {},
     selColor1 = {},
@@ -51,15 +51,20 @@ local function getSavedSettings()
 
   local counterInAutoColor = 1 -- count index in autocolor indepently from i for potential nothing between others
   local nameIndex = 1
+  local FXnameIndex = 1
   for i = 1, #selectedValues.selProperty do
       local curSelProperty = selectedValues.selProperty[i]
-      if curSelProperty and curSelProperty ~= "" and curSelProperty ~= 17 then
-          if curSelProperty >= 4 and curSelProperty <= 7 then
-              joshnt_autoColor.priorityOrderArray[counterInAutoColor] = "name"..nameIndex
-              joshnt_autoColor.names[nameIndex] = {}
-              joshnt_autoColor.names[nameIndex][1] = selectedValues.selTextInput[i]
-              joshnt_autoColor.names[nameIndex][2] = optionsForMain[curSelProperty]
-              nameIndex = nameIndex +1
+      if curSelProperty and curSelProperty ~= "" and curSelProperty ~= 19 then
+          if curSelProperty >= 6 and curSelProperty <= 9 then -- if names
+            joshnt_autoColor.priorityOrderArray[counterInAutoColor] = "name"..nameIndex
+            joshnt_autoColor.names[nameIndex] = {}
+            joshnt_autoColor.names[nameIndex][1] = selectedValues.selTextInput[i]
+            joshnt_autoColor.names[nameIndex][2] = optionsForMain[curSelProperty]
+            nameIndex = nameIndex +1
+          elseif curSelProperty == 4 then
+            joshnt_autoColor.priorityOrderArray[counterInAutoColor] = "FXnamed"..nameIndex
+            joshnt_autoColor.FXnames[FXnameIndex] = selectedValues.selTextInput[i]
+            FXnameIndex = FXnameIndex +1
           else
               joshnt_autoColor.priorityOrderArray[counterInAutoColor] = optionsForMain[curSelProperty]
           end
