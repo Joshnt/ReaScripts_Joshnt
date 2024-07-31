@@ -30,6 +30,8 @@ joshnt_autoColor.valueRanges = {
     volume = nil,
     combined = nil
 }
+joshnt_autoColor.dontOverwrite = false
+joshnt_autoColor.recoloredItems = {}
 -- save names in synatx priority = {name, compare}; e.g. 1 = {"REC","contains"}
 joshnt_autoColor.names = {}
 joshnt_autoColor.FXnames = {}
@@ -451,6 +453,18 @@ function joshnt_autoColor.main(item)
     joshnt_autoColor.propertyColoring["colorDefault"](item)
 end
 
+function joshnt_autoColor.main_dontOverwrite(item)
+    for i, action in ipairs(joshnt_autoColor.priorityOrderArray) do
+        local retval = joshnt_autoColor.propertyColoring[action](item)
+        if retval == true then 
+            joshnt_autoColor.recoloredItems[item] = joshnt_autoColor.colors[action] | 0x1000000
+            return 
+        end
+    end
+    joshnt_autoColor.propertyColoring["colorDefault"](item)
+    joshnt_autoColor.recoloredItems[item] = nil
+end
+
 -- call from outside: run function for selected items
 function joshnt_autoColor.selItems()
     if reaper.CountSelectedMediaItems() > 0 then
@@ -459,6 +473,29 @@ function joshnt_autoColor.selItems()
             local item = reaper.GetSelectedMediaItem(0, i)
             if item then
                 joshnt_autoColor.main(item)
+            end
+        end
+    end
+    reaper.UpdateArrange()
+end
+
+-- call from outside: run function for selected items; dont overwrite custom color
+function joshnt_autoColor.selItems_dontOverwrite()
+    if reaper.CountSelectedMediaItems() > 0 then
+        for i = 0, reaper.CountSelectedMediaItems()-1 do
+            -- Get the selected media item
+            local item = reaper.GetSelectedMediaItem(0, i)
+            if item then
+                local itemColor_TEMP = reaper.GetMediaItemInfo_Value(item, "I_CUSTOMCOLOR")
+                if itemColor_TEMP ~= 0 then
+                    if joshnt_autoColor.recoloredItems[item] == itemColor_TEMP or joshnt_autoColor.recoloredItems[item] == true then 
+                        joshnt_autoColor.main_dontOverwrite(item) 
+                    else
+                        joshnt_autoColor.recoloredItems[item] = nil
+                    end
+                else
+                    joshnt_autoColor.main_dontOverwrite(item)
+                end
             end
         end
     end

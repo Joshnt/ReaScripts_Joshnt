@@ -114,6 +114,8 @@ local function checkOptionDefaults()
         selectedValues.selValRange = joshnt.splitStringToTable(reaper.GetExtState("joshnt_Auto-Color_items", "selValRange"))
         selectedValues.selGradToggle = joshnt.splitStringToTable(reaper.GetExtState("joshnt_Auto-Color_items", "selGradToggle"))
         selectedValues.selTextInput = joshnt.splitStringToTable(reaper.GetExtState("joshnt_Auto-Color_items", "selTextInput"))
+        local tempVal = reaper.GetExtState("joshnt_Auto-Color_items", "dontOverwrite")
+        if tempVal then GUI.Val("DontOverwrite",tempVal=="true") end
     end
 
     for keys, subTable in pairs(selectedValues) do
@@ -132,6 +134,7 @@ local function saveOptions()
     reaper.SetExtState("joshnt_Auto-Color_items", "selValRange", joshnt.tableToCSVString(selectedValues.selValRange), true)
     reaper.SetExtState("joshnt_Auto-Color_items", "selGradToggle", joshnt.tableToCSVString(selectedValues.selGradToggle), true)
     reaper.SetExtState("joshnt_Auto-Color_items", "selTextInput", joshnt.tableToCSVString(selectedValues.selTextInput), true)
+    reaper.SetExtState("joshnt_Auto-Color_items", "dontOverwrite", tostring(GUI.Val("DontOverwrite")), true)
 end
 
 local function turnBGActionOff()
@@ -188,10 +191,12 @@ local function VerifyAndRun_Button()
             counterInAutoColor = counterInAutoColor + 1
         end
     end
-    
+    joshnt_autoColor.dontOverwrite = GUI.Val("DontOverwrite")
+
     local retval = joshnt_autoColor.checkDefaultsSet()
     verifiedVals = retval
     if verifiedVals == true then
+        joshnt_autoColor.recoloredItems = {}
         GUI.elms.unverified:fade(0.5, 5, 5, 0.2)
     else
         GUI.elms.unverified:fade(1, 7, 7, -0.2)
@@ -322,7 +327,7 @@ local function refreshPrioritySelectBoxes()
         
         --[[
         -- TODO - optional
-        -- setting checkmark to selected folder doesnt work?? - weird offset of value
+        -- for Menubox GUI: setting checkmark to selected folder doesnt work?? - weird offset of value
         if (selVal >= 4 and selVal <= 7) then -- name
             --currOptArray[3] = "!"..options[3]
         elseif (selVal == 9 or selVal == 10) then -- pitch/ rate
@@ -532,9 +537,9 @@ end
 
 local function SaveAndExit_Button()
     if verifiedVals == true then
-        GUI.quit = true
         saveOptions()
         turnBGActionOn()
+        GUI.quit = true
     else
         reaper.MB("Please press 'Verify new Settings' to check if all your conditions work.","Auto-Color items - Error",0)
     end
@@ -589,28 +594,60 @@ local function redrawAll()
         func = VerifyAndRun_Button
     })
 
+    GUI.New("DontOverwrite", "Checklist", {
+        z = 11,
+        x = 270,
+        y = 10,
+        w = 30,
+        h = 30,
+        caption = "",
+        optarray = {"Don't overwrite\ncustom color"},
+        dir = "v",
+        pad = 4,
+        font_a = 3,
+        font_b = 3,
+        col_txt = "txt",
+        col_fill = "elm_fill",
+        bg = "wnd_bg",
+        frame = false,
+        shadow = false,
+        swap = nil,
+        opt_size = 20
+    })
+    GUI.elms.DontOverwrite.tooltip = "If enabled, items with color set by user/ other scripts\nwill not get colored by this auto-color script's conditions."
+    function GUI.elms.DontOverwrite:onmousedown()
+        GUI.Checklist.onmousedown(self)        
+        verifiedVals = false
+    end
+    function GUI.elms.DontOverwrite:onmouseup()
+        GUI.Checklist.onmouseup(self)        
+        verifiedVals = false
+    end
+
+
     GUI.New("unverified", "Label", {
     z = 7,
-    x = 270,
-    y = 17,
-    caption = "unverified changes - execution paused",
+    x = 420,
+    y = 10,
+    caption = "unverified changes\n- execution paused",
     font = 4,
     color = "txt",
-    bg = "wnd_bg",
+    bg = "elm_frame",
     shadow = false
     })
 
     GUI.New("needToSave", "Label", {
         z = 5,
-        x = 270,
-        y = 17,
-        caption = "Preview - Settings not saved",
+        x = 420,
+        y = 10,
+        caption = "Preview\n- Settings not saved",
         font = 4,
         color = "txt",
         bg = "wnd_bg",
         shadow = false
     })
 
+    -- visual indicator where gradient toggle would be; replaced by tooltip
     --[[GUI.New("Gradient", "Label", {
         z = 11,
         x = 160,
@@ -895,7 +932,10 @@ end
 local function Loop()
     -- show label or run function
     if verifiedVals == true then
-        joshnt_autoColor.selItems()
+        if joshnt_autoColor.dontOverwrite == true then joshnt_autoColor.selItems_dontOverwrite()
+        else joshnt_autoColor.selItems()
+        end
+        
         if GUI.elms.needToSave.z == 5 then
             GUI.elms.needToSave:fade(2, 7, 5, 3)
         end
@@ -935,3 +975,9 @@ GUI.escape_bypass = true
 GUI.Main()
 
 
+-- TODO
+--[[
+- Tooltip dont overwrite custom color
+- dont overwrite checkbox sets verified values false
+
+]]--

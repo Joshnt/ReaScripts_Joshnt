@@ -40,13 +40,13 @@ local function getSavedSettings()
   joshnt_autoColor.priorityOrderArray = {}
 
   if reaper.HasExtState("joshnt_Auto-Color_items", "priorityOrder") then
-      selectedValues.selProperty = joshnt.splitStringToTable(reaper.GetExtState("joshnt_Auto-Color_items", "priorityOrder"))
-      selectedValues.selColor1 = joshnt.splitStringToTable(reaper.GetExtState("joshnt_Auto-Color_items", "selColor1"))
-      selectedValues.selColor2 = joshnt.splitStringToTable(reaper.GetExtState("joshnt_Auto-Color_items", "selColor2"))
-      selectedValues.selValRange = joshnt.splitStringToTable(reaper.GetExtState("joshnt_Auto-Color_items", "selValRange"))
-      selectedValues.selGradToggle = joshnt.splitStringToTable(reaper.GetExtState("joshnt_Auto-Color_items", "selGradToggle"))
-      selectedValues.selTextInput = joshnt.splitStringToTable(reaper.GetExtState("joshnt_Auto-Color_items", "selTextInput"))
-
+    selectedValues.selProperty = joshnt.splitStringToTable(reaper.GetExtState("joshnt_Auto-Color_items", "priorityOrder"))
+    selectedValues.selColor1 = joshnt.splitStringToTable(reaper.GetExtState("joshnt_Auto-Color_items", "selColor1"))
+    selectedValues.selColor2 = joshnt.splitStringToTable(reaper.GetExtState("joshnt_Auto-Color_items", "selColor2"))
+    selectedValues.selValRange = joshnt.splitStringToTable(reaper.GetExtState("joshnt_Auto-Color_items", "selValRange"))
+    selectedValues.selGradToggle = joshnt.splitStringToTable(reaper.GetExtState("joshnt_Auto-Color_items", "selGradToggle"))
+    selectedValues.selTextInput = joshnt.splitStringToTable(reaper.GetExtState("joshnt_Auto-Color_items", "selTextInput"))
+    joshnt_autoColor.dontOverwrite = reaper.GetExtState("joshnt_Auto-Color_items", "dontOverwrite") == "true"
   else return end
 
   local counterInAutoColor = 1 -- count index in autocolor indepently from i for potential nothing between others
@@ -86,9 +86,22 @@ getSavedSettings()
 
 if joshnt_autoColor.checkDefaultsSet() == false then return end
 
+local function main_sel_noOverwrite()
+  joshnt_autoColor.selItems_dontOverwrite()
+  reaper.defer(main_sel_noOverwrite)
+end
+
+local function main_sel()
+  joshnt_autoColor.selItems()
+  reaper.defer(main_sel)
+end
+
 local function main()
-    joshnt_autoColor.selItems()
-    reaper.defer(main)
+  if joshnt_autoColor.dontOverwrite == true then
+    main_sel_noOverwrite()
+  else
+    main_sel()
+  end
 end
 
 local function exitFunc()
