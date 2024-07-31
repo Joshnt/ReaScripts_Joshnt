@@ -1182,7 +1182,7 @@ function joshnt.getMarkerPosByIndex(inputMarkerIndex)
   return nil
 end
 
--- Function to get most overlapping region, returns region number, reg start and end
+-- Function to get all overlapping region, returns region number, reg start and end (as arrays) + the first overlapping regions start and the last overlapping regions end
 function joshnt.getAllOverlappingRegion(startTimeInput, endTimeInput)
   local ret, num_markers, num_regions = reaper.CountProjectMarkers( 0 )
   local num_total = num_markers + num_regions
