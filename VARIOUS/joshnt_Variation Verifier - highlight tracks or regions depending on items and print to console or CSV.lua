@@ -65,7 +65,13 @@ local textArrayDescription = {
     printwhat = "",
     printWhere = ""
 }
-local updateTextArray = true;
+local colors = {main = nil, other = nil}
+local redrawAction = nil
+
+-- keyinput variables
+local tabOrder = {"target","mathCompare","numItems","actionMain","countWhat","actionsOther"}
+local tabPosition = 0
+local keyPress = false
 
 local function checkOptionDefaults()
     if reaper.HasExtState("joshnt_VariationVerifier_Interface", "printMatching") then
@@ -86,7 +92,7 @@ local function checkOptionDefaults()
         -- other default values
         GUI.Val("target",tonumber(reaper.GetExtState("joshnt_VariationVerifier_Interface", "target")))
         GUI.Val("countWhat",tonumber(reaper.GetExtState("joshnt_VariationVerifier_Interface", "countWhat")))
-        GUI.Val("numItems",tonumber(reaper.GetExtState("joshnt_VariationVerifier_Interface", "numItems")))
+        GUI.Val("numItems",tonumber(reaper.GetExtState("joshnt_VariationVerifier_Interface", "numItems") or 0))
         GUI.Val("mathCompare",tonumber(reaper.GetExtState("joshnt_VariationVerifier_Interface", "mathCompare")))
         GUI.Val("actionMain",tonumber(reaper.GetExtState("joshnt_VariationVerifier_Interface", "actionMain")))
         GUI.Val("actionsOther",tonumber(reaper.GetExtState("joshnt_VariationVerifier_Interface", "actionsOther")))
@@ -141,21 +147,190 @@ local function updateDescription()
     else
         print_toString = "Print "..textArrayDescription.printwhat.." "..textArrayDescription.print.." to "..textArrayDescription.printWhere.."."
     end
-    textString = textArrayDescription.actionMain.." "..textArrayDescription.target.." with "..mathCompare_toString.." "..textArrayDescription.numItems.." "..textArrayDescription.countWhat..". "..textArrayDescription.actionsOther.." others. "..print_toString
+    if textArrayDescription.actionsOther ~= "Do nothing" then
+        textString = textArrayDescription.actionMain.." "..textArrayDescription.target.." with "..mathCompare_toString.." "..textArrayDescription.numItems.." "..textArrayDescription.countWhat..". "..textArrayDescription.actionsOther.." others. "..print_toString
+    else
+        textString = textArrayDescription.actionMain.." "..textArrayDescription.target.." with "..mathCompare_toString.." "..textArrayDescription.numItems.." "..textArrayDescription.countWhat..". "..print_toString
+    end
     GUI.Val("description",textString)
-    reaper.ShowConsoleMsg("\nUpdate description")
 end
 
+local function updateTextArrayDescription_Full()
+    if GUI.Val("numItems") == "" then GUI.Val("numItems",0) end
+    textArrayDescription = {
+        target = GUI.elms.target.optarray[GUI.Val("target")],
+        countWhat = GUI.elms.countWhat.optarray[GUI.Val("countWhat")],
+        numItems = tostring(GUI.Val("numItems")),
+        mathCompare = GUI.elms.mathCompare.optarray[GUI.Val("mathCompare")],
+        actionMain = GUI.elms.actionMain.optarray[GUI.Val("actionMain")],
+        actionsOther = GUI.elms.actionsOther.optarray[GUI.Val("actionsOther")],
+    }
 
+    local optionTable = GUI.Val("print")
+    local tempString = ""
+    for index, bool in ipairs(optionTable) do
+        if bool == true then
+            if tempString ~= "" then
+                tempString = tempString.." and "..GUI.elms.print.optarray[index]
+            else
+                tempString = GUI.elms.print.optarray[index]
+            end
+        end
+    end
+    textArrayDescription.print = tempString
+
+    optionTable = GUI.Val("printwhat")
+    tempString = ""
+    for index, bool in ipairs(optionTable) do
+        if bool == true then
+            if tempString ~= "" then
+                tempString = tempString.." and "..GUI.elms.printwhat.optarray[index]
+            else
+                tempString = GUI.elms.printwhat.optarray[index]
+            end
+        end
+    end
+    textArrayDescription.printwhat = tempString
+
+    optionTable = GUI.Val("printWhere")
+    tempString = ""
+    for index, bool in ipairs(optionTable) do
+        if bool == true then
+            if tempString ~= "" then
+                tempString = tempString.." and "..GUI.elms.printWhere.optarray[index]
+            else
+                tempString = GUI.elms.printWhere.optarray[index]
+            end
+        end
+    end
+    textArrayDescription.printWhere = tempString
+
+    updateDescription()
+end
+
+local function setActionColors(stringTarget)
+    if colors[stringTarget] ~= nil then
+        local r,g,b = reaper.ColorFromNative(colors[stringTarget])
+        r = r/255
+        g = g/255
+        b = b/255
+        GUI.colors[stringTarget] = {r,g,b,1}
+    else GUI.colors[stringTarget] = GUI.colors["elm_fill"] 
+    end
+end
+
+local function unfocusLists()
+    for i = 1, #tabOrder do
+        if tabOrder[i] ~= "numItems" then
+            GUI.elms[tabOrder[i]].frame = false
+        end
+    end 
+    tabPosition = 0
+end
+
+local function redraw_ActionOthers()
+    GUI.New("actionsOther", "Radio", {
+        z = 11,
+        x = 734.0,
+        y = 65.0,
+        w = 110,
+        h = 135,
+        caption = "Action for others",
+        optarray = {"Color", "Delete", "Select", "Hide", "Do nothing"},
+        dir = "v",
+        font_a = 3,
+        font_b = 2,
+        col_txt = "txt",
+        col_fill = "other",
+        bg = "wnd_bg",
+        frame = false,
+        shadow = true,
+        swap = false,
+        opt_size = 20
+    })
+
+    function GUI.elms.actionsOther:onmouseup()
+        GUI.Radio.onmouseup(self)
+        local prevColor = colors.other
+        if GUI.Val("actionsOther") == 1 then
+            local retval, newColor = reaper.GR_SelectColor(nil)
+            if retval then
+                colors.other = newColor
+            else
+                GUI.Val("actionsOther",5)
+                colors.other = nil
+            end
+        else
+            colors.other = nil
+        end
+
+        if colors.other ~= prevColor then
+            setActionColors("other")
+            redrawAction = "other"
+        end
+
+        updateTextArrayDescription_Full()
+        unfocusLists()
+    end
+end
+
+local function redraw_ActionMain()
+    GUI.New("actionMain", "Radio", {
+        z = 11,
+        x = 330,
+        y = 64,
+        w = 110,
+        h = 135,
+        caption = "Action to perform",
+        optarray = {"Color", "Delete", "Select", "Hide", "Do nothing"},
+        dir = "v",
+        font_a = 3,
+        font_b = 2,
+        col_txt = "txt",
+        col_fill = "main",
+        bg = "wnd_bg",
+        frame = false,
+        shadow = true,
+        swap = false,
+        opt_size = 20
+    })
+
+    function GUI.elms.actionMain:onmouseup()
+        GUI.Radio.onmouseup(self)
+        local prevColor = colors.main
+        if GUI.Val("actionMain") == 1 then
+            local retval, newColor = reaper.GR_SelectColor(nil)
+            if retval then
+                colors.main = newColor
+            else
+                GUI.Val("actionMain",5)
+                colors.main = nil
+            end
+        else
+            colors.main = nil
+        end
+
+        if colors.main ~= prevColor then
+            setActionColors("main")
+            redrawAction = "main"
+        end
+
+        updateTextArrayDescription_Full()
+        unfocusLists()
+    end
+end
 
 local function redrawAll()
+    redraw_ActionMain()
+    redraw_ActionOthers()
+    
     GUI.New("Run", "Button", {
         z = 11,
         x = 17.0,
         y = 250.0,
         w = 100,
         h = 30,
-        caption = "Execute",
+        caption = "Go!",
         font = 2,
         col_txt = "txt",
         col_fill = "elm_frame",
@@ -176,7 +351,7 @@ local function redrawAll()
         col_txt = "txt",
         col_fill = "elm_fill",
         bg = "wnd_bg",
-        frame = true,
+        frame = false,
         shadow = true,
         swap = false,
         opt_size = 20
@@ -196,13 +371,13 @@ local function redrawAll()
         col_txt = "txt",
         col_fill = "elm_fill",
         bg = "wnd_bg",
-        frame = true,
+        frame = false,
         shadow = true,
         swap = false,
         opt_size = 20
     })
 
-    GUI.New("Variation Verifier", "Label", {
+    GUI.New("VariationVerifier", "Label", {
         z = 11,
         x = 10,
         y = 10,
@@ -230,26 +405,6 @@ local function redrawAll()
         undo_limit = 20
     })
 
-    GUI.New("actionsOther", "Radio", {
-        z = 11,
-        x = 734.0,
-        y = 65.0,
-        w = 110,
-        h = 135,
-        caption = "Action for others",
-        optarray = {"Color", "Delete", "Select", "Hide", "Do nothing"},
-        dir = "v",
-        font_a = 3,
-        font_b = 2,
-        col_txt = "txt",
-        col_fill = "elm_fill",
-        bg = "wnd_bg",
-        frame = true,
-        shadow = true,
-        swap = false,
-        opt_size = 20
-    })
-
     GUI.New("description", "Label", {
         z = 11,
         x = 18.0,
@@ -259,26 +414,6 @@ local function redrawAll()
         color = "txt",
         bg = "wnd_bg",
         shadow = false
-    })
-
-    GUI.New("actionMain", "Radio", {
-        z = 11,
-        x = 330,
-        y = 64,
-        w = 110,
-        h = 135,
-        caption = "Action to perform",
-        optarray = {"Color", "Delete", "Select", "Hide", "Do nothing"},
-        dir = "v",
-        font_a = 3,
-        font_b = 2,
-        col_txt = "txt",
-        col_fill = "elm_fill",
-        bg = "wnd_bg",
-        frame = true,
-        shadow = true,
-        swap = false,
-        opt_size = 20
     })
 
     GUI.New("Frame1", "Frame", {
@@ -314,7 +449,7 @@ local function redrawAll()
         col_txt = "txt",
         col_fill = "elm_fill",
         bg = "wnd_bg",
-        frame = true,
+        frame = false,
         shadow = true,
         swap = false,
         opt_size = 20
@@ -335,7 +470,7 @@ local function redrawAll()
         col_txt = "txt",
         col_fill = "elm_fill",
         bg = "wnd_bg",
-        frame = true,
+        frame = false,
         shadow = true,
         swap = nil,
         opt_size = 20
@@ -356,7 +491,7 @@ local function redrawAll()
         col_txt = "txt",
         col_fill = "elm_fill",
         bg = "wnd_bg",
-        frame = true,
+        frame = false,
         shadow = true,
         swap = nil,
         opt_size = 20
@@ -377,129 +512,134 @@ local function redrawAll()
         col_txt = "txt",
         col_fill = "elm_fill",
         bg = "wnd_bg",
-        frame = true,
+        frame = false,
         shadow = true,
         swap = nil,
         opt_size = 20
     })
 
-    function GUI.elms.target:onmousedown()
-        GUI.Radio.onmousedown(self)
-        updateTextArray = true
+    function GUI.elms.target:onmouseup()
+        GUI.Radio.onmouseup(self)
+        updateTextArrayDescription_Full()
+        unfocusLists()
     end
 
-    function GUI.elms.countWhat:onmousedown()
-        GUI.Radio.onmousedown(self)
-        updateTextArray = true
+    function GUI.elms.countWhat:onmouseup()
+        GUI.Radio.onmouseup(self)
+        updateTextArrayDescription_Full()
+        unfocusLists()
     end
 
-    function GUI.elms.mathCompare:onmousedown()
-        GUI.Radio.onmousedown(self)
-        updateTextArray = true
-    end
-
-    function GUI.elms.actionsOther:onmousedown()
-        GUI.Radio.onmousedown(self)
-        updateTextArray = true
-    end
-
-    function GUI.elms.actionMain:onmousedown()
-        GUI.Radio.onmousedown(self)
-        updateTextArray = true
-        
+    function GUI.elms.mathCompare:onmouseup()
+        GUI.Radio.onmouseup(self)
+        updateTextArrayDescription_Full()
+        unfocusLists()
     end
 
     function GUI.elms.numItems:lostfocus()
         GUI.Textbox.lostfocus(self)
-        updateTextArray = true
-        
+        updateTextArrayDescription_Full()
+        unfocusLists()
     end
 
-    function GUI.elms.print:onmousedown()
-        GUI.Checklist.onmousedown(self)
-        updateTextArray = true
+    function GUI.elms.print:onmouseup()
+        GUI.Checklist.onmouseup(self)
+        updateTextArrayDescription_Full()
+        unfocusLists()
     end
 
-    function GUI.elms.printwhat:onmousedown()
-        GUI.Checklist.onmousedown(self)
-        updateTextArray = true
-        
+    function GUI.elms.printwhat:onmouseup()
+        GUI.Checklist.onmouseup(self)
+        updateTextArrayDescription_Full()
+        unfocusLists()
     end
 
-    function GUI.elms.printWhere:onmousedown()
-        GUI.Checklist.onmousedown(self)
-        updateTextArray = true
+    function GUI.elms.printWhere:onmouseup()
+        GUI.Checklist.onmouseup(self)
+        updateTextArrayDescription_Full()
+        unfocusLists()
     end
 
-end
+    GUI.elms.VariationVerifier.tooltip = "Filter and/ or print track/ region names depending on the number of items on them.\nPress 'TAB' to cycle through the options, 'UP' or 'DOWN' to select different options and 'RETURN' to execute the script."
 
-local function updateTextArrayDescription_Full()
-    textArrayDescription = {
-        target = GUI.elms.target.optarray[GUI.Val("target")],
-        countWhat = GUI.elms.countWhat.optarray[GUI.Val("countWhat")],
-        numItems = tostring(GUI.Val("numItems")),
-        mathCompare = GUI.elms.mathCompare.optarray[GUI.Val("mathCompare")],
-        actionMain = GUI.elms.actionMain.optarray[GUI.Val("actionMain")],
-        actionsOther = GUI.elms.actionsOther.optarray[GUI.Val("actionsOther")],
-    }
-
-
-
-    reaper.ShowConsoleMsg("\nValue of Target: "..GUI.Val("target"))
-
-    local optionTable = GUI.Val("print")
-    local tempString = ""
-    for index, bool in ipairs(optionTable) do
-        if bool == true then
-            if tempString ~= "" then
-                tempString = tempString.." and "..GUI.elms.print.optarray[index]
-            else
-                tempString = GUI.elms.print.optarray[index]
-            end
-        end
-    end
-    textArrayDescription.print = tempString
-
-    local optionTable = GUI.Val("printwhat")
-    local tempString = ""
-    for index, bool in ipairs(optionTable) do
-        if bool == true then
-            if tempString ~= "" then
-                tempString = tempString.." and "..GUI.elms.printwhat.optarray[index]
-            else
-                tempString = GUI.elms.printwhat.optarray[index]
-            end
-        end
-    end
-    textArrayDescription.printwhat = tempString
-
-    local optionTable = GUI.Val("printWhere")
-    local tempString = ""
-    for index, bool in ipairs(optionTable) do
-        if bool == true then
-            if tempString ~= "" then
-                tempString = tempString.." and "..GUI.elms.printWhere.optarray[index]
-            else
-                tempString = GUI.elms.printWhere.optarray[index]
-            end
-        end
-    end
-    textArrayDescription.printWhere = tempString
 end
 
 local function Loop()
-    if updateTextArray == true then
-        updateTextArray = false
-        updateTextArrayDescription_Full()
-        updateDescription()
+    if redrawAction ~= nil then
+        if redrawAction == "main" then
+            redraw_ActionMain()
+        else redraw_ActionOthers()
+        end
+        redrawAction = nil
     end
+
+    if GUI.char == 9.0 and keyPress == false then -- tab
+        if tabPosition ~= 0 then
+            -- visually unfocus previous
+            if tabOrder[tabPosition] ~= "numItems" then
+                local temp = GUI.elms[tabOrder[tabPosition]]
+                temp.frame= false
+            else
+                GUI.elms.numItems.focus = false
+            end
+        end
+
+        if GUI.mouse.cap == 8 then
+            tabPosition = ((tabPosition-2) % #tabOrder) +1
+        else
+            tabPosition = (tabPosition % #tabOrder) +1
+        end
+        
+        -- visually focus current
+        if tabOrder[tabPosition] ~= "numItems" then
+            GUI.elms[tabOrder[tabPosition]].frame= true
+        else
+            GUI.elms.numItems.focus = true
+        end
+
+        GUI.redraw_z[11] = true
+
+        keyPress = true
+    elseif GUI.char == 0.0 and keyPress == true then
+        keyPress = false
+    elseif GUI.elms.numItems.focus == true then return -- if text input box is focused, dont check further
+    elseif GUI.char == 13.0 and keyPress == false then -- enter
+        run_VariationVerifier()
+        keyPress = true
+    elseif GUI.char == 30064 and keyPress == false and tabPosition ~= 0 then -- up arrow
+        local selVal = GUI.Val(tabOrder[tabPosition])
+        selVal = ((selVal-2) % #GUI.elms[tabOrder[tabPosition]].optarray) +1
+        GUI.Val(tabOrder[tabPosition],selVal)
+        updateTextArrayDescription_Full()
+        keyPress = true
+    elseif GUI.char == 1685026670 and keyPress == false and tabPosition ~= 0 then -- down arrow
+        local selVal = GUI.Val(tabOrder[tabPosition])
+        selVal = (selVal % #GUI.elms[tabOrder[tabPosition]].optarray) +1
+        GUI.Val(tabOrder[tabPosition],selVal)
+        updateTextArrayDescription_Full()
+        keyPress = true
+    end
+
 end
 
-redrawAll()
+
+
+reaper.set_action_options(1) -- on rerun, terminate script
 GUI.Init()
+setActionColors("other")
+setActionColors("main")
+redrawAll()
 checkOptionDefaults()
+updateTextArrayDescription_Full()
 GUI.func = Loop
 GUI.freq = 0
 GUI.onresize = redrawAll
 GUI.exit = saveOptions
 GUI.Main()
+
+
+-- TODO
+--[[
+- copy functions from old variation verifier script and adjust variables
+- add region support
+]]--
