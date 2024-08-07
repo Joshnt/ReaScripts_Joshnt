@@ -110,6 +110,7 @@ end
 local function searchReplaceTrackName(track)
   if not track or not reaper.ValidatePtr(track, "MediaTrack") == false then return end
   local _,trackName = reaper.GetTrackName(track)
+  if trackName == "Track "..math.floor(reaper.GetMediaTrackInfo_Value(track, "IP_TRACKNUMBER")) then trackName = "" end
   if trackName:find(searchString) then
     local newName = getNewName(trackName)
     if boolJustReturn == true then 
@@ -299,7 +300,6 @@ local function executeRename()
     end
 
     for textBox, _ in pairs (enumReplaceString) do
-        reaper.ShowConsoleMsg("\nTextbox: "..textBox)
         local tempNumber = nil 
         local curString = ""
         if textBox == "replace" then
@@ -316,7 +316,6 @@ local function executeRename()
         elseif curString:find("/E") then
             enumNameIndexMaster[textBox] = 0
             enumReplaceString[textBox] = "/E"
-            reaper.ShowConsoleMsg("\nfound normal EEE")
         end
     end
 
@@ -629,6 +628,7 @@ GUI.elms.Find.tooltip = "Text input to search in target names.\nLeave empty to a
 GUI.elms.Replace.tooltip = "Text input to replace the search string with.\nUse '/E(X)' (e.g. '/E(1)') to enumerate from X. Just '/E' defaults to 1.\n(All targets get enumrated seperatly)\nIf 'find' is empty, target name is set to this"
 GUI.elms.InsertStart.tooltip = "Inserts this at the beginning of the targets name (after truncate got applied)\nOnly applies, if it matches the 'find' field.\nUsage of '/E' possible (see 'Replace'-box tooltip)"
 GUI.elms.insertEnd.tooltip = "Inserts this at the end of the targets name (after truncate got applied)\nOnly applies, if it matches the 'find' field\nUsage of '/E' possible (see 'Replace'-box tooltip)"
+GUI.elms.Preview.tooltip = "Click to refresh the renaming preview, e.g. after changing a selection\nShortcut: 'R'"
 
 for i = 1, #focusArray do
     local currText = GUI.elms[focusArray[i]]
@@ -707,6 +707,8 @@ local function Loop()
         end
         run_Button()
         enterPressed = true
+    elseif GUI.char == 114 then
+        preview_Button()
     elseif GUI.char == 0.0 then
         if tabPressed == true then tabPressed = false
         elseif enterPressed == true then enterPressed = false end

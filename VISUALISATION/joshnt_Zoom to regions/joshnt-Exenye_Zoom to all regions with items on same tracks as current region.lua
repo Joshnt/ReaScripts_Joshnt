@@ -2,7 +2,7 @@
 -- @version 1.0
 -- @author Joshnt
 -- @about
---    Zoom to all regions with items on same tracks as current region; Idea and Concept bei Wieland Müller
+--    Zoom to all regions with items on same tracks as current region; Idea and Concept + v1 as custom action by Exenye
 -- @changelog
 --  + init
 

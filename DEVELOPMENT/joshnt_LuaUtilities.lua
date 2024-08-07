@@ -1,6 +1,7 @@
 -- @description Adding own functions and functionalities as lua-functions
 -- @version 1.0
 -- @author Joshnt
+-- @provides [nomain] .
 -- @about
 --    Credits to Aaron Cendan https://aaroncendan.me - I partly straight up copied code from him; as well thanks for the awesome work in the scripting domain of reaper!
 
@@ -221,6 +222,7 @@ end
 
 -- Function to get overlapping item groups
 -- includeCloserThan_Input (in seconds): if distance between items is equal or smaller than given value, items are included in the group (for e.g. splittet item with indiv. fades)
+-- returns itemGroups - array with subarrays per group, itemGroupsStartsArray, itemGroupsEndArray
 function joshnt.getOverlappingItemGroupsOfSelectedItems(inlcudeCloserThan_Input)
   local itemGroups = {}
   local itemGroupsStartsArray = {}
@@ -1148,7 +1150,7 @@ function joshnt.checkOverlapWithRegions(startTimeInput, endTimeInput)
   return overlapDetected
 end
 
--- Function to get start and end of a specific region given by index
+-- Function to get start, end and name of a specific region given by index
 function joshnt.getRegionBoundsByIndex(inputRegionIndex)
   local ret, num_markers, num_regions = reaper.CountProjectMarkers( 0 )
   local num_total = num_markers + num_regions
@@ -1157,9 +1159,9 @@ function joshnt.getRegionBoundsByIndex(inputRegionIndex)
   end
 
   for j = 0, num_total - 1 do
-      local _, isrgn, rgnstart, rgnend, _, markerIndex = r.EnumProjectMarkers( j)
+      local _, isrgn, rgnstart, rgnend, name, markerIndex = r.EnumProjectMarkers( j)
       if isrgn and markerIndex == inputRegionIndex then
-        return rgnstart, rgnend
+        return rgnstart, rgnend, name
       end
   end
   return nil
@@ -1328,7 +1330,7 @@ function joshnt.getSelectedMarkerAndRegionIndex()
 end
 
 -- set Region selected in Region/ Marker Manager by index - adapted from edgemeal: Select next region in region manager window.lua
-function joshnt.setRegionSelectedByIndex(RegionIndexTable)
+function joshnt.setRegionSelectedByIndex(RegionIndexTable, boolUnselectOthers)
   
   if not RegionIndexTable or not joshnt.checkJS_API() then return end
   if type(RegionIndexTable) == "number" then
@@ -1338,6 +1340,10 @@ function joshnt.setRegionSelectedByIndex(RegionIndexTable)
   local lv, cnt = joshnt.getRegionManagerListAndItemCount()
   if not lv then return end
   local regionOrderInManager, _ = joshnt.GetRegionsAndMarkerInManagerOrder(lv, cnt)
+
+  if boolUnselectOthers == true then  
+    reaper.JS_ListView_SetItemState(lv, -1, 0x0, 0x2)         -- unselect all items
+  end
 
   for i = 1, #RegionIndexTable do
     local regionPositionInManager = -1
@@ -1444,6 +1450,16 @@ end
 ----------------
 ----- USER -----
 ----------------
+-- Bool check if a file exists
+function joshnt.fileExists(filePath)
+  local file = io.open(filePath, "r")
+  if file then
+    file:close()
+    return true
+  else
+    return false
+  end
+end
 
 -- Convert from CSV string to table (converts a single line of a CSV file) - for reading user input
 function joshnt.fromCSV(s)
@@ -1470,6 +1486,79 @@ function joshnt.fromCSV(s)
     end
   until fieldstart > string.len(s)
   return q
+end
+
+-- write CSV file from input array - array can have subarrays as keyvalues but not further stacked subarrays
+-- FileHeader needs to be comma seperated, e.g. keys of subarrays
+function joshnt.toCSV(arrayToPrint, FileNameString, FileHeaderCommaSeperatedString)
+  if type(arrayToPrint) ~= "table" or type(FileNameString) ~= "string" then reaper.ShowConsoleMsg("\nUnmatching filetype for CSV-File creation") return end
+  -- Get the path of the currently opened project
+  local retval, projectPath = reaper.EnumProjects(-1, "")
+
+  if projectPath ~= "" then
+    projectPath = projectPath:match("^(.*)[\\/]")
+  else
+    local ret = reaper.MB("No project open or project path not available to print CSV.\n\nChoose other save location?", "CSV Print Error",1)
+    if ret == 2 then return end
+    retval, projectPath = reaper.JS_Dialog_BrowseForFolder("Choose a dir for the CSV", "")
+    if retval ~= 1 then return end
+  end
+
+  local filePath = projectPath.."/"..FileNameString..".csv"
+  -- Attempt to open file for writing  
+  local exists = joshnt.fileExists(filePath)
+  if exists then
+    local ret = reaper.MB(filePath.."\nalready exists.\n\nOverwrite existing file?\nIf 'No', increment filename until not overwriting existing files.", "CSV Print Error", 3)
+    if ret == 7 then -- no
+      local i = 1
+      while exists do
+        i = i+1
+        filePath = projectPath.."/"..FileNameString..i..".csv"
+        exists = joshnt.fileExists(filePath)
+      end
+    elseif ret == 6 then else return end
+  end 
+
+  local file, err = io.open(filePath, "w")
+  if not file then
+    reaper.ShowMessageBox("Failed to open CSV file for writing:\n" .. err, "Error", 0)
+    return
+  end
+
+  -- check for subtables
+  local boolSubtables = false
+  for key, keyvalue in pairs(arrayToPrint) do
+    if type(keyvalue) == "table" then boolSubtables = true end
+    break
+  end
+
+  -- Write header
+  file:write(FileHeaderCommaSeperatedString.."\n")
+
+  -- Write each row of data
+  if boolSubtables then
+    for _, subtable in pairs(arrayToPrint) do
+      local i = 1
+      for _, keyvalue in pairs(subtable) do
+        if i == 1 then 
+          i = 2
+          file:write(tostring(keyvalue))
+        else
+          file:write(","..tostring(keyvalue))
+        end
+      end
+      file:write("\n")
+    end
+  else
+    for _, keyvalue in pairs(arrayToPrint) do
+      file:write(keyvalue.. "\n")
+    end
+  end
+
+  -- Close the file
+  file:close()
+
+  reaper.ShowMessageBox(filePath.."\nfile created successfully.", "Success", 0)
 end
 
 -- add small pop-up which doesn't block user input (copied from X-Raym)

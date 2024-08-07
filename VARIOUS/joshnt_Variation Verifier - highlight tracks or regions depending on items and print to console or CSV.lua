@@ -51,7 +51,8 @@ if missing_lib then return 0 end
 GUI.name = "joshnt - variation verifier"
 GUI.x, GUI.y, GUI.w, GUI.h = 0, 0, 1000, 350
 GUI.anchor, GUI.corner = "screen", "C"
-
+local actionOptArray = {"Color", "Select", "Delete", "Hide", "Do nothing"}
+local targetOptArray = {"All Tracks", "All Regions", "Sel. Tracks", "Sel. Regions"}
 
 -- variables
 local textArrayDescription = {
@@ -120,11 +121,6 @@ local function saveOptions()
     reaper.SetExtState("joshnt_VariationVerifier_Interface", "mathCompare", tostring(GUI.Val("mathCompare")), true)
     reaper.SetExtState("joshnt_VariationVerifier_Interface", "actionMain", tostring(GUI.Val("actionMain")), true)
     reaper.SetExtState("joshnt_VariationVerifier_Interface", "actionsOther", tostring(GUI.Val("actionsOther")), true)
-end
-
-local function run_VariationVerifier()
-    GUI.quit = true
-    saveOptions()
 end
 
 local function updateDescription()
@@ -208,6 +204,304 @@ local function updateTextArrayDescription_Full()
     updateDescription()
 end
 
+local function run_VariationVerifier()
+    if not colors.main then colors.main = reaper.ColorToNative(0, 255, 0) end
+    if not colors.other then colors.other = reaper.ColorToNative(0, 255, 0) end
+    updateTextArrayDescription_Full()
+
+    local function markTrackOther (trackInput)
+        if textArrayDescription.actionsOther == "Color" then
+            reaper.SetTrackColor(trackInput, colors.other | 0x1000000)
+        elseif textArrayDescription.actionsOther == "Select" then
+            reaper.SetTrackSelected(trackInput, true)
+        elseif textArrayDescription.actionsOther == "Hide" then
+            reaper.SetMediaTrackInfo_Value(trackInput,'B_SHOWINTCP',0);
+        end
+        -- delete after all tracks got checked
+    end
+
+    local function markTrackMain (trackInput)
+        if textArrayDescription.actionMain == "Color" then
+            reaper.SetTrackColor(trackInput, colors.main | 0x1000000) -- TODO: maybe need | 0x10000...
+        elseif textArrayDescription.actionMain == "Select" then 
+            reaper.SetTrackSelected(trackInput, true)
+        elseif textArrayDescription.actionMain == "Hide" then
+            reaper.SetMediaTrackInfo_Value(trackInput,'B_SHOWINTCP',0);
+        end
+        -- delete after all tracks got checked
+    end
+
+    local function compareItemCount(itemNum)
+        if textArrayDescription.mathCompare == "=" then
+            if itemNum == tonumber(textArrayDescription.numItems) then
+                return true
+            else
+                return false
+            end
+        elseif textArrayDescription.mathCompare == "!=" then
+            if itemNum ~=  tonumber(textArrayDescription.numItems) then
+                return true
+            else
+                return false
+            end
+        elseif textArrayDescription.mathCompare == "<" then
+            if itemNum < tonumber(textArrayDescription.numItems) then
+                return true
+            else
+                return false
+            end
+        else
+            if itemNum > tonumber(textArrayDescription.numItems) then
+                return true
+            else
+                return false
+            end
+        end
+    end
+
+    local function conditionalUnselect()
+        if textArrayDescription.actionMain == "Select" or textArrayDescription.actionsOther == "Select" then
+            joshnt.unselectAllTracks()
+        end
+    end
+
+    local function getItemNumInTimeframe(startTime, endTime)
+        if endTime - startTime < 0.01 then return 0 end
+        reaper.SelectAllMediaItems(0, false)
+        reaper.GetSet_LoopTimeRange(true, false, startTime, endTime, false)
+        reaper.Main_OnCommand(40717, 0) -- select items in time
+        return reaper.CountSelectedMediaItems(0)
+    end
+
+    local numItems = reaper.CountMediaItems(0)
+    if numItems == 0 then joshnt.TooltipAtMouse("No items in project!") return end
+
+
+    local mainTarget_Table = {} -- contains tracks/ rgn_index as keys and subarray with name and number per key value
+    local otherTarget_Table = {} -- contains tracks/ rgn_index as keys and subarray with name and number per key value
+
+    reaper.PreventUIRefresh(1) 
+    reaper.Undo_BeginBlock()  
+
+    if textArrayDescription.target == "All Tracks" then
+        local tracksNum = reaper.CountTracks(0)
+        if tracksNum == 0 then joshnt.TooltipAtMouse("No tracks in project!") return end
+        conditionalUnselect()
+        for i = 0, tracksNum-1 do -- check tracks if wrong or right
+            local track_TEMP = reaper.GetTrack(0,i)
+            local numItems_Track = reaper.CountTrackMediaItems(track_TEMP)
+            local retval = compareItemCount(numItems_Track)
+            if retval == true then
+                markTrackMain(track_TEMP)
+                local retval2, name = reaper.GetTrackName(track_TEMP)
+                mainTarget_Table[track_TEMP] = {name, numItems_Track}
+            else
+                markTrackOther(track_TEMP)
+                local retval2, name = reaper.GetTrackName(track_TEMP)
+                otherTarget_Table[track_TEMP] = {name, numItems_Track}
+            end
+        end
+    elseif textArrayDescription.target == "Sel. Tracks" then
+        local selTrackTable = {}
+        local selTracksNum = reaper.CountSelectedTracks(0)
+        if selTracksNum == 0 then joshnt.TooltipAtMouse("No selected tracks!") return end
+        for i = 0, selTracksNum-1 do
+            table.insert(selTrackTable,reaper.GetSelectedTrack(0, i))
+        end
+        conditionalUnselect()
+        for i = 1, #selTrackTable do -- check tracks if wrong or right
+            local track_TEMP = selTrackTable(i)
+            local numItems_Track = reaper.CountTrackMediaItems(track_TEMP)
+            local retval = compareItemCount(numItems_Track)
+            if retval == true then
+                markTrackMain(track_TEMP)
+                mainTarget_Table[track_TEMP] = numItems_Track
+            else
+                markTrackOther(track_TEMP)
+                otherTarget_Table[track_TEMP] = numItems_Track
+            end
+        end
+    elseif textArrayDescription.target == "All Regions" then
+        local ret, num_markers, num_regions = reaper.CountProjectMarkers( 0 )
+        if num_regions == 0 then joshnt.TooltipAtMouse("No regions in project!") return end
+        local num_total = num_markers + num_regions
+        for j=0, num_total - 1 do
+          local retval2, isrgn, pos, rgnend, name, markrgnindexnumber = reaper.EnumProjectMarkers( j )
+          if name == "" then name = "Region Nr."..markrgnindexnumber end
+          if isrgn then
+            local numItems_rgn = getItemNumInTimeframe(pos,rgnend)
+            local retval = compareItemCount(numItems_rgn)
+            if retval == true then
+                mainTarget_Table[markrgnindexnumber] = {name, numItems_rgn}
+            else
+                otherTarget_Table[markrgnindexnumber] = {name, numItems_rgn}
+            end
+          end
+        end
+    else -- selected regions
+        local selRgns, _ = joshnt.getSelectedMarkerAndRegionIndex()
+        if selRgns then
+            for i = 1, #selRgns do
+                local rgnStart, rgnEnd, name = joshnt.getRegionBoundsByIndex(selRgns[i])
+                local numItems_rgn = getItemNumInTimeframe(rgnStart,rgnEnd)
+                local retval = compareItemCount(numItems_rgn)
+                if name == "" then name = "Region Nr."..selRgns[i] end
+                if retval == true then
+                    mainTarget_Table[selRgns[i]] = {name, numItems_rgn}
+                else
+                    otherTarget_Table[selRgns[i]] = {name, numItems_rgn}
+                end
+            end
+        else
+            joshnt.TooltipAtMouse("No selected regions!")
+            return
+        end
+    end
+
+    -- print names/ item count
+    if textArrayDescription.print ~= "" and textArrayDescription.printwhat ~= "" and textArrayDescription.printWhere ~= "" then
+        
+        -- print to console
+        if string.find(textArrayDescription.printWhere,"console") then
+            reaper.ClearConsole()
+            reaper.ShowConsoleMsg("Mark Tracks with different item numbers (Variation Verifier) - Track Name Output:")
+
+            if string.find(textArrayDescription.print,"matching") then
+                reaper.ShowConsoleMsg("\n\nFollowing "..textArrayDescription.target.." had items " .. textArrayDescription.mathCompare .. " to "..textArrayDescription.numItems..":")
+                for key, subtable in pairs(mainTarget_Table) do
+                    local name, itemNum = mainTarget_Table[key][1], mainTarget_Table[key][2]
+                    reaper.ShowConsoleMsg("\n"..name.." - "..itemNum)
+                end
+            end
+
+            if string.find(textArrayDescription.print,"others") then
+                reaper.ShowConsoleMsg("\n\nFollowing "..textArrayDescription.target.." had items different than " .. textArrayDescription.mathCompare .. " to "..textArrayDescription.numItems..":")
+                for key, subtable in pairs(otherTarget_Table) do
+                    local name, itemNum = otherTarget_Table[key][1], otherTarget_Table[key][2]
+                    reaper.ShowConsoleMsg("\n"..name.." - "..itemNum)
+                end
+            end
+        end
+
+        local function printTable(t, indent)
+            -- Set the default indent value to an empty string if it's not provided
+            indent = indent or ""
+            
+            -- Loop through each key-value pair in the table
+            for key, value in pairs(t) do
+              -- Check if the value is a table
+              if type(value) == "table" then
+                -- Print the key and indicate that it's a table
+                reaper.ShowConsoleMsg(indent .. tostring(key) .. ":\n")
+                -- Recursively print the subtable with increased indentation
+                printTable(value, indent .. "  ")
+              else
+                -- Print the key-value pair
+                reaper.ShowConsoleMsg(indent .. tostring(key) .. ": " .. tostring(value) .. "\n")
+              end
+            end
+        end
+        reaper.ShowConsoleMsg("\n\nMain\n")
+        printTable(mainTarget_Table)
+        reaper.ShowConsoleMsg("\n\nOther\n")
+        printTable(otherTarget_Table)
+
+        -- print to CSV
+        if string.find(textArrayDescription.printWhere,"CSV") then
+            if string.find(textArrayDescription.print,"matching") then
+                joshnt.toCSV(mainTarget_Table,"Variation Verifier - Matching","Name of "..textArrayDescription.target..",Number items")
+            end
+            if string.find(textArrayDescription.print,"others") then
+                joshnt.toCSV(otherTarget_Table,"Variation Verifier - Others","Name of "..textArrayDescription.target..",Number items")
+            end
+        end
+    end
+
+    -- action for regions
+    if textArrayDescription.target == "All Regions" or textArrayDescription.target == "Sel. Regions" then
+        local function colorRgns(table)
+            local numMarkers, numRegions = reaper.CountProjectMarkers(0)
+            for i = 0, numMarkers + numRegions - 1 do
+                local retval, isRegion, pos, rgnend, name, markerIndex, color = reaper.EnumProjectMarkers3(0, i)
+                if isRegion and joshnt.tableContainsKey(table,markerIndex) then
+                    reaper.SetProjectMarker3(0, markerIndex, isRegion, pos, rgnend, name, colors.main | 0x1000000 )
+                end
+            end
+        end
+        local function deleteTime(table)
+            local numMarkers, numRegions = reaper.CountProjectMarkers(0)
+            for i = 0, numMarkers + numRegions - 1 do
+                local retval, isRegion, pos, rgnend, name, markrgnindexnumber = reaper.EnumProjectMarkers( i )
+                if isRegion and joshnt.tableContainsKey(table,markrgnindexnumber) then
+                    reaper.GetSet_LoopTimeRange(true, false, pos, rgnend, false)
+                    reaper.Main_OnCommand(40201,0) -- remove time
+                end
+            end
+        end
+        local function deleteRgns(table)
+            local numMarkers, numRegions = reaper.CountProjectMarkers(0)
+            for i = 0, numMarkers + numRegions - 1 do
+                local retval, isRegion, pos, rgnend, name, markrgnindexnumber = reaper.EnumProjectMarkers( i )
+                if isRegion and joshnt.tableContainsKey(table,markrgnindexnumber) then
+                    reaper.DeleteProjectMarker(0, markrgnindexnumber, true)
+                end
+            end
+        end
+        
+        -- main regions
+        if textArrayDescription.actionMain == "Color" then
+            colorRgns(mainTarget_Table)
+        elseif textArrayDescription.actionMain == "Select" then
+            local rgnAsValues = {}
+            for key, _ in pairs(mainTarget_Table) do
+                rgnAsValues[#rgnAsValues+1] = key
+            end
+            joshnt.setRegionSelectedByIndex(rgnAsValues,true)
+        elseif textArrayDescription.actionMain == "Delete" then
+            deleteRgns(mainTarget_Table)
+        elseif textArrayDescription.actionMain == "Delete time" then
+            deleteTime(mainTarget_Table)
+        end
+
+        -- other regions
+        if textArrayDescription.actionsOther == "Color" then
+            colorRgns(otherTarget_Table)
+        elseif textArrayDescription.actionsOther == "Select" then
+            local rgnAsValues = {}
+            for key, _ in pairs(otherTarget_Table) do
+                rgnAsValues[#rgnAsValues+1] = key
+            end
+            joshnt.setRegionSelectedByIndex(rgnAsValues,true)
+        elseif textArrayDescription.actionsOther == "Delete" then
+            deleteRgns(otherTarget_Table)
+        elseif textArrayDescription.actionsOther == "Delete time" then
+            deleteTime(otherTarget_Table)
+        end
+    end
+
+    -- Delete Tracks, if selected
+    if textArrayDescription.target == "All Tracks" or textArrayDescription.target == "Sel. Tracks" then
+        if textArrayDescription.actionMain == "Delete" then -- delete correct tracks if user input
+            for keyTrack, _ in pairs(mainTarget_Table) do
+                reaper.DeleteTrack(keyTrack)
+            end
+        end
+        if textArrayDescription.actionsOther == "Delete" then -- delete other tracks if user input
+            for keyTrack, _ in pairs(otherTarget_Table) do
+                reaper.DeleteTrack(keyTrack)
+            end
+        end
+    end
+
+    reaper.Undo_EndBlock("Variation Verifier", -1)
+    reaper.PreventUIRefresh(-1)
+    reaper.UpdateArrange()
+    
+    
+    GUI.quit = true
+    saveOptions()
+end
+
 local function setActionColors(stringTarget)
     if colors[stringTarget] ~= nil then
         local r,g,b = reaper.ColorFromNative(colors[stringTarget])
@@ -229,6 +523,8 @@ local function unfocusLists()
 end
 
 local function redraw_ActionOthers()
+    local prevVal = GUI.Val("actionsOther") or 1
+
     GUI.New("actionsOther", "Radio", {
         z = 11,
         x = 734.0,
@@ -236,7 +532,7 @@ local function redraw_ActionOthers()
         w = 110,
         h = 135,
         caption = "Action for others",
-        optarray = {"Color", "Delete", "Select", "Hide", "Do nothing"},
+        optarray = actionOptArray,
         dir = "v",
         font_a = 3,
         font_b = 2,
@@ -248,6 +544,9 @@ local function redraw_ActionOthers()
         swap = false,
         opt_size = 20
     })
+
+    GUI.Val("actionsOther",prevVal)
+    GUI.elms.actionsOther.tooltip = "Click on 'Color' to open Color selector\nUse 'Do nothing' if you only want to print the number of items"
 
     function GUI.elms.actionsOther:onmouseup()
         GUI.Radio.onmouseup(self)
@@ -275,6 +574,8 @@ local function redraw_ActionOthers()
 end
 
 local function redraw_ActionMain()
+    local prevVal = GUI.Val("actionMain") or 1
+
     GUI.New("actionMain", "Radio", {
         z = 11,
         x = 330,
@@ -282,7 +583,7 @@ local function redraw_ActionMain()
         w = 110,
         h = 135,
         caption = "Action to perform",
-        optarray = {"Color", "Delete", "Select", "Hide", "Do nothing"},
+        optarray = actionOptArray,
         dir = "v",
         font_a = 3,
         font_b = 2,
@@ -294,6 +595,9 @@ local function redraw_ActionMain()
         swap = false,
         opt_size = 20
     })
+
+    GUI.Val("actionMain",prevVal)
+    GUI.elms.actionMain.tooltip = "Click on 'Color' to open Color selector\nUse 'Do nothing' if you only want to print the number of items"
 
     function GUI.elms.actionMain:onmouseup()
         GUI.Radio.onmouseup(self)
@@ -317,6 +621,24 @@ local function redraw_ActionMain()
 
         updateTextArrayDescription_Full()
         unfocusLists()
+    end
+end
+
+local function updateActions()
+    local prevOptArray = GUI.elms.actionMain.optarray
+    local targetVal = GUI.Val("target")
+    local newOptArray = {}
+    if targetVal == 2 or targetVal == 4 then -- "All Regions" or "Sel. Regions"
+        newOptArray = {"Color", "Select", "Delete", "Delete time", "Do nothing"}
+        
+    else
+        newOptArray = {"Color", "Select", "Delete", "Hide", "Do nothing"}
+    end
+    
+    if prevOptArray[4] ~= newOptArray[4] then
+        actionOptArray = newOptArray
+        redraw_ActionMain()
+        redraw_ActionOthers()
     end
 end
 
@@ -344,7 +666,7 @@ local function redrawAll()
         w = 120,
         h = 112,
         caption = "What to check",
-        optarray = {"All Tracks", "All Regions", "Sel. Tracks", "Sel. Regions"},
+        optarray = targetOptArray,
         dir = "v",
         font_a = 3,
         font_b = 2,
@@ -520,6 +842,7 @@ local function redrawAll()
 
     function GUI.elms.target:onmouseup()
         GUI.Radio.onmouseup(self)
+        updateActions()
         updateTextArrayDescription_Full()
         unfocusLists()
     end
@@ -529,6 +852,8 @@ local function redrawAll()
         updateTextArrayDescription_Full()
         unfocusLists()
     end
+
+    GUI.elms.countWhat.tooltip = "'Single items' - number of individual items\n'Overlapping items' - overlapping items count as one"
 
     function GUI.elms.mathCompare:onmouseup()
         GUI.Radio.onmouseup(self)
@@ -630,7 +955,9 @@ setActionColors("other")
 setActionColors("main")
 redrawAll()
 checkOptionDefaults()
+updateActions()
 updateTextArrayDescription_Full()
+updateActions()
 GUI.func = Loop
 GUI.freq = 0
 GUI.onresize = redrawAll
@@ -641,5 +968,8 @@ GUI.Main()
 -- TODO
 --[[
 - copy functions from old variation verifier script and adjust variables
-- add region support
+- add region support/ actual region action from table of regions
 ]]--
+
+
+

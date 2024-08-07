@@ -973,11 +973,3 @@ GUI.freq = 0
 GUI.onresize = init
 GUI.escape_bypass = true
 GUI.Main()
-
-
--- TODO
---[[
-- Tooltip dont overwrite custom color
-- dont overwrite checkbox sets verified values false
-
-]]--
