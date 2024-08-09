@@ -1,5 +1,5 @@
 -- @description Variation Verfier
--- @version 1.2
+-- @version 1.21
 -- @author Joshnt
 -- @about
 --    Marks/ Colors/ Hides Tracks or regions if different than given number of items
@@ -529,7 +529,7 @@ local function redraw_ActionOthers()
         local prevColor = colors.other
         if GUI.Val("actionsOther") == 1 then
             local retval, newColor = reaper.GR_SelectColor(nil)
-            if retval then
+            if retval and retval ~= 0 then
                 colors.other = newColor
             else
                 GUI.Val("actionsOther",5)
