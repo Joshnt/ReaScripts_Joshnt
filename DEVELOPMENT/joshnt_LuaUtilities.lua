@@ -62,6 +62,25 @@ function joshnt.getItemPropertyPitch(item)
   return reaper.GetMediaItemTakeInfo_Value(take, "D_PITCH")
 end
 
+-- get item property (f2) pitch
+function joshnt.getItemPropertyPitch_WithRatePitch(item)
+  local take = reaper.GetMediaItemTake(item, 0)
+  if not take then
+    return
+  end
+  -- Get the volume of the media item as a double value
+  local pitchRaw = reaper.GetMediaItemTakeInfo_Value(take, "D_PITCH")
+
+  local preserve_pitch = reaper.GetMediaItemTakeInfo_Value(take, "B_PPITCH")
+  local pitchRate = 0
+  if preserve_pitch == 1 then
+    local rate = reaper.GetMediaItemTakeInfo_Value(take, "D_PLAYRATE")
+    -- Calculate the pitch change in semitones
+    pitchRate = 12 * math.log(rate) / math.log(2)
+  end
+  return pitchRaw + pitchRate
+end
+
 -- set item property (f2) volume
 function joshnt.setItemPropertyVolume(item, volume)
   local take = reaper.GetMediaItemTake(item, 0)

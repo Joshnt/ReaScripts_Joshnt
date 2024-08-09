@@ -229,7 +229,7 @@ joshnt_autoColor.propertyColoring = {
     end,
     pitch = 
         function(item) 
-            local pitch = joshnt.getItemPropertyPitch(item)
+            local pitch = joshnt.getItemPropertyPitch_WithRatePitch(item)
             if pitch ~= 0 and pitch ~= nil  then
                 local colorTEMP = joshnt_autoColor.colors["pitch"]
                 if colorTEMP == "brighter" then colorTEMP = joshnt_autoColor.getBrighter(item) 
