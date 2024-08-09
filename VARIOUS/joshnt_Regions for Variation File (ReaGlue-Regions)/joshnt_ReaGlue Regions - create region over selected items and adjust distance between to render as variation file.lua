@@ -4,9 +4,9 @@
 ---------------------------------------
 
     local isolateItems_USER = 2 -- 1 = move selected, 2 = move others, 3 = dont move
-    local space_in_between_USER = 1000 -- Time in seconds (positive)
-    local start_silence_USER = 100 -- Time in seconds (positive)
-    local end_silence_USER = 50 -- Time in seconds (positive)
+    local space_in_between_USER = 1 -- Time in seconds (positive)
+    local start_silence_USER = 0.100 -- Time in seconds (positive)
+    local end_silence_USER = 0.050 -- Time in seconds (positive)
     local groupToleranceTime_USER = 0  -- Time in seconds (positive); Adjust how far away from each other items can be to still be considered as one 'group'.\n\nE.g. 0 means only actually overlapping items count as one group.\n1 means items within 1 second of each others start/ end still count as one group.
     local RRMLink_ToMaster_USER = true -- Create Link in Region Render Matrix to Master Track
     local openRgnDialog_USER = false -- wheather or not to open the "Edit region dialog" for the newly created region; only works when RRM_Link is set to false

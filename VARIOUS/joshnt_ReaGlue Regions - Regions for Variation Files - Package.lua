@@ -1,7 +1,7 @@
 -- @description ReaGlue adaption to Regions (with user input)
--- @version 4.01
+-- @version 4.02
 -- @changelog 
---      added RRM Link
+--      minor bug fixes
 -- @author Joshnt
 -- @metapackage
 -- @provides

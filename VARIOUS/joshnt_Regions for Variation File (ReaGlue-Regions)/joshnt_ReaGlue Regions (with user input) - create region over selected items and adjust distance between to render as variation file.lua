@@ -75,7 +75,7 @@ end
 
 local function userInputValues()
   local continue, s = reaper.GetUserInputs("ReaGlue Region", 7,
-          "Start silence:,Space in between:,End silence:,Group tolerance:,Render Matrix Master Link:,Open Region Edit Dialog,Isolate items across tracks (1-3):,extrawidth=1", 
+          "Start silence (ms):,Space in between (ms):,End silence (ms):,Group tolerance:,Render Matrix Master Link:,Open Region Edit Dialog,Isolate items across tracks (1-3):,extrawidth=1", 
           "100,1000,50,0,y,n,2")
   
     if not continue or s == "" then return false end
