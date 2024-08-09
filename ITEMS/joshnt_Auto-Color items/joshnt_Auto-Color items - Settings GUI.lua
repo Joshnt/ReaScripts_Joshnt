@@ -264,13 +264,13 @@ local function refreshVisibleElementsForPriority(intPriority, boolRefreshSlider_
 
             -- change slider boundarys depending on focus
             if boolRefreshSlider_Input ~= false then
-                if selVal == 9 then -- pitch
+                if selVal == 11 then -- pitch
                     valRange.min = -24
                     valRange.max = 24
                     valRange.inc = 1
                     valRange.defaults = {12,36}
                     valRange.tooltip = "Lower and upper bound for gradient\n(Values in semitones)"
-                elseif selVal == 10 then -- rate
+                elseif selVal == 12 then -- rate
                     valRange.min = 0.25
                     valRange.max = 4
                     valRange.inc = 0.05
