@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Joshnt_ReaScripts" commit="2a456bc917672b7be61a006e082a5d34a404f0b9">
+<index version="1" name="Joshnt_ReaScripts" commit="b2227fccf31896f035de8ec53e67f928c4202aa7">
   <category name="DEVELOPMENT">
     <reapack name="joshnt_LuaUtilities.lua" type="script" desc="Adding own functions and functionalities as lua-functions">
       <metadata>
@@ -43,6 +43,10 @@
       <version name="1.1" author="Joshnt" time="2024-08-09T05:52:53Z">
         <changelog><![CDATA[+ init]]></changelog>
         <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/ENVELOPES/joshnt_Mouse%20focus%20envelope/joshnt_Toggle%20show%20Volume%20Envelope%20for%20track%20or%20item%20(depending%20on%20mouse%20context).lua</source>
+      </version>
+      <version name="1.11" author="Joshnt" time="2024-08-09T19:12:46Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/ENVELOPES/joshnt_Mouse%20focus%20envelope/joshnt_Toggle%20show%20Volume%20Envelope%20for%20track%20or%20item%20(depending%20on%20mouse%20context).lua</source>
       </version>
     </reapack>
   </category>
@@ -90,6 +94,27 @@
         <source main="main" file="joshnt_Float and Unfloat Monitoring FX/joshnt_Toggle float Monitoring FX 8.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/3b824e3d331a55d0734573765ec218de49fdb9f4/FX/joshnt_Float%20and%20Unfloat%20Monitoring%20FX/joshnt_Toggle%20float%20Monitoring%20FX%208.lua</source>
         <source main="main" file="joshnt_Float and Unfloat Monitoring FX/joshnt_Toggle float Monitoring FX 9.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/3b824e3d331a55d0734573765ec218de49fdb9f4/FX/joshnt_Float%20and%20Unfloat%20Monitoring%20FX/joshnt_Toggle%20float%20Monitoring%20FX%209.lua</source>
       </version>
+      <version name="1.11" author="Joshnt" time="2024-08-09T19:12:46Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main" file="joshnt_Float and Unfloat Monitoring FX/joshnt_Float and focus Monitoring FX 1.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/FX/joshnt_Float%20and%20Unfloat%20Monitoring%20FX/joshnt_Float%20and%20focus%20Monitoring%20FX%201.lua</source>
+        <source main="main" file="joshnt_Float and Unfloat Monitoring FX/joshnt_Float and focus Monitoring FX 2.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/FX/joshnt_Float%20and%20Unfloat%20Monitoring%20FX/joshnt_Float%20and%20focus%20Monitoring%20FX%202.lua</source>
+        <source main="main" file="joshnt_Float and Unfloat Monitoring FX/joshnt_Float and focus Monitoring FX 3.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/FX/joshnt_Float%20and%20Unfloat%20Monitoring%20FX/joshnt_Float%20and%20focus%20Monitoring%20FX%203.lua</source>
+        <source main="main" file="joshnt_Float and Unfloat Monitoring FX/joshnt_Float and focus Monitoring FX 4.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/FX/joshnt_Float%20and%20Unfloat%20Monitoring%20FX/joshnt_Float%20and%20focus%20Monitoring%20FX%204.lua</source>
+        <source main="main" file="joshnt_Float and Unfloat Monitoring FX/joshnt_Float and focus Monitoring FX 5.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/FX/joshnt_Float%20and%20Unfloat%20Monitoring%20FX/joshnt_Float%20and%20focus%20Monitoring%20FX%205.lua</source>
+        <source main="main" file="joshnt_Float and Unfloat Monitoring FX/joshnt_Float and focus Monitoring FX 6.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/FX/joshnt_Float%20and%20Unfloat%20Monitoring%20FX/joshnt_Float%20and%20focus%20Monitoring%20FX%206.lua</source>
+        <source main="main" file="joshnt_Float and Unfloat Monitoring FX/joshnt_Float and focus Monitoring FX 7.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/FX/joshnt_Float%20and%20Unfloat%20Monitoring%20FX/joshnt_Float%20and%20focus%20Monitoring%20FX%207.lua</source>
+        <source main="main" file="joshnt_Float and Unfloat Monitoring FX/joshnt_Float and focus Monitoring FX 8.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/FX/joshnt_Float%20and%20Unfloat%20Monitoring%20FX/joshnt_Float%20and%20focus%20Monitoring%20FX%208.lua</source>
+        <source main="main" file="joshnt_Float and Unfloat Monitoring FX/joshnt_Float and focus Monitoring FX 9.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/FX/joshnt_Float%20and%20Unfloat%20Monitoring%20FX/joshnt_Float%20and%20focus%20Monitoring%20FX%209.lua</source>
+        <source main="main" file="joshnt_Float and Unfloat Monitoring FX/joshnt_Toggle float Monitoring FX 1.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/FX/joshnt_Float%20and%20Unfloat%20Monitoring%20FX/joshnt_Toggle%20float%20Monitoring%20FX%201.lua</source>
+        <source main="main" file="joshnt_Float and Unfloat Monitoring FX/joshnt_Toggle float Monitoring FX 2.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/FX/joshnt_Float%20and%20Unfloat%20Monitoring%20FX/joshnt_Toggle%20float%20Monitoring%20FX%202.lua</source>
+        <source main="main" file="joshnt_Float and Unfloat Monitoring FX/joshnt_Toggle float Monitoring FX 3.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/FX/joshnt_Float%20and%20Unfloat%20Monitoring%20FX/joshnt_Toggle%20float%20Monitoring%20FX%203.lua</source>
+        <source main="main" file="joshnt_Float and Unfloat Monitoring FX/joshnt_Toggle float Monitoring FX 4.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/FX/joshnt_Float%20and%20Unfloat%20Monitoring%20FX/joshnt_Toggle%20float%20Monitoring%20FX%204.lua</source>
+        <source main="main" file="joshnt_Float and Unfloat Monitoring FX/joshnt_Toggle float Monitoring FX 5.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/FX/joshnt_Float%20and%20Unfloat%20Monitoring%20FX/joshnt_Toggle%20float%20Monitoring%20FX%205.lua</source>
+        <source main="main" file="joshnt_Float and Unfloat Monitoring FX/joshnt_Toggle float Monitoring FX 6.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/FX/joshnt_Float%20and%20Unfloat%20Monitoring%20FX/joshnt_Toggle%20float%20Monitoring%20FX%206.lua</source>
+        <source main="main" file="joshnt_Float and Unfloat Monitoring FX/joshnt_Toggle float Monitoring FX 7.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/FX/joshnt_Float%20and%20Unfloat%20Monitoring%20FX/joshnt_Toggle%20float%20Monitoring%20FX%207.lua</source>
+        <source main="main" file="joshnt_Float and Unfloat Monitoring FX/joshnt_Toggle float Monitoring FX 8.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/FX/joshnt_Float%20and%20Unfloat%20Monitoring%20FX/joshnt_Toggle%20float%20Monitoring%20FX%208.lua</source>
+        <source main="main" file="joshnt_Float and Unfloat Monitoring FX/joshnt_Toggle float Monitoring FX 9.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/FX/joshnt_Float%20and%20Unfloat%20Monitoring%20FX/joshnt_Toggle%20float%20Monitoring%20FX%209.lua</source>
+      </version>
     </reapack>
     <reapack name="joshnt_Toggle FX bypass for item under mouse and other selected items or selected track.lua" type="script" desc="Toggle FX Bypass for item under mouse or selected Track">
       <metadata>
@@ -104,6 +129,10 @@
       <version name="1.1" author="Joshnt" time="2024-07-01T17:54:26Z">
         <changelog><![CDATA[+ init]]></changelog>
         <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/309bdb85cec2c464ea04642aac910d4227455d91/FX/joshnt_Toggle%20FX%20bypass%20for%20item%20under%20mouse%20and%20other%20selected%20items%20or%20selected%20track.lua</source>
+      </version>
+      <version name="1.11" author="Joshnt" time="2024-08-09T19:12:46Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/FX/joshnt_Toggle%20FX%20bypass%20for%20item%20under%20mouse%20and%20other%20selected%20items%20or%20selected%20track.lua</source>
       </version>
     </reapack>
   </category>
@@ -136,6 +165,12 @@
         <source main="main" file="joshnt_Auto-Color items/joshnt_Auto-Color items - Settings GUI.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/e11542aad06b507302d6d2fe17f99e7bbfcf54f4/ITEMS/joshnt_Auto-Color%20items/joshnt_Auto-Color%20items%20-%20Settings%20GUI.lua</source>
         <source file="joshnt_Auto-Color items/joshnt_Auto-Color items - Main Function.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/e11542aad06b507302d6d2fe17f99e7bbfcf54f4/ITEMS/joshnt_Auto-Color%20items/joshnt_Auto-Color%20items%20-%20Main%20Function.lua</source>
       </version>
+      <version name="1.21" author="Joshnt" time="2024-08-09T19:12:46Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main" file="joshnt_Auto-Color items/joshnt_Auto-Color items.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/ITEMS/joshnt_Auto-Color%20items/joshnt_Auto-Color%20items.lua</source>
+        <source main="main" file="joshnt_Auto-Color items/joshnt_Auto-Color items - Settings GUI.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/ITEMS/joshnt_Auto-Color%20items/joshnt_Auto-Color%20items%20-%20Settings%20GUI.lua</source>
+        <source file="joshnt_Auto-Color items/joshnt_Auto-Color items - Main Function.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/ITEMS/joshnt_Auto-Color%20items/joshnt_Auto-Color%20items%20-%20Main%20Function.lua</source>
+      </version>
     </reapack>
     <reapack name="joshnt_Cycle selected item(s) channel mapper preset.lua" type="script" desc="Cycle through presets for channel mapper on selected item - accessing unusal channel mappings like in 1/4 to 1/2 out more easily">
       <metadata>
@@ -149,6 +184,9 @@
       </metadata>
       <version name="1.0" author="Joshnt" time="2024-07-25T02:50:10Z">
         <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/7b096b58ce84b20fcdeda63c40cb5c88e51b9795/ITEMS/joshnt_Cycle%20selected%20item(s)%20channel%20mapper%20preset.lua</source>
+      </version>
+      <version name="1.01" author="Joshnt" time="2024-08-09T19:12:46Z">
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/ITEMS/joshnt_Cycle%20selected%20item(s)%20channel%20mapper%20preset.lua</source>
       </version>
     </reapack>
     <reapack name="joshnt_Fade Utility - Package.lua" type="script" desc="Fade Utility">
@@ -209,6 +247,9 @@
       <version name="1.0" author="Joshnt" time="2024-07-01T17:54:26Z">
         <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/309bdb85cec2c464ea04642aac910d4227455d91/ITEMS/joshnt_Normalize%20selected%20items%20-%20prompt%20for%20max.%20dB%20Change.lua</source>
       </version>
+      <version name="1.01" author="Joshnt" time="2024-08-09T19:12:46Z">
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/ITEMS/joshnt_Normalize%20selected%20items%20-%20prompt%20for%20max.%20dB%20Change.lua</source>
+      </version>
     </reapack>
   </category>
   <category name="REGIONS">
@@ -223,6 +264,16 @@
         <source main="main" file="joshnt_Add to Region Render Matrix/joshnt_Add selected Track(s) to region render matrix via region(s) with items.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/REGIONS/joshnt_Add%20to%20Region%20Render%20Matrix/joshnt_Add%20selected%20Track(s)%20to%20region%20render%20matrix%20via%20region(s)%20with%20items.lua</source>
         <source main="main" file="joshnt_Add to Region Render Matrix/joshnt_Copy region render matrix selection from region at cursor to selected region(s).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/REGIONS/joshnt_Add%20to%20Region%20Render%20Matrix/joshnt_Copy%20region%20render%20matrix%20selection%20from%20region%20at%20cursor%20to%20selected%20region(s).lua</source>
       </version>
+      <version name="1.01" author="Joshnt" time="2024-08-09T19:12:46Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main" file="joshnt_Add to Region Render Matrix/joshnt_Add selected Region(s) to region render matrix via highest common parent of items per region.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/REGIONS/joshnt_Add%20to%20Region%20Render%20Matrix/joshnt_Add%20selected%20Region(s)%20to%20region%20render%20matrix%20via%20highest%20common%20parent%20of%20items%20per%20region.lua</source>
+        <source main="main" file="joshnt_Add to Region Render Matrix/joshnt_Add selected Region(s) to region render matrix via highest parent(s) or top-level tracks of items per region.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/REGIONS/joshnt_Add%20to%20Region%20Render%20Matrix/joshnt_Add%20selected%20Region(s)%20to%20region%20render%20matrix%20via%20highest%20parent(s)%20or%20top-level%20tracks%20of%20items%20per%20region.lua</source>
+        <source main="main" file="joshnt_Add to Region Render Matrix/joshnt_Add selected Region(s) to region render matrix via Master.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/REGIONS/joshnt_Add%20to%20Region%20Render%20Matrix/joshnt_Add%20selected%20Region(s)%20to%20region%20render%20matrix%20via%20Master.lua</source>
+        <source main="main" file="joshnt_Add to Region Render Matrix/joshnt_Add selected Region(s) to region render matrix via selected Track(s).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/REGIONS/joshnt_Add%20to%20Region%20Render%20Matrix/joshnt_Add%20selected%20Region(s)%20to%20region%20render%20matrix%20via%20selected%20Track(s).lua</source>
+        <source main="main" file="joshnt_Add to Region Render Matrix/joshnt_Add selected Region(s) to region render matrix via tracks with items in corresponding region.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/REGIONS/joshnt_Add%20to%20Region%20Render%20Matrix/joshnt_Add%20selected%20Region(s)%20to%20region%20render%20matrix%20via%20tracks%20with%20items%20in%20corresponding%20region.lua</source>
+        <source main="main" file="joshnt_Add to Region Render Matrix/joshnt_Add selected Track(s) to region render matrix via region(s) with items.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/REGIONS/joshnt_Add%20to%20Region%20Render%20Matrix/joshnt_Add%20selected%20Track(s)%20to%20region%20render%20matrix%20via%20region(s)%20with%20items.lua</source>
+        <source main="main" file="joshnt_Add to Region Render Matrix/joshnt_Copy region render matrix selection from region at cursor to selected region(s).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/REGIONS/joshnt_Add%20to%20Region%20Render%20Matrix/joshnt_Copy%20region%20render%20matrix%20selection%20from%20region%20at%20cursor%20to%20selected%20region(s).lua</source>
+      </version>
     </reapack>
     <reapack name="joshnt_Select Regions - Package.lua" type="script" desc="Various Actions for selecting regions (in the region marker manager)">
       <version name="1.0" author="Joshnt" time="2024-08-09T05:52:53Z">
@@ -235,6 +286,16 @@
         <source main="main" file="joshnt_Select Regions/joshnt_Select region(s) with items on same tracks as selected region(s) or region at edit cursor.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/REGIONS/joshnt_Select%20Regions/joshnt_Select%20region(s)%20with%20items%20on%20same%20tracks%20as%20selected%20region(s)%20or%20region%20at%20edit%20cursor.lua</source>
         <source main="main" file="joshnt_Select Regions/joshnt_Select Region(s) with items on selected tracks.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/REGIONS/joshnt_Select%20Regions/joshnt_Select%20Region(s)%20with%20items%20on%20selected%20tracks.lua</source>
       </version>
+      <version name="1.01" author="Joshnt" time="2024-08-09T19:12:46Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main" file="joshnt_Select Regions/joshnt_Invert Region Selection.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/REGIONS/joshnt_Select%20Regions/joshnt_Invert%20Region%20Selection.lua</source>
+        <source main="main" file="joshnt_Select Regions/joshnt_Select only Region(s) in time selection.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/REGIONS/joshnt_Select%20Regions/joshnt_Select%20only%20Region(s)%20in%20time%20selection.lua</source>
+        <source main="main" file="joshnt_Select Regions/joshnt_Select Region(s) at edit cursor.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/REGIONS/joshnt_Select%20Regions/joshnt_Select%20Region(s)%20at%20edit%20cursor.lua</source>
+        <source main="main" file="joshnt_Select Regions/joshnt_Select Region(s) in time selection.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/REGIONS/joshnt_Select%20Regions/joshnt_Select%20Region(s)%20in%20time%20selection.lua</source>
+        <source main="main" file="joshnt_Select Regions/joshnt_Select Region(s) overlapping with item selection.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/REGIONS/joshnt_Select%20Regions/joshnt_Select%20Region(s)%20overlapping%20with%20item%20selection.lua</source>
+        <source main="main" file="joshnt_Select Regions/joshnt_Select region(s) with items on same tracks as selected region(s) or region at edit cursor.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/REGIONS/joshnt_Select%20Regions/joshnt_Select%20region(s)%20with%20items%20on%20same%20tracks%20as%20selected%20region(s)%20or%20region%20at%20edit%20cursor.lua</source>
+        <source main="main" file="joshnt_Select Regions/joshnt_Select Region(s) with items on selected tracks.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/REGIONS/joshnt_Select%20Regions/joshnt_Select%20Region(s)%20with%20items%20on%20selected%20tracks.lua</source>
+      </version>
     </reapack>
   </category>
   <category name="TRACKS">
@@ -243,6 +304,11 @@
         <changelog><![CDATA[+ init]]></changelog>
         <source main="main" file="joshnt_Select Tracks/joshnt_Select Tracks of items in region at edit cursor.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/TRACKS/joshnt_Select%20Tracks/joshnt_Select%20Tracks%20of%20items%20in%20region%20at%20edit%20cursor.lua</source>
         <source main="main" file="joshnt_Select Tracks/joshnt_Select Tracks of items in selected region.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/TRACKS/joshnt_Select%20Tracks/joshnt_Select%20Tracks%20of%20items%20in%20selected%20region.lua</source>
+      </version>
+      <version name="1.01" author="Joshnt" time="2024-08-09T19:12:46Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main" file="joshnt_Select Tracks/joshnt_Select Tracks of items in region at edit cursor.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/TRACKS/joshnt_Select%20Tracks/joshnt_Select%20Tracks%20of%20items%20in%20region%20at%20edit%20cursor.lua</source>
+        <source main="main" file="joshnt_Select Tracks/joshnt_Select Tracks of items in selected region.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/TRACKS/joshnt_Select%20Tracks/joshnt_Select%20Tracks%20of%20items%20in%20selected%20region.lua</source>
       </version>
     </reapack>
   </category>
@@ -274,6 +340,13 @@
         <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for each group of overlapping items of the selected items avoiding overlap with non-selected items.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items%20of%20the%20selected%20items%20avoiding%20overlap%20with%20non-selected%20items.lua</source>
         <source file="joshnt_Create unique regions for each group of overlapping items/joshnt_Unique Regions for overlapping items - CORE.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Unique%20Regions%20for%20overlapping%20items%20-%20CORE.lua</source>
       </version>
+      <version name="2.01" author="Joshnt" time="2024-08-09T19:12:46Z">
+        <changelog><![CDATA[- added Lokasenna GUI + RRM Link]]></changelog>
+        <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for each group of overlapping items of selected items (with mother region) - GUI.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items%20of%20selected%20items%20(with%20mother%20region)%20-%20GUI.lua</source>
+        <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for each group of overlapping items of the selected items + isolate (with mother region).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items%20of%20the%20selected%20items%20+%20isolate%20(with%20mother%20region).lua</source>
+        <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for each group of overlapping items of the selected items + isolate.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items%20of%20the%20selected%20items%20+%20isolate.lua</source>
+        <source file="joshnt_Create unique regions for each group of overlapping items/joshnt_Unique Regions for overlapping items - CORE.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Unique%20Regions%20for%20overlapping%20items%20-%20CORE.lua</source>
+      </version>
     </reapack>
     <reapack name="joshnt_Play only selected time (from time selection start or edit cursor).lua" type="script" desc="Play only selected Time">
       <metadata>
@@ -287,6 +360,9 @@
       </metadata>
       <version name="1.0" author="Joshnt" time="2024-08-09T09:48:10Z">
         <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/9fdfd4378381dbf40f07bced9bb7d0a7b61a5d0c/VARIOUS/joshnt_Play%20only%20selected%20time%20(from%20time%20selection%20start%20or%20edit%20cursor).lua</source>
+      </version>
+      <version name="1.01" author="Joshnt" time="2024-08-09T19:12:46Z">
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/VARIOUS/joshnt_Play%20only%20selected%20time%20(from%20time%20selection%20start%20or%20edit%20cursor).lua</source>
       </version>
     </reapack>
     <reapack name="joshnt_PowerReaName - Find and replace in region marker track item names.lua" type="script" desc="PowerReaName - Find and Replace in Track, Items, Regions or Marker Names">
@@ -302,6 +378,10 @@
       <version name="1.0" author="Joshnt" time="2024-08-09T05:52:53Z">
         <changelog><![CDATA[+ init]]></changelog>
         <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/VARIOUS/joshnt_PowerReaName%20-%20Find%20and%20replace%20in%20region%20marker%20track%20item%20names.lua</source>
+      </version>
+      <version name="1.01" author="Joshnt" time="2024-08-09T19:12:46Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/VARIOUS/joshnt_PowerReaName%20-%20Find%20and%20replace%20in%20region%20marker%20track%20item%20names.lua</source>
       </version>
     </reapack>
     <reapack name="joshnt_ReaGlue Regions - Regions for Variation Files - Package.lua" type="script" desc="ReaGlue adaption to Regions (with user input)">
@@ -331,6 +411,12 @@
         <source main="main" file="joshnt_Regions for Variation File (ReaGlue-Regions)/joshnt_ReaGlue Regions - create region over selected items and adjust distance between to render as variation file.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/2a456bc917672b7be61a006e082a5d34a404f0b9/VARIOUS/joshnt_Regions%20for%20Variation%20File%20(ReaGlue-Regions)/joshnt_ReaGlue%20Regions%20-%20create%20region%20over%20selected%20items%20and%20adjust%20distance%20between%20to%20render%20as%20variation%20file.lua</source>
         <source main="main" file="joshnt_Regions for Variation File (ReaGlue-Regions)/joshnt_ReaGlue Regions (with user input) - create region over selected items and adjust distance between to render as variation file.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/2a456bc917672b7be61a006e082a5d34a404f0b9/VARIOUS/joshnt_Regions%20for%20Variation%20File%20(ReaGlue-Regions)/joshnt_ReaGlue%20Regions%20(with%20user%20input)%20-%20create%20region%20over%20selected%20items%20and%20adjust%20distance%20between%20to%20render%20as%20variation%20file.lua</source>
       </version>
+      <version name="4.03" author="Joshnt" time="2024-08-09T19:12:46Z">
+        <changelog><![CDATA[minor bug fixes]]></changelog>
+        <source file="joshnt_Regions for Variation File (ReaGlue-Regions)/joshnt_ReaGlue Regions - CORE.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/VARIOUS/joshnt_Regions%20for%20Variation%20File%20(ReaGlue-Regions)/joshnt_ReaGlue%20Regions%20-%20CORE.lua</source>
+        <source main="main" file="joshnt_Regions for Variation File (ReaGlue-Regions)/joshnt_ReaGlue Regions - create region over selected items and adjust distance between to render as variation file.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/VARIOUS/joshnt_Regions%20for%20Variation%20File%20(ReaGlue-Regions)/joshnt_ReaGlue%20Regions%20-%20create%20region%20over%20selected%20items%20and%20adjust%20distance%20between%20to%20render%20as%20variation%20file.lua</source>
+        <source main="main" file="joshnt_Regions for Variation File (ReaGlue-Regions)/joshnt_ReaGlue Regions (with user input) - create region over selected items and adjust distance between to render as variation file.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/VARIOUS/joshnt_Regions%20for%20Variation%20File%20(ReaGlue-Regions)/joshnt_ReaGlue%20Regions%20(with%20user%20input)%20-%20create%20region%20over%20selected%20items%20and%20adjust%20distance%20between%20to%20render%20as%20variation%20file.lua</source>
+      </version>
     </reapack>
     <reapack name="joshnt_Run Actions per Region - Package.lua" type="script" desc="Run Action over over items/tracks/time on region (individually per region)">
       <metadata>
@@ -348,6 +434,12 @@
         <source main="main" file="joshnt_Run Actions for items, tracks, time or envelope of region (individually per region)/joshnt_Run Action for items tracks or time in regions in time selection (individually per region).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/VARIOUS/joshnt_Run%20Actions%20for%20items,%20tracks,%20time%20or%20envelope%20of%20region%20(individually%20per%20region)/joshnt_Run%20Action%20for%20items%20tracks%20or%20time%20in%20regions%20in%20time%20selection%20(individually%20per%20region).lua</source>
         <source main="main" file="joshnt_Run Actions for items, tracks, time or envelope of region (individually per region)/joshnt_Run Action for items tracks or time in selected regions (individually per region).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/VARIOUS/joshnt_Run%20Actions%20for%20items,%20tracks,%20time%20or%20envelope%20of%20region%20(individually%20per%20region)/joshnt_Run%20Action%20for%20items%20tracks%20or%20time%20in%20selected%20regions%20(individually%20per%20region).lua</source>
       </version>
+      <version name="1.01" author="Joshnt" time="2024-08-09T19:12:46Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main" file="joshnt_Run Actions for items, tracks, time or envelope of region (individually per region)/joshnt_Run Action for items tracks or time in all regions (individually per region).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/VARIOUS/joshnt_Run%20Actions%20for%20items,%20tracks,%20time%20or%20envelope%20of%20region%20(individually%20per%20region)/joshnt_Run%20Action%20for%20items%20tracks%20or%20time%20in%20all%20regions%20(individually%20per%20region).lua</source>
+        <source main="main" file="joshnt_Run Actions for items, tracks, time or envelope of region (individually per region)/joshnt_Run Action for items tracks or time in regions in time selection (individually per region).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/VARIOUS/joshnt_Run%20Actions%20for%20items,%20tracks,%20time%20or%20envelope%20of%20region%20(individually%20per%20region)/joshnt_Run%20Action%20for%20items%20tracks%20or%20time%20in%20regions%20in%20time%20selection%20(individually%20per%20region).lua</source>
+        <source main="main" file="joshnt_Run Actions for items, tracks, time or envelope of region (individually per region)/joshnt_Run Action for items tracks or time in selected regions (individually per region).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/VARIOUS/joshnt_Run%20Actions%20for%20items,%20tracks,%20time%20or%20envelope%20of%20region%20(individually%20per%20region)/joshnt_Run%20Action%20for%20items%20tracks%20or%20time%20in%20selected%20regions%20(individually%20per%20region).lua</source>
+      </version>
     </reapack>
     <reapack name="joshnt_Variation Verifier - highlight tracks or regions depending on items and print to console or CSV.lua" type="script" desc="Variation Verfier">
       <metadata>
@@ -362,6 +454,10 @@
       <version name="1.0" author="Joshnt" time="2024-08-01T23:40:23Z">
         <changelog><![CDATA[+ init]]></changelog>
         <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/61aa057c8d154e2029cb5e79f15806c0f7462207/VARIOUS/joshnt_Variation%20Verifier%20-%20highlight%20tracks%20or%20regions%20depending%20on%20items%20and%20print%20to%20console%20or%20CSV.lua</source>
+      </version>
+      <version name="1.01" author="Joshnt" time="2024-08-09T19:12:46Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/VARIOUS/joshnt_Variation%20Verifier%20-%20highlight%20tracks%20or%20regions%20depending%20on%20items%20and%20print%20to%20console%20or%20CSV.lua</source>
       </version>
     </reapack>
   </category>
@@ -385,6 +481,15 @@
         <source main="main" file="joshnt_Zoom to regions/joshnt-Exenye_Go to previous region and zoom to items.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/VISUALISATION/joshnt_Zoom%20to%20regions/joshnt-Exenye_Go%20to%20previous%20region%20and%20zoom%20to%20items.lua</source>
         <source main="main" file="joshnt_Zoom to regions/joshnt-Exenye_Zoom to all regions with items on same tracks as current region.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/VISUALISATION/joshnt_Zoom%20to%20regions/joshnt-Exenye_Zoom%20to%20all%20regions%20with%20items%20on%20same%20tracks%20as%20current%20region.lua</source>
       </version>
+      <version name="1.01" author="Joshnt, Exenye" time="2024-08-09T19:12:46Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main" file="joshnt_Zoom to regions/joshnt_Zoom to selected region(s) - horizontally.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/VISUALISATION/joshnt_Zoom%20to%20regions/joshnt_Zoom%20to%20selected%20region(s)%20-%20horizontally.lua</source>
+        <source main="main" file="joshnt_Zoom to regions/joshnt_Zoom to selected region(s) - vertically to items in regions.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/VISUALISATION/joshnt_Zoom%20to%20regions/joshnt_Zoom%20to%20selected%20region(s)%20-%20vertically%20to%20items%20in%20regions.lua</source>
+        <source main="main" file="joshnt_Zoom to regions/joshnt_Zoom to selected region(s).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/VISUALISATION/joshnt_Zoom%20to%20regions/joshnt_Zoom%20to%20selected%20region(s).lua</source>
+        <source main="main" file="joshnt_Zoom to regions/joshnt-Exenye_Go to next region and zoom to items.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/VISUALISATION/joshnt_Zoom%20to%20regions/joshnt-Exenye_Go%20to%20next%20region%20and%20zoom%20to%20items.lua</source>
+        <source main="main" file="joshnt_Zoom to regions/joshnt-Exenye_Go to previous region and zoom to items.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/VISUALISATION/joshnt_Zoom%20to%20regions/joshnt-Exenye_Go%20to%20previous%20region%20and%20zoom%20to%20items.lua</source>
+        <source main="main" file="joshnt_Zoom to regions/joshnt-Exenye_Zoom to all regions with items on same tracks as current region.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/VISUALISATION/joshnt_Zoom%20to%20regions/joshnt-Exenye_Zoom%20to%20all%20regions%20with%20items%20on%20same%20tracks%20as%20current%20region.lua</source>
+      </version>
     </reapack>
     <reapack name="joshnt_Change Distance between non-overlapping regions in timeselection - Package.lua" type="script" desc="Change distance between regions">
       <metadata>
@@ -401,6 +506,11 @@
         <source main="main" file="joshnt_Change Distance between non overlapping regions in timeselection/joshnt_Decrease Distance Between non-overlapping Regions in Timeselection by 1 second.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/3b824e3d331a55d0734573765ec218de49fdb9f4/VISUALISATION/joshnt_Change%20Distance%20between%20non%20overlapping%20regions%20in%20timeselection/joshnt_Decrease%20Distance%20Between%20non-overlapping%20Regions%20in%20Timeselection%20by%201%20second.lua</source>
         <source main="main" file="joshnt_Change Distance between non overlapping regions in timeselection/joshnt_Increase Distance Between Regions in Timeselection by 1 second.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/3b824e3d331a55d0734573765ec218de49fdb9f4/VISUALISATION/joshnt_Change%20Distance%20between%20non%20overlapping%20regions%20in%20timeselection/joshnt_Increase%20Distance%20Between%20Regions%20in%20Timeselection%20by%201%20second.lua</source>
       </version>
+      <version name="1.02" author="Joshnt" time="2024-08-09T19:12:46Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main" file="joshnt_Change Distance between non overlapping regions in timeselection/joshnt_Decrease Distance Between non-overlapping Regions in Timeselection by 1 second.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/VISUALISATION/joshnt_Change%20Distance%20between%20non%20overlapping%20regions%20in%20timeselection/joshnt_Decrease%20Distance%20Between%20non-overlapping%20Regions%20in%20Timeselection%20by%201%20second.lua</source>
+        <source main="main" file="joshnt_Change Distance between non overlapping regions in timeselection/joshnt_Increase Distance Between Regions in Timeselection by 1 second.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/VISUALISATION/joshnt_Change%20Distance%20between%20non%20overlapping%20regions%20in%20timeselection/joshnt_Increase%20Distance%20Between%20Regions%20in%20Timeselection%20by%201%20second.lua</source>
+      </version>
     </reapack>
     <reapack name="joshnt_Insert Remove Time at edges of timeselection - Package.lua" type="script" desc="Remove time at edges of time selection">
       <metadata>
@@ -416,6 +526,11 @@
         <changelog><![CDATA[+ init]]></changelog>
         <source main="main" file="joshnt_Insert or remove time at start and end of timeselection/joshnt_Insert 1 second time at start and end of time selection.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/3b824e3d331a55d0734573765ec218de49fdb9f4/VISUALISATION/joshnt_Insert%20or%20remove%20time%20at%20start%20and%20end%20of%20timeselection/joshnt_Insert%201%20second%20time%20at%20start%20and%20end%20of%20time%20selection.lua</source>
         <source main="main" file="joshnt_Insert or remove time at start and end of timeselection/joshnt_Remove 1 second time at start and end of time selection.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/3b824e3d331a55d0734573765ec218de49fdb9f4/VISUALISATION/joshnt_Insert%20or%20remove%20time%20at%20start%20and%20end%20of%20timeselection/joshnt_Remove%201%20second%20time%20at%20start%20and%20end%20of%20time%20selection.lua</source>
+      </version>
+      <version name="1.02" author="Joshnt" time="2024-08-09T19:12:46Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main" file="joshnt_Insert or remove time at start and end of timeselection/joshnt_Insert 1 second time at start and end of time selection.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/VISUALISATION/joshnt_Insert%20or%20remove%20time%20at%20start%20and%20end%20of%20timeselection/joshnt_Insert%201%20second%20time%20at%20start%20and%20end%20of%20time%20selection.lua</source>
+        <source main="main" file="joshnt_Insert or remove time at start and end of timeselection/joshnt_Remove 1 second time at start and end of time selection.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/VISUALISATION/joshnt_Insert%20or%20remove%20time%20at%20start%20and%20end%20of%20timeselection/joshnt_Remove%201%20second%20time%20at%20start%20and%20end%20of%20time%20selection.lua</source>
       </version>
     </reapack>
     <reapack name="joshnt_Insert Remove Time on selected Tracks - Package.lua" type="script" desc="Remove Time on selected Tracks">
@@ -442,6 +557,13 @@
         <source main="main" file="joshnt_Insert-Remove Time selected Tracks/joshnt_Remove time on selected tracks (1 sec at edit cursor).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/3b824e3d331a55d0734573765ec218de49fdb9f4/VISUALISATION/joshnt_Insert-Remove%20Time%20selected%20Tracks/joshnt_Remove%20time%20on%20selected%20tracks%20(1%20sec%20at%20edit%20cursor).lua</source>
         <source main="main" file="joshnt_Insert-Remove Time selected Tracks/joshnt_Remove time on selected tracks (length of timeselection).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/3b824e3d331a55d0734573765ec218de49fdb9f4/VISUALISATION/joshnt_Insert-Remove%20Time%20selected%20Tracks/joshnt_Remove%20time%20on%20selected%20tracks%20(length%20of%20timeselection).lua</source>
       </version>
+      <version name="1.02" author="Joshnt" time="2024-08-09T19:12:46Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main" file="joshnt_Insert-Remove Time selected Tracks/joshnt_Insert time on selected tracks (1 sec at edit cursor).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/VISUALISATION/joshnt_Insert-Remove%20Time%20selected%20Tracks/joshnt_Insert%20time%20on%20selected%20tracks%20(1%20sec%20at%20edit%20cursor).lua</source>
+        <source main="main" file="joshnt_Insert-Remove Time selected Tracks/joshnt_Insert time on selected tracks (length of timeselection).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/VISUALISATION/joshnt_Insert-Remove%20Time%20selected%20Tracks/joshnt_Insert%20time%20on%20selected%20tracks%20(length%20of%20timeselection).lua</source>
+        <source main="main" file="joshnt_Insert-Remove Time selected Tracks/joshnt_Remove time on selected tracks (1 sec at edit cursor).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/VISUALISATION/joshnt_Insert-Remove%20Time%20selected%20Tracks/joshnt_Remove%20time%20on%20selected%20tracks%20(1%20sec%20at%20edit%20cursor).lua</source>
+        <source main="main" file="joshnt_Insert-Remove Time selected Tracks/joshnt_Remove time on selected tracks (length of timeselection).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/VISUALISATION/joshnt_Insert-Remove%20Time%20selected%20Tracks/joshnt_Remove%20time%20on%20selected%20tracks%20(length%20of%20timeselection).lua</source>
+      </version>
     </reapack>
     <reapack name="joshnt_Zoom to items - Package.lua" type="script" desc="Zoom to overlapping item group at cursor">
       <metadata>
@@ -457,6 +579,11 @@
         <changelog><![CDATA[+ init]]></changelog>
         <source main="main" file="joshnt_Zoom to items/joshnt_Zoom to overlapping items across all tracks at edit cursor.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/VISUALISATION/joshnt_Zoom%20to%20items/joshnt_Zoom%20to%20overlapping%20items%20across%20all%20tracks%20at%20edit%20cursor.lua</source>
         <source main="main" file="joshnt_Zoom to items/joshnt_Zoom to overlapping items across selected tracks at edit cursor.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/VISUALISATION/joshnt_Zoom%20to%20items/joshnt_Zoom%20to%20overlapping%20items%20across%20selected%20tracks%20at%20edit%20cursor.lua</source>
+      </version>
+      <version name="1.01" author="Joshnt" time="2024-08-09T19:12:46Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main" file="joshnt_Zoom to items/joshnt_Zoom to overlapping items across all tracks at edit cursor.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/VISUALISATION/joshnt_Zoom%20to%20items/joshnt_Zoom%20to%20overlapping%20items%20across%20all%20tracks%20at%20edit%20cursor.lua</source>
+        <source main="main" file="joshnt_Zoom to items/joshnt_Zoom to overlapping items across selected tracks at edit cursor.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/VISUALISATION/joshnt_Zoom%20to%20items/joshnt_Zoom%20to%20overlapping%20items%20across%20selected%20tracks%20at%20edit%20cursor.lua</source>
       </version>
     </reapack>
   </category>
