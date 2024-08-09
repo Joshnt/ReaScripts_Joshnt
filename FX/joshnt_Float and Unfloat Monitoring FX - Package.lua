@@ -1,5 +1,5 @@
--- @description Multiple single actions for creating fades
--- @version 1.0
+-- @description Float/ Unfloat Monitoring FX
+-- @version 1.1
 -- @author Joshnt
 -- @changelog
 --  + init

@@ -1,6 +1,8 @@
--- @description Multiple single actions for creating fades
--- @version 1.0
+-- @description Fade Utility
+-- @version 1.01
 -- @author Joshnt
+-- @about
+-- Multiple single actions for creating fades
 -- @changelog
 --  + init
 -- @metapackage

@@ -1,5 +1,5 @@
--- @description Zoom to overlapping item group at cursor
--- @version 1.0
+-- @description Remove time at edges of time selection
+-- @version 1.01
 -- @author Joshnt
 -- @about
 --    Various actions for zooming/ scrolling to overlapping item group at cursor
