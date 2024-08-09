@@ -73,7 +73,7 @@ function joshnt.getItemPropertyPitch_WithRatePitch(item)
 
   local preserve_pitch = reaper.GetMediaItemTakeInfo_Value(take, "B_PPITCH")
   local pitchRate = 0
-  if preserve_pitch == 1 then
+  if preserve_pitch == 0 then
     local rate = reaper.GetMediaItemTakeInfo_Value(take, "D_PLAYRATE")
     -- Calculate the pitch change in semitones
     pitchRate = 12 * math.log(rate) / math.log(2)
