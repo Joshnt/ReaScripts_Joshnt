@@ -1,3 +1,4 @@
+-- @noindex
 --    Changes Fade closest to mouse on selected item to S-Shape or Log-Shape -- credits to me2beats
 
 

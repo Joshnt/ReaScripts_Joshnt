@@ -1,7 +1,5 @@
 -- @description Play only selected Time
 -- @version 1.0
--- @changelog
--- + init
 -- @author Joshnt
 -- @about 
 --    play only time selection (from start of timeselection or edit cursor) - similar to iZotope RX etc.

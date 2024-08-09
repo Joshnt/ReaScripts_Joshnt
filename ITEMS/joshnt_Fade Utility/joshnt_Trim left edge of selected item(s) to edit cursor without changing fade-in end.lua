@@ -1,3 +1,4 @@
+-- @noindex
 --    alternative to reaper in-built "Item edit: Trim left edge of item to edit cursor"
 --    adapted from X-Raym_Trim left edge of item under mouse or the next one without changing fade-in end.lua
 --    as I prefer working with the edit cursor

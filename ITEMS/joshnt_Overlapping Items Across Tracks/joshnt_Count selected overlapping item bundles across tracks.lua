@@ -1,8 +1,4 @@
--- @description Count selected overlapping item groups/ bundles across tracks
--- @version 1.0
--- @author Joshnt
--- @about
---    alternative to misleading item count with "Item properties (F2)" when crossfading items/ using multi-mic arrangements
+-- @noindex
 
 ---------------------------------------
 --------- USER CONFIG - EDIT ME -------

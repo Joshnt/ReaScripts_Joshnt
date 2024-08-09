@@ -1,10 +1,4 @@
--- @description Increase distance between regions in time selection by 1 sec
--- @version 1.0
--- @author Joshnt
--- @about
---    Moves region closer together - only use when no items between regions, as those may get ripped apart
--- @changelog
---  + init
+-- @noindex
 
 ---------------------------------------
 --------- USER CONFIG - EDIT ME -------

@@ -1,10 +1,4 @@
--- @description Inserts 1 seconds of empty space at time-selection start and end
--- @version 1.0
--- @author Joshnt
--- @about
---    Useful for visually isolating items/ regions
--- @changelog
---  + init
+-- @noindex
 
 ---------------------------------------
 --------- USER CONFIG - EDIT ME -------

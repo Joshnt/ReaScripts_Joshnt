@@ -1,8 +1,4 @@
--- @description Select Previous Item Track Keep Current Selection
--- @author joshnt, Aaron Cendan
--- @version 1.0
--- @about
---   straight up copied from acendan's "Select Next Item Track Keep Current Selection"
+-- @noindex
 
     ------------------------------------------------------
     local function no_undo()reaper.defer(function()end)end;

@@ -1,3 +1,4 @@
+-- @noindex
 --    If selected items have no fades, create 1ms fade in and fade out (use to not override fades on multi-selection)
 
 local function nothing() end; local function bla() reaper.defer(nothing) end

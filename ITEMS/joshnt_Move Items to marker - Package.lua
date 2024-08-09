@@ -15,6 +15,6 @@
 --   [main] joshnt_Move Items to Marker/joshnt_Move selected items to marker 07 (keep relative position).lua
 --   [main] joshnt_Move Items to Marker/joshnt_Move selected items to marker 08 (keep relative position).lua
 --   [main] joshnt_Move Items to Marker/joshnt_Move selected items to marker 09 (keep relative position).lua
---   [main] joshnt_Move Items to Marker/joshnt_Move selected items to marker with name [user input] (keep relative position) .lua
+--   [main] joshnt_Move Items to Marker/joshnt_Move selected items to marker (name input) (keep relative position).lua
 --   [main] joshnt_Move Items to Marker/joshnt_Move selected items to marker with name X (keep relative position) (TEMPLATE - EDIT ME).lua
 --   [main] joshnt_Move Items to Marker/joshnt_Move selected items to selected marker or region (keep relative position).lua

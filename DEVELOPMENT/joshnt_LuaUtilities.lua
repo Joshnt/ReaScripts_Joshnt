@@ -1,5 +1,5 @@
 -- @description Adding own functions and functionalities as lua-functions
--- @version 1.0
+-- @version 2.0
 -- @author Joshnt
 -- @provides [nomain] .
 -- @about
