@@ -1,32 +1,152 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Joshnt_ReaScripts" commit="b5ad9ded1b3fa23b8e457bf0eb7b32a624fc1aa4">
-  <category name="ITEMS">
-    <reapack name="joshnt_Isolate - Move selected items to avoid overlap with any other item across all tracks (obeying move envelopes option).lua" type="script" desc="Move selected items to avoid overlaps (obeying move envelope toggle)">
+<index version="1" name="Joshnt_ReaScripts" commit="d63ef85c9cdc468e1f3c2859dc76d49aa3d236da">
+  <category name="DEVELOPMENT">
+    <reapack name="joshnt_LuaUtilities.lua" type="script" desc="Adding own functions and functionalities as lua-functions">
       <metadata>
         <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
 {\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
 \widowctrl\hyphauto
 
-{\pard \ql \f0 \sa180 \li0 \fi0 Credits to Aaron Cendan https://aaroncendan.me, David Arnoldy, Joshua Hank Basically the isolate option of my ReaGlue - Regions script without a region around it; Usecase: multiple Multi-Track Recordings or Sounddesigns across multiple tracks which needs to be exported to a single variation file. Script creates region across those selected items (including beginning and end silence), adjusting the space between them, moving other non selected items away\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 Credits to Aaron Cendan https://aaroncendan.me - I partly straight up copied code from him; as well thanks for the awesome work in the scripting domain of reaper!\par}
 }
 ]]></description>
       </metadata>
-      <version name="1.0" author="Joshnt" time="2024-06-04T18:09:06Z">
-        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/08c3bc7b9093826b95fa200df6cbb847f45f4543/ITEMS/joshnt_Isolate%20-%20Move%20selected%20items%20to%20avoid%20overlap%20with%20any%20other%20item%20across%20all%20tracks%20(obeying%20move%20envelopes%20option).lua</source>
+      <version name="1.0" author="Joshnt" time="2024-06-07T17:35:06Z">
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/cf1beec700527f40e07c26ce636569ac6ef25775/DEVELOPMENT/joshnt_LuaUtilities.lua</source>
       </version>
     </reapack>
-    <reapack name="joshnt_Isolate - Move selected items to avoid overlap with any other item across all tracks (with envelopes and parent envelopes if existing).lua" type="script" desc="Move selected items to avoid overlaps (with parent envelopes)">
+  </category>
+  <category name="ENVELOPES/joshnt_Mouse focus envelope">
+    <reapack name="joshnt_Toggle show Volume Envelope for track or item (depending on mouse context).lua" type="script" desc="Show volume for item or track depending on mouse context">
       <metadata>
         <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
 {\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
 \widowctrl\hyphauto
 
-{\pard \ql \f0 \sa180 \li0 \fi0 Credits to Aaron Cendan https://aaroncendan.me, David Arnoldy, Joshua Hank Basically the isolate option of my ReaGlue - Regions script without a region around it; Usecase: multiple Multi-Track Recordings or Sounddesigns across multiple tracks which needs to be exported to a single variation file. Script creates region across those selected items (including beginning and end silence), adjusting the space between them, moving other non selected items away\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 Adaption of amagalma's version of this idea; checks for items under mouse cursor, then selected track(s) then track under mouse cursor\par}
 }
 ]]></description>
       </metadata>
-      <version name="1.0" author="Joshnt" time="2024-06-04T18:09:06Z">
-        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/08c3bc7b9093826b95fa200df6cbb847f45f4543/ITEMS/joshnt_Isolate%20-%20Move%20selected%20items%20to%20avoid%20overlap%20with%20any%20other%20item%20across%20all%20tracks%20(with%20envelopes%20and%20parent%20envelopes%20if%20existing).lua</source>
+      <version name="1.0" author="Joshnt" time="2024-07-01T17:54:26Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/309bdb85cec2c464ea04642aac910d4227455d91/ENVELOPES/joshnt_Mouse%20focus%20envelope/joshnt_Toggle%20show%20Volume%20Envelope%20for%20track%20or%20item%20(depending%20on%20mouse%20context).lua</source>
+      </version>
+      <version name="1.1" author="Joshnt" time="2024-08-09T05:52:53Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/ENVELOPES/joshnt_Mouse%20focus%20envelope/joshnt_Toggle%20show%20Volume%20Envelope%20for%20track%20or%20item%20(depending%20on%20mouse%20context).lua</source>
+      </version>
+    </reapack>
+  </category>
+  <category name="FX">
+    <reapack name="joshnt_Float and Unfloat Monitoring FX - Package.lua" type="script" desc="Multiple single actions for creating fades">
+      <version name="1.0" author="Joshnt" time="2024-08-09T05:52:53Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main" file="joshnt_Float and Unfloat Monitoring FX/joshnt_Float and focus Monitoring FX 1.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/FX/joshnt_Float%20and%20Unfloat%20Monitoring%20FX/joshnt_Float%20and%20focus%20Monitoring%20FX%201.lua</source>
+        <source main="main" file="joshnt_Float and Unfloat Monitoring FX/joshnt_Float and focus Monitoring FX 2.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/FX/joshnt_Float%20and%20Unfloat%20Monitoring%20FX/joshnt_Float%20and%20focus%20Monitoring%20FX%202.lua</source>
+        <source main="main" file="joshnt_Float and Unfloat Monitoring FX/joshnt_Float and focus Monitoring FX 3.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/FX/joshnt_Float%20and%20Unfloat%20Monitoring%20FX/joshnt_Float%20and%20focus%20Monitoring%20FX%203.lua</source>
+        <source main="main" file="joshnt_Float and Unfloat Monitoring FX/joshnt_Float and focus Monitoring FX 4.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/FX/joshnt_Float%20and%20Unfloat%20Monitoring%20FX/joshnt_Float%20and%20focus%20Monitoring%20FX%204.lua</source>
+        <source main="main" file="joshnt_Float and Unfloat Monitoring FX/joshnt_Float and focus Monitoring FX 5.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/FX/joshnt_Float%20and%20Unfloat%20Monitoring%20FX/joshnt_Float%20and%20focus%20Monitoring%20FX%205.lua</source>
+        <source main="main" file="joshnt_Float and Unfloat Monitoring FX/joshnt_Float and focus Monitoring FX 6.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/FX/joshnt_Float%20and%20Unfloat%20Monitoring%20FX/joshnt_Float%20and%20focus%20Monitoring%20FX%206.lua</source>
+        <source main="main" file="joshnt_Float and Unfloat Monitoring FX/joshnt_Float and focus Monitoring FX 7.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/FX/joshnt_Float%20and%20Unfloat%20Monitoring%20FX/joshnt_Float%20and%20focus%20Monitoring%20FX%207.lua</source>
+        <source main="main" file="joshnt_Float and Unfloat Monitoring FX/joshnt_Float and focus Monitoring FX 8.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/FX/joshnt_Float%20and%20Unfloat%20Monitoring%20FX/joshnt_Float%20and%20focus%20Monitoring%20FX%208.lua</source>
+        <source main="main" file="joshnt_Float and Unfloat Monitoring FX/joshnt_Float and focus Monitoring FX 9.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/FX/joshnt_Float%20and%20Unfloat%20Monitoring%20FX/joshnt_Float%20and%20focus%20Monitoring%20FX%209.lua</source>
+        <source main="main" file="joshnt_Float and Unfloat Monitoring FX/joshnt_Toggle float Monitoring FX 1.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/FX/joshnt_Float%20and%20Unfloat%20Monitoring%20FX/joshnt_Toggle%20float%20Monitoring%20FX%201.lua</source>
+        <source main="main" file="joshnt_Float and Unfloat Monitoring FX/joshnt_Toggle float Monitoring FX 2.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/FX/joshnt_Float%20and%20Unfloat%20Monitoring%20FX/joshnt_Toggle%20float%20Monitoring%20FX%202.lua</source>
+        <source main="main" file="joshnt_Float and Unfloat Monitoring FX/joshnt_Toggle float Monitoring FX 3.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/FX/joshnt_Float%20and%20Unfloat%20Monitoring%20FX/joshnt_Toggle%20float%20Monitoring%20FX%203.lua</source>
+        <source main="main" file="joshnt_Float and Unfloat Monitoring FX/joshnt_Toggle float Monitoring FX 4.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/FX/joshnt_Float%20and%20Unfloat%20Monitoring%20FX/joshnt_Toggle%20float%20Monitoring%20FX%204.lua</source>
+        <source main="main" file="joshnt_Float and Unfloat Monitoring FX/joshnt_Toggle float Monitoring FX 5.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/FX/joshnt_Float%20and%20Unfloat%20Monitoring%20FX/joshnt_Toggle%20float%20Monitoring%20FX%205.lua</source>
+        <source main="main" file="joshnt_Float and Unfloat Monitoring FX/joshnt_Toggle float Monitoring FX 6.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/FX/joshnt_Float%20and%20Unfloat%20Monitoring%20FX/joshnt_Toggle%20float%20Monitoring%20FX%206.lua</source>
+        <source main="main" file="joshnt_Float and Unfloat Monitoring FX/joshnt_Toggle float Monitoring FX 7.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/FX/joshnt_Float%20and%20Unfloat%20Monitoring%20FX/joshnt_Toggle%20float%20Monitoring%20FX%207.lua</source>
+        <source main="main" file="joshnt_Float and Unfloat Monitoring FX/joshnt_Toggle float Monitoring FX 8.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/FX/joshnt_Float%20and%20Unfloat%20Monitoring%20FX/joshnt_Toggle%20float%20Monitoring%20FX%208.lua</source>
+        <source main="main" file="joshnt_Float and Unfloat Monitoring FX/joshnt_Toggle float Monitoring FX 9.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/FX/joshnt_Float%20and%20Unfloat%20Monitoring%20FX/joshnt_Toggle%20float%20Monitoring%20FX%209.lua</source>
+      </version>
+    </reapack>
+    <reapack name="joshnt_Toggle FX bypass for item under mouse and other selected items or selected track.lua" type="script" desc="Toggle FX Bypass for item under mouse or selected Track">
+      <metadata>
+        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 allows for single shortcut to bypass either item or track FX, depending on mouse position\par}
+}
+]]></description>
+      </metadata>
+      <version name="1.1" author="Joshnt" time="2024-07-01T17:54:26Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/309bdb85cec2c464ea04642aac910d4227455d91/FX/joshnt_Toggle%20FX%20bypass%20for%20item%20under%20mouse%20and%20other%20selected%20items%20or%20selected%20track.lua</source>
+      </version>
+    </reapack>
+  </category>
+  <category name="ITEMS">
+    <reapack name="joshnt_Auto-Color Items - Package.lua" type="script" desc="Automatic coloring of selected items - similar to SWS Auto-Color for tracks">
+      <metadata>
+        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 use the GUI to create your own rule set with item conditions etc. after previewing it, save it in the GUI and the run the normal function (which can be toggled on and off)\par}
+}
+]]></description>
+      </metadata>
+      <version name="1.0" author="Joshnt" time="2024-08-09T05:52:53Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main" file="joshnt_Auto-Color items/joshnt_Auto-Color items.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/ITEMS/joshnt_Auto-Color%20items/joshnt_Auto-Color%20items.lua</source>
+        <source main="main" file="joshnt_Auto-Color items/joshnt_Auto-Color items - Settings GUI.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/ITEMS/joshnt_Auto-Color%20items/joshnt_Auto-Color%20items%20-%20Settings%20GUI.lua</source>
+        <source file="joshnt_Auto-Color items/joshnt_Auto-Color items - Main Function.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/ITEMS/joshnt_Auto-Color%20items/joshnt_Auto-Color%20items%20-%20Main%20Function.lua</source>
+      </version>
+    </reapack>
+    <reapack name="joshnt_Cycle selected item(s) channel mapper preset.lua" type="script" desc="Cycle through presets for channel mapper on selected item - accessing unusal channel mappings like in 1/4 to 1/2 out more easily">
+      <metadata>
+        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 You need to create presets for the channel mapper device for this script to work if you don't have any presets the script only inserts a default channel mapper device\par}
+}
+]]></description>
+      </metadata>
+      <version name="1.0" author="Joshnt" time="2024-07-25T02:50:10Z">
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/7b096b58ce84b20fcdeda63c40cb5c88e51b9795/ITEMS/joshnt_Cycle%20selected%20item(s)%20channel%20mapper%20preset.lua</source>
+      </version>
+    </reapack>
+    <reapack name="joshnt_Isolate selected items (avoid overlap with non-selected) - Package.lua" type="script" desc="Multiple actions to isolate the selected items">
+      <version name="1.0" author="Joshnt" time="2024-08-09T05:52:53Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main" file="joshnt_Isolate selected items/joshnt_Easy Cut-Copy-Paste Items with envelopes (Isolate with interface).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/ITEMS/joshnt_Isolate%20selected%20items/joshnt_Easy%20Cut-Copy-Paste%20Items%20with%20envelopes%20(Isolate%20with%20interface).lua</source>
+        <source main="main" file="joshnt_Isolate selected items/joshnt_Isolate - Move non-selected items to avoid overlap with selected items (with all envelopes).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/ITEMS/joshnt_Isolate%20selected%20items/joshnt_Isolate%20-%20Move%20non-selected%20items%20to%20avoid%20overlap%20with%20selected%20items%20(with%20all%20envelopes).lua</source>
+        <source main="main" file="joshnt_Isolate selected items/joshnt_Isolate - Move selected items to avoid overlap with any other item across all tracks (with track and parent envelopes).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/ITEMS/joshnt_Isolate%20selected%20items/joshnt_Isolate%20-%20Move%20selected%20items%20to%20avoid%20overlap%20with%20any%20other%20item%20across%20all%20tracks%20(with%20track%20and%20parent%20envelopes).lua</source>
+        <source main="main" file="joshnt_Isolate selected items/joshnt_Isolate - Move selected items to project end.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/ITEMS/joshnt_Isolate%20selected%20items/joshnt_Isolate%20-%20Move%20selected%20items%20to%20project%20end.lua</source>
+      </version>
+    </reapack>
+    <reapack name="joshnt_Normalize selected items - prompt for max. dB Change.lua" type="script" desc="Normalize selected items seperatly with recent settings - prompt for max. dB Change.lua">
+      <metadata>
+        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 Usecase: "rough" normalization as something between common gain and seperatly normalizing\par}
+}
+]]></description>
+      </metadata>
+      <version name="1.0" author="Joshnt" time="2024-07-01T17:54:26Z">
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/309bdb85cec2c464ea04642aac910d4227455d91/ITEMS/joshnt_Normalize%20selected%20items%20-%20prompt%20for%20max.%20dB%20Change.lua</source>
+      </version>
+    </reapack>
+  </category>
+  <category name="ITEMS/joshnt_Fade Utility">
+    <reapack name="joshnt_Set minimal fade-in and -out for selected items if no fade.lua" type="script" desc="Create 1ms fade in and out if no fades on selected item">
+      <metadata>
+        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 If selected items have no fades, create 1ms fade in and fade out (use to not override fades on multi-selection)\par}
+}
+]]></description>
+      </metadata>
+      <version name="1.0" author="Joshnt" time="2024-07-01T17:54:26Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/309bdb85cec2c464ea04642aac910d4227455d91/ITEMS/joshnt_Fade%20Utility/joshnt_Set%20minimal%20fade-in%20and%20-out%20for%20selected%20items%20if%20no%20fade.lua</source>
       </version>
     </reapack>
     <reapack name="joshnt_Toggle change selected items fade to S- or Log-Shape (fade in or out depending on mouse position).lua" type="script" desc="Change Fade of selected item depending on mouse cursor">
@@ -39,81 +159,321 @@
 }
 ]]></description>
       </metadata>
-      <version name="1.0" author="joshnt -- credits to me2beats" time="2024-06-04T18:09:06Z">
-        <changelog><![CDATA[+ init]]></changelog>
-        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/08c3bc7b9093826b95fa200df6cbb847f45f4543/ITEMS/joshnt_Toggle%20change%20selected%20items%20fade%20to%20S-%20or%20Log-Shape%20(fade%20in%20or%20out%20depending%20on%20mouse%20position).lua</source>
+      <version name="1.2" author="Joshnt" time="2024-07-01T17:54:26Z">
+        <changelog><![CDATA[now looks for fade position instead of item start/ -end to get fade in or fade out]]></changelog>
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/309bdb85cec2c464ea04642aac910d4227455d91/ITEMS/joshnt_Fade%20Utility/joshnt_Toggle%20change%20selected%20items%20fade%20to%20S-%20or%20Log-Shape%20(fade%20in%20or%20out%20depending%20on%20mouse%20position).lua</source>
       </version>
-      <version name="1.1" author="Joshnt" time="2024-06-04T19:29:02Z">
+    </reapack>
+    <reapack name="joshnt_Trim left edge of selected item(s) to edit cursor without changing fade-in end.lua" type="script" desc="alternative to reaper in-built &quot;Item edit: Trim left edge of item to edit cursor&quot;">
+      <metadata>
+        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 adapted from X-Raym_Trim left edge of item under mouse or the next one without changing fade-in end.lua as I prefer working with the edit cursor\par}
+}
+]]></description>
+      </metadata>
+      <version name="1.0" author="Joshnt" time="2024-07-01T17:54:26Z">
         <changelog><![CDATA[+ init]]></changelog>
-        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b5ad9ded1b3fa23b8e457bf0eb7b32a624fc1aa4/ITEMS/joshnt_Toggle%20change%20selected%20items%20fade%20to%20S-%20or%20Log-Shape%20(fade%20in%20or%20out%20depending%20on%20mouse%20position).lua</source>
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/309bdb85cec2c464ea04642aac910d4227455d91/ITEMS/joshnt_Fade%20Utility/joshnt_Trim%20left%20edge%20of%20selected%20item(s)%20to%20edit%20cursor%20without%20changing%20fade-in%20end.lua</source>
+      </version>
+    </reapack>
+    <reapack name="joshnt_Trim right edge of selected item(s) to edit cursor without changing fade-out start.lua" type="script" desc="alternative to reaper in-built &quot;Item edit: Trim right edge of item to edit cursor&quot;">
+      <metadata>
+        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 adapted from X-Raym_Trim right edge of item under mouse or the previous one to mouse cursor without changing fade-out start.lua as I prefer working with the edit cursor\par}
+}
+]]></description>
+      </metadata>
+      <version name="1.0" author="Joshnt" time="2024-07-01T17:54:26Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/309bdb85cec2c464ea04642aac910d4227455d91/ITEMS/joshnt_Fade%20Utility/joshnt_Trim%20right%20edge%20of%20selected%20item(s)%20to%20edit%20cursor%20without%20changing%20fade-out%20start.lua</source>
+      </version>
+    </reapack>
+  </category>
+  <category name="ITEMS/joshnt_Overlapping Items Across Tracks">
+    <reapack name="joshnt_Count selected overlapping item bundles across tracks.lua" type="script" desc="Count selected overlapping item groups/ bundles across tracks">
+      <metadata>
+        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 alternative to misleading item count with "Item properties (F2)" when crossfading items/ using multi-mic arrangements\par}
+}
+]]></description>
+      </metadata>
+      <version name="1.0" author="Joshnt" time="2024-07-25T02:50:10Z">
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/7b096b58ce84b20fcdeda63c40cb5c88e51b9795/ITEMS/joshnt_Overlapping%20Items%20Across%20Tracks/joshnt_Count%20selected%20overlapping%20item%20bundles%20across%20tracks.lua</source>
+      </version>
+    </reapack>
+  </category>
+  <category name="ITEMS/joshnt_Select Items">
+    <reapack name="joshnt_Select previous Item in track (keep current selection).lua" type="script" desc="Select Previous Item Track Keep Current Selection">
+      <metadata>
+        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 straight up copied from acendan's "Select Next Item Track Keep Current Selection"\par}
+}
+]]></description>
+      </metadata>
+      <version name="1.0" author="joshnt, Aaron Cendan" time="2024-07-01T17:54:26Z">
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/309bdb85cec2c464ea04642aac910d4227455d91/ITEMS/joshnt_Select%20Items/joshnt_Select%20previous%20Item%20in%20track%20(keep%20current%20selection).lua</source>
+      </version>
+    </reapack>
+  </category>
+  <category name="REGIONS">
+    <reapack name="joshnt_Add region(s) to Region Render Matrix - Package.lua" type="script" desc="Various Actions for adding different tracks of regions to the RRM">
+      <version name="1.0" author="Joshnt" time="2024-08-09T05:52:53Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main" file="joshnt_Add to Region Render Matrix/joshnt_Add selected Region(s) to region render matrix via highest common parent of items per region.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/REGIONS/joshnt_Add%20to%20Region%20Render%20Matrix/joshnt_Add%20selected%20Region(s)%20to%20region%20render%20matrix%20via%20highest%20common%20parent%20of%20items%20per%20region.lua</source>
+        <source main="main" file="joshnt_Add to Region Render Matrix/joshnt_Add selected Region(s) to region render matrix via highest parent(s) or top-level tracks of items per region.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/REGIONS/joshnt_Add%20to%20Region%20Render%20Matrix/joshnt_Add%20selected%20Region(s)%20to%20region%20render%20matrix%20via%20highest%20parent(s)%20or%20top-level%20tracks%20of%20items%20per%20region.lua</source>
+        <source main="main" file="joshnt_Add to Region Render Matrix/joshnt_Add selected Region(s) to region render matrix via Master.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/REGIONS/joshnt_Add%20to%20Region%20Render%20Matrix/joshnt_Add%20selected%20Region(s)%20to%20region%20render%20matrix%20via%20Master.lua</source>
+        <source main="main" file="joshnt_Add to Region Render Matrix/joshnt_Add selected Region(s) to region render matrix via selected Track(s).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/REGIONS/joshnt_Add%20to%20Region%20Render%20Matrix/joshnt_Add%20selected%20Region(s)%20to%20region%20render%20matrix%20via%20selected%20Track(s).lua</source>
+        <source main="main" file="joshnt_Add to Region Render Matrix/joshnt_Add selected Region(s) to region render matrix via tracks with items in corresponding region.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/REGIONS/joshnt_Add%20to%20Region%20Render%20Matrix/joshnt_Add%20selected%20Region(s)%20to%20region%20render%20matrix%20via%20tracks%20with%20items%20in%20corresponding%20region.lua</source>
+        <source main="main" file="joshnt_Add to Region Render Matrix/joshnt_Add selected Track(s) to region render matrix via region(s) with items.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/REGIONS/joshnt_Add%20to%20Region%20Render%20Matrix/joshnt_Add%20selected%20Track(s)%20to%20region%20render%20matrix%20via%20region(s)%20with%20items.lua</source>
+        <source main="main" file="joshnt_Add to Region Render Matrix/joshnt_Copy region render matrix selection from region at cursor to selected region(s).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/REGIONS/joshnt_Add%20to%20Region%20Render%20Matrix/joshnt_Copy%20region%20render%20matrix%20selection%20from%20region%20at%20cursor%20to%20selected%20region(s).lua</source>
+      </version>
+    </reapack>
+    <reapack name="joshnt_Select Regions - Package.lua" type="script" desc="Various Actions for selecting regions (in the region marker manager)">
+      <version name="1.0" author="Joshnt" time="2024-08-09T05:52:53Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main" file="joshnt_Select Regions/joshnt_Invert Region Selection.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/REGIONS/joshnt_Select%20Regions/joshnt_Invert%20Region%20Selection.lua</source>
+        <source main="main" file="joshnt_Select Regions/joshnt_Select only Region(s) in time selection.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/REGIONS/joshnt_Select%20Regions/joshnt_Select%20only%20Region(s)%20in%20time%20selection.lua</source>
+        <source main="main" file="joshnt_Select Regions/joshnt_Select Region(s) at edit cursor.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/REGIONS/joshnt_Select%20Regions/joshnt_Select%20Region(s)%20at%20edit%20cursor.lua</source>
+        <source main="main" file="joshnt_Select Regions/joshnt_Select Region(s) in time selection.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/REGIONS/joshnt_Select%20Regions/joshnt_Select%20Region(s)%20in%20time%20selection.lua</source>
+        <source main="main" file="joshnt_Select Regions/joshnt_Select Region(s) overlapping with item selection.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/REGIONS/joshnt_Select%20Regions/joshnt_Select%20Region(s)%20overlapping%20with%20item%20selection.lua</source>
+        <source main="main" file="joshnt_Select Regions/joshnt_Select region(s) with items on same tracks as selected region(s) or region at edit cursor.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/REGIONS/joshnt_Select%20Regions/joshnt_Select%20region(s)%20with%20items%20on%20same%20tracks%20as%20selected%20region(s)%20or%20region%20at%20edit%20cursor.lua</source>
+        <source main="main" file="joshnt_Select Regions/joshnt_Select Region(s) with items on selected tracks.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/REGIONS/joshnt_Select%20Regions/joshnt_Select%20Region(s)%20with%20items%20on%20selected%20tracks.lua</source>
+      </version>
+    </reapack>
+  </category>
+  <category name="TRACKS">
+    <reapack name="joshnt_Select Tracks - Package.lua" type="script" desc="Various Actions for conditional Track-selecting">
+      <version name="1.0" author="Joshnt" time="2024-08-09T05:52:53Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main" file="joshnt_Select Tracks/joshnt_Select Tracks of items in region at edit cursor.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/TRACKS/joshnt_Select%20Tracks/joshnt_Select%20Tracks%20of%20items%20in%20region%20at%20edit%20cursor.lua</source>
+        <source main="main" file="joshnt_Select Tracks/joshnt_Select Tracks of items in selected region.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/TRACKS/joshnt_Select%20Tracks/joshnt_Select%20Tracks%20of%20items%20in%20selected%20region.lua</source>
       </version>
     </reapack>
   </category>
   <category name="VARIOUS">
-    <reapack name="joshnt_Create unique regions for each group of overlapping items of the selected items avoiding overlap with non-selected items (with mother region).lua" type="script" desc="Unique Region per overlapping item bundle in selection (with Mother Region over them) - Game Audio/ SD Use">
+    <reapack name="joshnt_Create unique regions for each group of overlapping items - Package.lua" type="script" desc="Unique Region per overlapping item bundle in selection (with Mother Region over them) - Game Audio/ SD Use">
       <metadata>
         <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
 {\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
 \widowctrl\hyphauto
 
-{\pard \ql \f0 \sa180 \li0 \fi0 Credits to Aaron Cendan https://aaroncendan.me, David Arnoldy, Joshua Hank, Yannick Winter Usecase: creating incremental numbered regions for single layered sounds (for e.g. game audio) - mother region possibly useful for reapers region render dialog and naming via $region(=name) Script creates regions for overlapping selected items (including beginning and end silence), adjusting the space between them, moving other non selected items away.\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Unique Regions - Joshnt\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 {\b User input explanation:}\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Time before item group start: Time in seconds between region start and item group start (per region) (use numbers above 0)\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Time after item group end: Time in seconds between item group end and region end (per region) (use numbers above 0)\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Space between regions: space between each item group's region and the next (use numbers above 0)\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Lock items: write "y" to lock the items after adjusting the position\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Region names/ Mother Region name: Eachs overlapping item group region name; use the wildcard [$incrX] to start numbering the regions from X and increase it per region (e.g. "Footsteps_[$incr3]" would name the first region "Footsteps_03", the next "Footsteps_04", ...)\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Region Color/ Mother Region Color: input anything to open the REAPER's Color-Picker to color the region; leave empty to use default color\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Link to RRM: Input to create a link to the moved/ created region(s); Input can be "HP" for highest hierachy common parent track of selected Items, "P" for first common parent of selected items, "T" for each track if it has items in the region, "M" for Master-Track, "N" (or anything else) for no link to Region Render Matrix\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 {\b Credits} to Aaron Cendan (for acendan_Set nearest regions edges to selected media items.lua; https://aaroncendan.me), David Arnoldy, Joshua Hank, Yannick Winter\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 {\b Usecase:}\line creating incremental numbered regions for single layered sounds (for e.g. game audio) - mother region possibly useful for reapers region render dialog and naming via $region(=name) Script creates regions for overlapping selected items (including beginning and end silence), adjusting the space between them, moving other non selected items away.\par}
 }
 ]]></description>
       </metadata>
-      <version name="1.0" author="Joshnt" time="2024-06-04T18:09:06Z">
-        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/08c3bc7b9093826b95fa200df6cbb847f45f4543/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items%20of%20the%20selected%20items%20avoiding%20overlap%20with%20non-selected%20items%20(with%20mother%20region).lua</source>
+      <version name="2.0" author="Joshnt" time="2024-08-09T05:52:53Z">
+        <changelog><![CDATA[- added Lokasenna GUI + RRM Link]]></changelog>
+        <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for each group of overlapping items of selected items (with mother region) - GUI.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items%20of%20selected%20items%20(with%20mother%20region)%20-%20GUI.lua</source>
+        <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for each group of overlapping items of the selected items avoiding overlap with non-selected items (with mother region).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items%20of%20the%20selected%20items%20avoiding%20overlap%20with%20non-selected%20items%20(with%20mother%20region).lua</source>
+        <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for each group of overlapping items of the selected items avoiding overlap with non-selected items.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items%20of%20the%20selected%20items%20avoiding%20overlap%20with%20non-selected%20items.lua</source>
+        <source file="joshnt_Create unique regions for each group of overlapping items/joshnt_Unique Regions for overlapping items - CORE.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Unique%20Regions%20for%20overlapping%20items%20-%20CORE.lua</source>
       </version>
     </reapack>
-    <reapack name="joshnt_Create unique regions for each group of overlapping items of the selected items avoiding overlap with non-selected items.lua" type="script" desc="Unique Region per overlapping item bundle in selection - Game Audio/ SD Use">
+    <reapack name="joshnt_PowerReaName - Find and replace in region marker track item names.lua" type="script" desc="PowerReaName - Find and Replace in Track, Items, Regions or Marker Names">
       <metadata>
         <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
 {\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
 \widowctrl\hyphauto
 
-{\pard \ql \f0 \sa180 \li0 \fi0 Credits to Aaron Cendan https://aaroncendan.me, David Arnoldy, Joshua Hank Usecase: creating incremental numbered regions for single layered sounds (for e.g. game audio) - mother region possibly useful for reapers region render dialog and naming via $region(=name) Script creates regions for overlapping selected items (including beginning and end silence), adjusting the space between them, moving other non selected items away\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 Various possibilities to reliable rename most things in REAPER Requires Lokasenna_GUI Library\par}
 }
 ]]></description>
       </metadata>
-      <version name="1.0" author="Joshnt" time="2024-06-04T18:09:06Z">
-        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/08c3bc7b9093826b95fa200df6cbb847f45f4543/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items%20of%20the%20selected%20items%20avoiding%20overlap%20with%20non-selected%20items.lua</source>
+      <version name="1.0" author="Joshnt" time="2024-08-09T05:52:53Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/VARIOUS/joshnt_PowerReaName%20-%20Find%20and%20replace%20in%20region%20marker%20track%20item%20names.lua</source>
       </version>
     </reapack>
-    <reapack name="ReaGlue-Regions-v3.2 (with user input).lua" type="script" desc="ReaGlue adaption to Regions (with user input)">
+    <reapack name="joshnt_ReaGlue Regions - Regions for Variation Files - Package.lua" type="script" desc="ReaGlue adaption to Regions (with user input)">
       <metadata>
         <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
 {\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
 \widowctrl\hyphauto
 
-{\pard \ql \f0 \sa180 \li0 \fi0 Credits to Aaron Cendan (for acendan_Set nearest regions edges to selected media items.lua; https://aaroncendan.me), David Arnoldy, Joshua Hank\par}
-{\pard \ql \f0 \sa180 \li0 \fi0 Usecase: multiple Multi-Track Recordings or Sounddesigns across multiple tracks which needs to be exported to a single variation file. Script creates region across those selected items (including beginning and end silence), adjusting the space between them, moving other non selected items away\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 ReaGlue Region\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 Basically the light version of "joshnt_Create unique regions for each group of overlapping items" For detailed explanation, refer this script\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 {\b Credits} to Aaron Cendan (for acendan_Set nearest regions edges to selected media items.lua; https://aaroncendan.me), David Arnoldy, Joshua Hank\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 {\b Usecase:} multiple Multi-Track Recordings or Sounddesigns across multiple tracks which needs to be exported to a single variation file. Script creates region across those selected items (including beginning and end silence), adjusting the space between them, moving other non selected items away\par}
 }
 ]]></description>
       </metadata>
-      <version name="3.0" author="Joshnt" time="2024-06-04T18:09:06Z">
-        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/08c3bc7b9093826b95fa200df6cbb847f45f4543/VARIOUS/ReaGlue-Regions-v3.2%20(with%20user%20input).lua</source>
-      </version>
-      <version name="3.2" author="Joshnt" time="2024-06-04T19:05:30Z">
-        <changelog><![CDATA[Now uses ripple-Edit to move envelopes with items (even parent envelopes, if toggled) and properly move later items]]></changelog>
-        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/6af11f0fc10cbd5b5d76fea28a1072a2b9c3c969/VARIOUS/ReaGlue-Regions-v3.2%20(with%20user%20input).lua</source>
+      <version name="4.0" author="Joshnt" time="2024-08-09T05:52:53Z">
+        <changelog><![CDATA[added RRM Link]]></changelog>
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/VARIOUS/joshnt_ReaGlue%20Regions%20-%20Regions%20for%20Variation%20Files%20-%20Package.lua</source>
       </version>
     </reapack>
-    <reapack name="ReaGlue-Regions-v3.2.lua" type="script" desc="ReaGlue adaption to Regions (no Input box)">
+    <reapack name="joshnt_Run Actions per Region - Package.lua" type="script" desc="Run Action over over items/tracks/time on region (individually per region)">
       <metadata>
         <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
 {\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
 \widowctrl\hyphauto
 
-{\pard \ql \f0 \sa180 \li0 \fi0 Credits to Aaron Cendan (for acendan_Set nearest regions edges to selected media items.lua; https://aaroncendan.me), David Arnoldy, Joshua Hank\par}
-{\pard \ql \f0 \sa180 \li0 \fi0 Usecase: multiple Multi-Track Recordings or Sounddesigns across multiple tracks which needs to be exported to a single variation file. Script creates region across those selected items (including beginning and end silence), adjusting the space between them, moving other non selected items away\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 Run Action over items/tracks/time on region (individually per region) - script selects items, tracks, time and envelope points per region Usecase e.g. SWS_Set selected items to One Random Custom Color, joshnt_ReaGlue-Regions.lua, ...\par}
 }
 ]]></description>
       </metadata>
-      <version name="3.0" author="Joshnt" time="2024-06-04T18:09:06Z">
-        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/08c3bc7b9093826b95fa200df6cbb847f45f4543/VARIOUS/ReaGlue-Regions-v3.2.lua</source>
+      <version name="1.0" author="Joshnt" time="2024-08-09T05:52:53Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main" file="joshnt_Run Actions for items, tracks, time or envelope of region (individually per region)/joshnt_Run Action for items tracks or time in all regions (individually per region).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/VARIOUS/joshnt_Run%20Actions%20for%20items,%20tracks,%20time%20or%20envelope%20of%20region%20(individually%20per%20region)/joshnt_Run%20Action%20for%20items%20tracks%20or%20time%20in%20all%20regions%20(individually%20per%20region).lua</source>
+        <source main="main" file="joshnt_Run Actions for items, tracks, time or envelope of region (individually per region)/joshnt_Run Action for items tracks or time in regions in time selection (individually per region).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/VARIOUS/joshnt_Run%20Actions%20for%20items,%20tracks,%20time%20or%20envelope%20of%20region%20(individually%20per%20region)/joshnt_Run%20Action%20for%20items%20tracks%20or%20time%20in%20regions%20in%20time%20selection%20(individually%20per%20region).lua</source>
+        <source main="main" file="joshnt_Run Actions for items, tracks, time or envelope of region (individually per region)/joshnt_Run Action for items tracks or time in selected regions (individually per region).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/VARIOUS/joshnt_Run%20Actions%20for%20items,%20tracks,%20time%20or%20envelope%20of%20region%20(individually%20per%20region)/joshnt_Run%20Action%20for%20items%20tracks%20or%20time%20in%20selected%20regions%20(individually%20per%20region).lua</source>
       </version>
-      <version name="3.2" author="Joshnt" time="2024-06-04T19:05:30Z">
-        <changelog><![CDATA[Now uses ripple-Edit to move envelopes with items (even parent envelopes, if toggled) and properly move later items]]></changelog>
-        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/6af11f0fc10cbd5b5d76fea28a1072a2b9c3c969/VARIOUS/ReaGlue-Regions-v3.2.lua</source>
+    </reapack>
+    <reapack name="joshnt_Variation Verifier - highlight tracks or regions depending on items and print to console or CSV.lua" type="script" desc="Variation Verfier">
+      <metadata>
+        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 Marks/ Colors/ Hides Tracks or regions if different than given number of items Useful for checking number of Variations of multiple files after dynamic splitting them\par}
+}
+]]></description>
+      </metadata>
+      <version name="1.0" author="Joshnt" time="2024-08-01T23:40:23Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/61aa057c8d154e2029cb5e79f15806c0f7462207/VARIOUS/joshnt_Variation%20Verifier%20-%20highlight%20tracks%20or%20regions%20depending%20on%20items%20and%20print%20to%20console%20or%20CSV.lua</source>
+      </version>
+    </reapack>
+  </category>
+  <category name="VISUALISATION">
+    <reapack name="joshnt-Exenye_Zoom to regions - Package.lua" type="script" desc="Zoom to selected regions">
+      <metadata>
+        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 Various actions for zooming/ scrolling to selected/ next/ previous region(s)\par}
+}
+]]></description>
+      </metadata>
+      <version name="1.0" author="Joshnt, Exenye" time="2024-08-09T05:52:53Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main" file="joshnt_Zoom to regions/joshnt_Zoom to selected region(s) - horizontally.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/VISUALISATION/joshnt_Zoom%20to%20regions/joshnt_Zoom%20to%20selected%20region(s)%20-%20horizontally.lua</source>
+        <source main="main" file="joshnt_Zoom to regions/joshnt_Zoom to selected region(s) - vertically to items in regions.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/VISUALISATION/joshnt_Zoom%20to%20regions/joshnt_Zoom%20to%20selected%20region(s)%20-%20vertically%20to%20items%20in%20regions.lua</source>
+        <source main="main" file="joshnt_Zoom to regions/joshnt_Zoom to selected region(s).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/VISUALISATION/joshnt_Zoom%20to%20regions/joshnt_Zoom%20to%20selected%20region(s).lua</source>
+        <source main="main" file="joshnt_Zoom to regions/joshnt-Exenye_Go to next region and zoom to items.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/VISUALISATION/joshnt_Zoom%20to%20regions/joshnt-Exenye_Go%20to%20next%20region%20and%20zoom%20to%20items.lua</source>
+        <source main="main" file="joshnt_Zoom to regions/joshnt-Exenye_Go to previous region and zoom to items.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/VISUALISATION/joshnt_Zoom%20to%20regions/joshnt-Exenye_Go%20to%20previous%20region%20and%20zoom%20to%20items.lua</source>
+        <source main="main" file="joshnt_Zoom to regions/joshnt-Exenye_Zoom to all regions with items on same tracks as current region.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/VISUALISATION/joshnt_Zoom%20to%20regions/joshnt-Exenye_Zoom%20to%20all%20regions%20with%20items%20on%20same%20tracks%20as%20current%20region.lua</source>
+      </version>
+    </reapack>
+    <reapack name="joshnt_Insert Remove Time on selected Tracks - Package.lua" type="script" desc="Zoom to overlapping item group at cursor">
+      <metadata>
+        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 Various actions for zooming/ scrolling to overlapping item group at cursor\par}
+}
+]]></description>
+      </metadata>
+      <version name="1.0" author="Joshnt" time="2024-08-09T05:52:53Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main" file="joshnt_Insert-Remove Time selected Tracks/joshnt_Insert time on selected tracks (1 sec at edit cursor).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/VISUALISATION/joshnt_Insert-Remove%20Time%20selected%20Tracks/joshnt_Insert%20time%20on%20selected%20tracks%20(1%20sec%20at%20edit%20cursor).lua</source>
+        <source main="main" file="joshnt_Insert-Remove Time selected Tracks/joshnt_Insert time on selected tracks (length of timeselection).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/VISUALISATION/joshnt_Insert-Remove%20Time%20selected%20Tracks/joshnt_Insert%20time%20on%20selected%20tracks%20(length%20of%20timeselection).lua</source>
+        <source main="main" file="joshnt_Insert-Remove Time selected Tracks/joshnt_Remove time on selected tracks (1 sec at edit cursor).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/VISUALISATION/joshnt_Insert-Remove%20Time%20selected%20Tracks/joshnt_Remove%20time%20on%20selected%20tracks%20(1%20sec%20at%20edit%20cursor).lua</source>
+        <source main="main" file="joshnt_Insert-Remove Time selected Tracks/joshnt_Remove time on selected tracks (length of timeselection).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/VISUALISATION/joshnt_Insert-Remove%20Time%20selected%20Tracks/joshnt_Remove%20time%20on%20selected%20tracks%20(length%20of%20timeselection).lua</source>
+      </version>
+    </reapack>
+    <reapack name="joshnt_Zoom to items - Package.lua" type="script" desc="Zoom to overlapping item group at cursor">
+      <metadata>
+        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 Various actions for zooming/ scrolling to overlapping item group at cursor\par}
+}
+]]></description>
+      </metadata>
+      <version name="1.0" author="Joshnt" time="2024-08-09T05:52:53Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main" file="joshnt_Zoom to items/joshnt_Zoom to overlapping items across all tracks at edit cursor.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/VISUALISATION/joshnt_Zoom%20to%20items/joshnt_Zoom%20to%20overlapping%20items%20across%20all%20tracks%20at%20edit%20cursor.lua</source>
+        <source main="main" file="joshnt_Zoom to items/joshnt_Zoom to overlapping items across selected tracks at edit cursor.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/VISUALISATION/joshnt_Zoom%20to%20items/joshnt_Zoom%20to%20overlapping%20items%20across%20selected%20tracks%20at%20edit%20cursor.lua</source>
+      </version>
+    </reapack>
+  </category>
+  <category name="VISUALISATION/joshnt_Change Distance between non overlapping regions in timeselection">
+    <reapack name="joshnt_Decrease Distance Between non-overlapping Regions in Timeselection by 1 second.lua" type="script" desc="Increase distance between regions in time selection by 1 sec">
+      <metadata>
+        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 Moves region closer together - only use when no items between regions, as those may get ripped apart\par}
+}
+]]></description>
+      </metadata>
+      <version name="1.0" author="Joshnt" time="2024-08-09T05:52:53Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/VISUALISATION/joshnt_Change%20Distance%20between%20non%20overlapping%20regions%20in%20timeselection/joshnt_Decrease%20Distance%20Between%20non-overlapping%20Regions%20in%20Timeselection%20by%201%20second.lua</source>
+      </version>
+    </reapack>
+    <reapack name="joshnt_Increase Distance Between Regions in Timeselection by 1 second.lua" type="script" desc="Increase distance between regions in time selection by 1 sec">
+      <metadata>
+        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 Moves region further apart - only use when no items between regions, as those may get ripped apart\par}
+}
+]]></description>
+      </metadata>
+      <version name="1.0" author="Joshnt" time="2024-07-01T17:54:26Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/309bdb85cec2c464ea04642aac910d4227455d91/VISUALISATION/joshnt_Change%20Distance%20between%20non%20overlapping%20regions%20in%20timeselection/joshnt_Increase%20Distance%20Between%20Regions%20in%20Timeselection%20by%201%20second.lua</source>
+      </version>
+    </reapack>
+  </category>
+  <category name="VISUALISATION/joshnt_Insert or remove time at start and end of timeselection">
+    <reapack name="joshnt_Insert 1 second time at start and end of time selection.lua" type="script" desc="Inserts 1 seconds of empty space at time-selection start and end">
+      <metadata>
+        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 Useful for visually isolating items/ regions\par}
+}
+]]></description>
+      </metadata>
+      <version name="1.0" author="Joshnt" time="2024-07-01T17:54:26Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/309bdb85cec2c464ea04642aac910d4227455d91/VISUALISATION/joshnt_Insert%20or%20remove%20time%20at%20start%20and%20end%20of%20timeselection/joshnt_Insert%201%20second%20time%20at%20start%20and%20end%20of%20time%20selection.lua</source>
+      </version>
+    </reapack>
+    <reapack name="joshnt_Remove 1 second time at start and end of time selection.lua" type="script" desc="Inserts 1 seconds of empty space at time-selection start and end">
+      <metadata>
+        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 Useful for visually isolating items/ regions\par}
+}
+]]></description>
+      </metadata>
+      <version name="1.0" author="Joshnt" time="2024-07-01T17:54:26Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/309bdb85cec2c464ea04642aac910d4227455d91/VISUALISATION/joshnt_Insert%20or%20remove%20time%20at%20start%20and%20end%20of%20timeselection/joshnt_Remove%201%20second%20time%20at%20start%20and%20end%20of%20time%20selection.lua</source>
       </version>
     </reapack>
   </category>
