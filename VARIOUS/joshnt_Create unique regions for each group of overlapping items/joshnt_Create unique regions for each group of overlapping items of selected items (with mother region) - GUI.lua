@@ -354,17 +354,17 @@ local function redrawColFrames()
         if retval then 
             joshnt_UniqueRegions.regionColor = newColor 
         else
-            joshnt_UniqueRegions.regionColor = 0
+            joshnt_UniqueRegions.regionColor = nil
         end
         setFrameColors("Child",newColor)
     end
 
     function GUI.elms.ColSelFrame_Mother:onmouseup()
         local retval, newColor = reaper.GR_SelectColor(nil)
-        if retval then 
+        if retval ~= 0 then 
             joshnt_UniqueRegions.regionColorMother = newColor 
         else
-            joshnt_UniqueRegions.regionColorMother = 0
+            joshnt_UniqueRegions.regionColorMother = nil
         end
         setFrameColors("Mother",newColor)
     end

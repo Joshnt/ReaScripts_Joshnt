@@ -160,7 +160,7 @@ function joshnt_UniqueRegions.setRegionLength()
   end
   
   -- Move overlapping region
-  if joshnt_UniqueRegions.regionColor ~= 0 then
+  if joshnt_UniqueRegions.regionColor ~= nil then
     reaper.SetProjectMarker3(0, region_to_move, 1, start_time, end_time, joshnt_UniqueRegions.regionName, joshnt_UniqueRegions.regionColor | 0x1000000) 
   else
     reaper.SetProjectMarker( region_to_move, 1, start_time, end_time, joshnt_UniqueRegions.regionName )
@@ -183,7 +183,9 @@ function joshnt_UniqueRegions.createRegionOverItems()
         startTime = 0
     end
     -- Create the region
-    return reaper.AddProjectMarker2(0, true, startTime, endTime, joshnt_UniqueRegions.regionName, -1, joshnt_UniqueRegions.regionColor | 0x1000000)
+    local colorTEMP = 0;
+    if joshnt_UniqueRegions.regionColor ~= nil then colorTEMP = joshnt_UniqueRegions.regionColor | 0x1000000 end
+    return reaper.AddProjectMarker2(0, true, startTime, endTime, joshnt_UniqueRegions.regionName, -1, colorTEMP)
 end
 
 function joshnt_UniqueRegions.createRRMLink(RRMLink_Target,rgnIndex)
@@ -259,14 +261,16 @@ function joshnt_UniqueRegions.setMotherRegion(tableWithChildRgnIndex)
         end
 
         
-        if joshnt_UniqueRegions.regionColorMother ~= 0 then
-            reaper.SetProjectMarker3(0, differentRgns_TEMP, 1, motherRegionStart, motherRegionEnd, joshnt_UniqueRegions.motherRegionName, joshnt_UniqueRegions.regionColor | 0x1000000) 
+        if joshnt_UniqueRegions.regionColorMother ~= nil then
+            reaper.SetProjectMarker3(0, differentRgns_TEMP, 1, motherRegionStart, motherRegionEnd, joshnt_UniqueRegions.motherRegionName, joshnt_UniqueRegions.regionColorMother | 0x1000000) 
         else
             reaper.SetProjectMarker( differentRgns_TEMP, 1, motherRegionStart, motherRegionEnd, joshnt_UniqueRegions.motherRegionName )
         end
         addedRegion = differentRgns_TEMP
     else
-        addedRegion = reaper.AddProjectMarker2(0, true, motherRegionStart, motherRegionEnd, joshnt_UniqueRegions.motherRegionName, -1, joshnt_UniqueRegions.regionColorMother | 0x1000000)
+        local colorTEMP = 0;
+        if joshnt_UniqueRegions.regionColorMother ~= nil then colorTEMP = joshnt_UniqueRegions.regionColorMother | 0x1000000 end
+        addedRegion = reaper.AddProjectMarker2(0, true, motherRegionStart, motherRegionEnd, joshnt_UniqueRegions.motherRegionName, -1, colorTEMP)
     end
 
     joshnt_UniqueRegions.createRRMLink("Mother",addedRegion)
