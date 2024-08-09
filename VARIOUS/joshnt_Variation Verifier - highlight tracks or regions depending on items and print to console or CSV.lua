@@ -1,5 +1,5 @@
 -- @description Variation Verfier
--- @version 1.1
+-- @version 1.2
 -- @author Joshnt
 -- @about
 --    Marks/ Colors/ Hides Tracks or regions if different than given number of items
