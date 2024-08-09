@@ -1,0 +1,12 @@
+-- @description Zoom to overlapping item group at cursor
+-- @version 1.0
+-- @author Joshnt
+-- @about
+--    Various actions for zooming/ scrolling to overlapping item group at cursor
+-- @changelog
+--  + init
+-- @metapackage
+-- @provides
+--   [main] joshnt_Change Distance between non overlapping regions in timeselection/joshnt_Decrease Distance Between non-overlapping Regions in Timeselection by 1 second.lua
+--   [main] joshnt_Change Distance between non overlapping regions in timeselection/joshnt_Increase Distance Between Regions in Timeselection by 1 second.lua
+

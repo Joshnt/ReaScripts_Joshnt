@@ -1,0 +1,10 @@
+-- @description Various Actions for overlapping items across tracks
+-- @version 1.0
+-- @author Joshnt
+-- @changelog
+--  + init
+-- @metapackage
+-- @provides
+--   [main] joshnt_Overlapping Items Across Tracks/joshnt_Count selected overlapping item bundles across tracks.lua
+--   [main] joshnt_Overlapping Items Across Tracks/joshnt_Group selected overlapping items (across tracks).lua
+--   [main] joshnt_Overlapping Items Across Tracks/joshnt_Reposition selected items (overlapping item bundles across tracks count as one).lua

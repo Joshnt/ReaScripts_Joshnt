@@ -1,13 +1,4 @@
--- @description Move non-selected items to avoid overlaps (with all envelopes)
--- @version 1.1
--- @author Joshnt
--- @about
---    Credits to Aaron Cendan https://aaroncendan.me, Joshua Hank
---    Basically the isolate option of my ReaGlue - Regions script without a region around it;
---    Usecase: 
---    multiple Multi-Track Recordings or Sounddesigns across multiple tracks which needs to be exported to a single variation file.
---    Script creates region across those selected items (including beginning and end silence), adjusting the space between them, moving other non selected items away
-
+-- @noindex
 ---------------------------------------
 --------- USER CONFIG - EDIT ME -------
 --- Default Values for input dialog ---

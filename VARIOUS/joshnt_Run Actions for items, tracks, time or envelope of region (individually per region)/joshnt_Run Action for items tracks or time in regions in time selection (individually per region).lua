@@ -65,6 +65,7 @@ local function runAction()
         if selectEnvelopePoints then
           reaper.Main_OnCommand(40888,0) -- show all active envelopes
           for i = 0, reaper.CountSelectedTracks()-1 do
+            local track = reaper.GetSelectedTrack(0,i)
             for e = 0, reaper.CountTrackEnvelopes(reaper.GetSelectedTrack(0,i)) - 1 do
               local envelope = reaper.GetTrackEnvelope(track, e)
               for p = 0, reaper.CountEnvelopePoints(envelope) - 1 do

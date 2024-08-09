@@ -1,0 +1,20 @@
+-- @description Move items to numbered, named or selected marker
+-- @version 1.0
+-- @author Joshnt
+-- @changelog
+--  + init
+-- @metapackage
+-- @provides
+--   [main] joshnt_Move Items to Marker/joshnt_Move selected items to marker 00 (keep relative position).lua
+--   [main] joshnt_Move Items to Marker/joshnt_Move selected items to marker 01 (keep relative position).lua
+--   [main] joshnt_Move Items to Marker/joshnt_Move selected items to marker 02 (keep relative position).lua
+--   [main] joshnt_Move Items to Marker/joshnt_Move selected items to marker 03 (keep relative position).lua
+--   [main] joshnt_Move Items to Marker/joshnt_Move selected items to marker 04 (keep relative position).lua
+--   [main] joshnt_Move Items to Marker/joshnt_Move selected items to marker 05 (keep relative position).lua
+--   [main] joshnt_Move Items to Marker/joshnt_Move selected items to marker 06 (keep relative position).lua
+--   [main] joshnt_Move Items to Marker/joshnt_Move selected items to marker 07 (keep relative position).lua
+--   [main] joshnt_Move Items to Marker/joshnt_Move selected items to marker 08 (keep relative position).lua
+--   [main] joshnt_Move Items to Marker/joshnt_Move selected items to marker 09 (keep relative position).lua
+--   [main] joshnt_Move Items to Marker/joshnt_Move selected items to marker with name [user input] (keep relative position) .lua
+--   [main] joshnt_Move Items to Marker/joshnt_Move selected items to marker with name X (keep relative position) (TEMPLATE - EDIT ME).lua
+--   [main] joshnt_Move Items to Marker/joshnt_Move selected items to selected marker or region (keep relative position).lua

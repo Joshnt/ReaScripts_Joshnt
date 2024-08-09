@@ -1,0 +1,15 @@
+-- @description Zoom to selected regions
+-- @version 1.0
+-- @author Joshnt, Exenye
+-- @about
+--    Various actions for zooming/ scrolling to selected/ next/ previous region(s)
+-- @changelog
+--  + init
+-- @metapackage
+-- @provides
+--   [main] joshnt_Zoom to regions/joshnt_Zoom to selected region(s) - horizontally.lua
+--   [main] joshnt_Zoom to regions/joshnt_Zoom to selected region(s) - vertically to items in regions.lua
+--   [main] joshnt_Zoom to regions/joshnt_Zoom to selected region(s).lua
+--   [main] joshnt_Zoom to regions/joshnt-Exenye_Go to next region and zoom to items.lua
+--   [main] joshnt_Zoom to regions/joshnt-Exenye_Go to previous region and zoom to items.lua
+--   [main] joshnt_Zoom to regions/joshnt-Exenye_Zoom to all regions with items on same tracks as current region.lua

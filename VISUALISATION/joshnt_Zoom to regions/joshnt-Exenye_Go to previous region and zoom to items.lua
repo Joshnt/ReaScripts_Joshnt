@@ -1,11 +1,4 @@
--- @description Zoom to previous region
--- @version 1.0
--- @author Joshnt
--- @about
---    Zoom to previous region; Idea and Concept + v1 as custom action by Exenye
---    basically chaining REAPER/ SWS commands - avoiding the need to setup own custom action by that + smoother UI because of UI gets updated after everthing is complete
--- @changelog
---  + init
+-- @noindex
 
 -- check for SWS extension
 if reaper.NamedCommandLookup("_SWS_ABOUT") == 0 then

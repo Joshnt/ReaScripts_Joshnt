@@ -1,10 +1,4 @@
--- @description Zoom to all regions with items on same tracks as current region
--- @version 1.0
--- @author Joshnt
--- @about
---    Zoom to all regions with items on same tracks as current region; Idea and Concept + v1 as custom action by Exenye
--- @changelog
---  + init
+-- @noindex
 
 local joshnt_LuaUtils = reaper.GetResourcePath()..'/Scripts/Joshnt_ReaScripts/DEVELOPMENT/joshnt_LuaUtilities.lua'
 if reaper.file_exists( joshnt_LuaUtils ) then 

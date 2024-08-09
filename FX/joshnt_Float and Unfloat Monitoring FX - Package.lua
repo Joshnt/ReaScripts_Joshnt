@@ -1,0 +1,25 @@
+-- @description Multiple single actions for creating fades
+-- @version 1.0
+-- @author Joshnt
+-- @changelog
+--  + init
+-- @metapackage
+-- @provides
+--   [main] joshnt_Float and Unfloat Monitoring FX/joshnt_Float and focus Monitoring FX 1.lua
+--   [main] joshnt_Float and Unfloat Monitoring FX/joshnt_Float and focus Monitoring FX 2.lua
+--   [main] joshnt_Float and Unfloat Monitoring FX/joshnt_Float and focus Monitoring FX 3.lua
+--   [main] joshnt_Float and Unfloat Monitoring FX/joshnt_Float and focus Monitoring FX 4.lua
+--   [main] joshnt_Float and Unfloat Monitoring FX/joshnt_Float and focus Monitoring FX 5.lua
+--   [main] joshnt_Float and Unfloat Monitoring FX/joshnt_Float and focus Monitoring FX 6.lua
+--   [main] joshnt_Float and Unfloat Monitoring FX/joshnt_Float and focus Monitoring FX 7.lua
+--   [main] joshnt_Float and Unfloat Monitoring FX/joshnt_Float and focus Monitoring FX 8.lua
+--   [main] joshnt_Float and Unfloat Monitoring FX/joshnt_Float and focus Monitoring FX 9.lua
+--   [main] joshnt_Float and Unfloat Monitoring FX/joshnt_Toggle float Monitoring FX 1.lua
+--   [main] joshnt_Float and Unfloat Monitoring FX/joshnt_Toggle float Monitoring FX 2.lua
+--   [main] joshnt_Float and Unfloat Monitoring FX/joshnt_Toggle float Monitoring FX 3.lua
+--   [main] joshnt_Float and Unfloat Monitoring FX/joshnt_Toggle float Monitoring FX 4.lua
+--   [main] joshnt_Float and Unfloat Monitoring FX/joshnt_Toggle float Monitoring FX 5.lua
+--   [main] joshnt_Float and Unfloat Monitoring FX/joshnt_Toggle float Monitoring FX 6.lua
+--   [main] joshnt_Float and Unfloat Monitoring FX/joshnt_Toggle float Monitoring FX 7.lua
+--   [main] joshnt_Float and Unfloat Monitoring FX/joshnt_Toggle float Monitoring FX 8.lua
+--   [main] joshnt_Float and Unfloat Monitoring FX/joshnt_Toggle float Monitoring FX 9.lua

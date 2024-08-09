@@ -1,0 +1,23 @@
+-- @description Various Actions for selecting items
+-- @version 1.0
+-- @author Joshnt
+-- @changelog
+--  + init
+-- @metapackage
+-- @provides
+--   [main] joshnt_Select Items/joshnt_Select all audible item(s) overlapping with edit cursor (non-muted items on soloed or non-muted track).lua
+--   [main] joshnt_Select Items/joshnt_Select all item(s) overlapping with edit cursor (across tracks).lua
+--   [main] joshnt_Select Items/joshnt_Select earliest item overlapping with edit cursor (across tracks).lua
+--   [main] joshnt_Select Items/joshnt_Select items on selected track(s) overlapping with any other already selected item (keep current selection).lua
+--   [main] joshnt_Select Items/joshnt_Select next item from cursor across tracks (keep current selection).lua
+--   [main] joshnt_Select Items/joshnt_Select next Item in selected track or first after edit cursor (keep current selection).lua
+--   [main] joshnt_Select Items/joshnt_Select next overlapping item-group on all track(s) or next from edit cursor (keep selection).lua
+--   [main] joshnt_Select Items/joshnt_Select next overlapping item-group on all track(s) or next from edit cursor.lua
+--   [main] joshnt_Select Items/joshnt_Select next overlapping item-group on selected track(s) or next from edit cursor (keep selection).lua
+--   [main] joshnt_Select Items/joshnt_Select next overlapping item-group on selected track(s) or next from edit cursor.lua
+--   [main] joshnt_Select Items/joshnt_Select previous Item in selected track or first before edit cursor (keep current selection).lua
+--   [main] joshnt_Select Items/joshnt_Select previous Item in track (keep current selection).lua
+--   [main] joshnt_Select Items/joshnt_Select previous overlapping item-group on all track(s) or previous from edit cursor (keep selection).lua
+--   [main] joshnt_Select Items/joshnt_Select previous overlapping item-group on all track(s) or previous from edit cursor.lua
+--   [main] joshnt_Select Items/joshnt_Select previous overlapping item-group on selected track(s) or previous from edit cursor (keep selection).lua
+--   [main] joshnt_Select Items/joshnt_Select previous overlapping item-group on selected track(s) or previous from edit cursor.lua

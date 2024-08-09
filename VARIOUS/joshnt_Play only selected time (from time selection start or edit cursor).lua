@@ -4,7 +4,7 @@
 -- + init
 -- @author Joshnt
 -- @about 
---    play only time selection (from start of timeselection or edit cursor)
+--    play only time selection (from start of timeselection or edit cursor) - similar to iZotope RX etc.
 
 local timeRangeStart, timeRangeEnd = reaper.GetSet_LoopTimeRange(false, false, 0, 0, false)
 local playState = reaper.GetPlayState()

@@ -1229,9 +1229,10 @@ function joshnt.getMostOverlappingRegion(startTimeInput, endTimeInput)
   local targetRegion = nil
   local reg_Start = 0
   local reg_End = 0
+  local name = ""
   local overlapAmount = math.huge
   for j=0, num_total - 1 do
-    local retval, isrgn, pos, rgnend, name, markrgnindexnumber = reaper.EnumProjectMarkers( j )
+    local retval, isrgn, pos, rgnend, nameTEMP, markrgnindexnumber = reaper.EnumProjectMarkers( j )
     local overlapRegion_TEMP = nil
     if isrgn then
       if pos < endTimeInput and rgnend > startTimeInput then -- check for overlap
@@ -1249,11 +1250,12 @@ function joshnt.getMostOverlappingRegion(startTimeInput, endTimeInput)
           targetRegion = markrgnindexnumber
           reg_Start = pos
           reg_End = rgnend
+          name = nameTEMP
         end
       end
     end
   end
-  return targetRegion, reg_Start, reg_End
+  return targetRegion, reg_Start, reg_End, name
 end
 
 -- Function to get current, returns region number, reg start and end

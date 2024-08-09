@@ -1,0 +1,11 @@
+-- @description Multiple actions to isolate the selected items
+-- @version 1.0
+-- @author Joshnt
+-- @changelog
+--  + init
+-- @metapackage
+-- @provides
+--   [main] joshnt_Isolate selected items/joshnt_Easy Cut-Copy-Paste Items with envelopes (Isolate with interface).lua
+--   [main] joshnt_Isolate selected items/joshnt_Isolate - Move non-selected items to avoid overlap with selected items (with all envelopes).lua
+--   [main] joshnt_Isolate selected items/joshnt_Isolate - Move selected items to avoid overlap with any other item across all tracks (with track and parent envelopes).lua
+--   [main] joshnt_Isolate selected items/joshnt_Isolate - Move selected items to project end.lua

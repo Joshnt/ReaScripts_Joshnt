@@ -1,10 +1,5 @@
--- @description Change Fade of selected item depending on mouse cursor
--- @version 1.2
--- @author Joshnt
--- @about
 --    Changes Fade closest to mouse on selected item to S-Shape or Log-Shape -- credits to me2beats
--- @changelog
---  now looks for fade position instead of item start/ -end to get fade in or fade out
+
 
 if reaper.NamedCommandLookup("_SWS_ABOUT") == 0 then reaper.MB("This script requires the SWS Extension. Please install it from here:\n\nhttps://www.sws-extension.org/","Error",0) return end
 

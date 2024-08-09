@@ -1,10 +1,4 @@
--- @description Create 1ms fade in and out if no fades on selected item
--- @version 1.0
--- @author Joshnt
--- @about
 --    If selected items have no fades, create 1ms fade in and fade out (use to not override fades on multi-selection)
--- @changelog
---  + init
 
 local function nothing() end; local function bla() reaper.defer(nothing) end
 

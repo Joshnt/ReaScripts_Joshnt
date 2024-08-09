@@ -1,11 +1,7 @@
 -- @description Unique Region per overlapping item bundle in selection (with Mother Region over them) - Game Audio/ SD Use
--- @version 1.0
+-- @version 2.0
 -- @changelog
---  - added optional link to parent track
---  - reworked Top of Script to be more accessable for default parameter changes
---  - adjusted about section of script to explain parameters properly
---  - Both "chooseColor" and "ChooseColorMother" show the colorpicker, if there is anything (instead of only with "p")
---  - introduced "joshnt lua utilities" for shared functions + other optimisations
+--  - added Lokasenna GUI + RRM Link
 -- @author Joshnt
 -- @about 
 --    ## Unique Regions - Joshnt
@@ -24,3 +20,9 @@
 --    **Usecase:**  
 --    creating incremental numbered regions for single layered sounds (for e.g. game audio) - mother region possibly useful for reapers region render dialog and naming via $region(=name) 
 --    Script creates regions for overlapping selected items (including beginning and end silence), adjusting the space between them, moving other non selected items away.
+-- @metapackage
+-- @provides
+--   [main] joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for each group of overlapping items of selected items (with mother region) - GUI.lua
+--   [main] joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for each group of overlapping items of the selected items avoiding overlap with non-selected items (with mother region).lua
+--   [main] joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for each group of overlapping items of the selected items avoiding overlap with non-selected items.lua
+--   [nomain] joshnt_Create unique regions for each group of overlapping items/joshnt_Unique Regions for overlapping items - CORE.lua

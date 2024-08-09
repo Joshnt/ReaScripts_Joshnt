@@ -1,0 +1,13 @@
+-- @description Zoom to overlapping item group at cursor
+-- @version 1.0
+-- @author Joshnt
+-- @about
+--    Various actions for zooming/ scrolling to overlapping item group at cursor
+-- @changelog
+--  + init
+-- @metapackage
+-- @provides
+--   [main] joshnt_Insert-Remove Time selected Tracks/joshnt_Insert time on selected tracks (1 sec at edit cursor).lua
+--   [main] joshnt_Insert-Remove Time selected Tracks/joshnt_Insert time on selected tracks (length of timeselection).lua
+--   [main] joshnt_Insert-Remove Time selected Tracks/joshnt_Remove time on selected tracks (1 sec at edit cursor).lua
+--   [main] joshnt_Insert-Remove Time selected Tracks/joshnt_Remove time on selected tracks (length of timeselection).lua

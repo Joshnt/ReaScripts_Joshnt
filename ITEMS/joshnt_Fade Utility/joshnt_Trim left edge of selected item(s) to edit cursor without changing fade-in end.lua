@@ -1,11 +1,7 @@
--- @description alternative to reaper in-built "Item edit: Trim left edge of item to edit cursor"
--- @version 1.0
--- @author Joshnt
--- @about
+--    alternative to reaper in-built "Item edit: Trim left edge of item to edit cursor"
 --    adapted from X-Raym_Trim left edge of item under mouse or the next one without changing fade-in end.lua
 --    as I prefer working with the edit cursor
--- @changelog
---  + init
+
 
 if reaper.NamedCommandLookup("_SWS_ABOUT") == 0 then reaper.MB("This script requires the SWS Extension. Please install it from here:\n\nhttps://www.sws-extension.org/","Error",0) return end
 

@@ -1,0 +1,13 @@
+-- @description Automatic coloring of selected items - similar to SWS Auto-Color for tracks
+-- @version 1.0
+-- @author Joshnt
+-- @about
+--      use the GUI to create your own rule set with item conditions etc.
+--      after previewing it, save it in the GUI and the run the normal function (which can be toggled on and off)
+-- @changelog
+--  + init
+-- @metapackage
+-- @provides
+--   [main] joshnt_Auto-Color items/joshnt_Auto-Color items.lua
+--   [main] joshnt_Auto-Color items/joshnt_Auto-Color items - Settings GUI.lua
+--   [nomain] joshnt_Auto-Color items/joshnt_Auto-Color items - Main Function.lua

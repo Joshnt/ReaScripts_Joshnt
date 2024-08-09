@@ -30,7 +30,7 @@ joshnt_UniqueRegions = {
     itemGroupsEndArray = nil,
     nudgeValues = {},
     parentTracksWithEnvelopes = {},
-    parentTrackForRRM = nil,
+    parentTrackForRRM = nil
 }
 
 function joshnt_UniqueRegions.getDefaults()
@@ -325,39 +325,39 @@ function joshnt_UniqueRegions.main()
     if parentTracks[1] == nil and (joshnt_UniqueRegions.RRMLink_Child == 2 or joshnt_UniqueRegions.RRMLink_Child == 3) then -- falls keine Parents, Master als RRM
         joshnt_UniqueRegions.RRMLink_Child = 1
     else
-    local commonParents = {}
-    for i = 1, #parentTracks do
-        if (joshnt_UniqueRegions.RRMLink_Child == 2 or joshnt_UniqueRegions.RRMLink_Child == 3) and joshnt.isAnyParentOfAllSelectedItems(parentTracks[i]) then
+        local commonParents = {}
+        for i = 1, #parentTracks do
+            if (joshnt_UniqueRegions.RRMLink_Child == 2 or joshnt_UniqueRegions.RRMLink_Child == 3) and joshnt.isAnyParentOfAllSelectedItems(parentTracks[i]) then
 
-        commonParents[#commonParents + 1] = parentTracks[i]
-        end
-
-        -- get parent Tracks with envelopes
-        if reaper.CountTrackEnvelopes(parentTracks[i]) > 0 then
-        table.insert(joshnt_UniqueRegions.parentTracksWithEnvelopes,parentTracks[i])
-        end
-    end
-
-    -- set RRM ParentTrack
-    if commonParents[1] then
-        joshnt_UniqueRegions.parentTrackForRRM = commonParents[1]
-    end
-    for i = 1, #commonParents do
-        if joshnt_UniqueRegions.RRMLink_Child == 2 then -- highest common parent
-            if reaper.GetMediaTrackInfo_Value(commonParents[i], "IP_TRACKNUMBER") < reaper.GetMediaTrackInfo_Value(joshnt_UniqueRegions.parentTrackForRRM, "IP_TRACKNUMBER") then
-                joshnt_UniqueRegions.parentTrackForRRM = commonParents[i]
+            commonParents[#commonParents + 1] = parentTracks[i]
             end
-        elseif joshnt_UniqueRegions.RRMLink_Child == 3 then -- first common parent
-            if reaper.GetMediaTrackInfo_Value(commonParents[i], "IP_TRACKNUMBER") > reaper.GetMediaTrackInfo_Value(joshnt_UniqueRegions.parentTrackForRRM, "IP_TRACKNUMBER") then
-                joshnt_UniqueRegions.parentTrackForRRM = commonParents[i]
+
+            -- get parent Tracks with envelopes
+            if reaper.CountTrackEnvelopes(parentTracks[i]) > 0 then
+                table.insert(joshnt_UniqueRegions.parentTracksWithEnvelopes,parentTracks[i])
             end
         end
-    end
 
-    -- check if highest parent is any parent of all Tracks of selected items
-    if (joshnt_UniqueRegions.RRMLink_Child == 2 or joshnt_UniqueRegions.RRMLink_Child == 3) and joshnt_UniqueRegions.parentTrackForRRM == nil then
-        joshnt_UniqueRegions.RRMLink_Child = 1 -- set to master
-    end
+        -- set RRM ParentTrack
+        if commonParents[1] then
+            joshnt_UniqueRegions.parentTrackForRRM = commonParents[1]
+        end
+        for i = 1, #commonParents do
+            if joshnt_UniqueRegions.RRMLink_Child == 2 then -- highest common parent
+                if reaper.GetMediaTrackInfo_Value(commonParents[i], "IP_TRACKNUMBER") < reaper.GetMediaTrackInfo_Value(joshnt_UniqueRegions.parentTrackForRRM, "IP_TRACKNUMBER") then
+                    joshnt_UniqueRegions.parentTrackForRRM = commonParents[i]
+                end
+            elseif joshnt_UniqueRegions.RRMLink_Child == 3 then -- first common parent
+                if reaper.GetMediaTrackInfo_Value(commonParents[i], "IP_TRACKNUMBER") > reaper.GetMediaTrackInfo_Value(joshnt_UniqueRegions.parentTrackForRRM, "IP_TRACKNUMBER") then
+                    joshnt_UniqueRegions.parentTrackForRRM = commonParents[i]
+                end
+            end
+        end
+
+        -- check if highest parent is any parent of all Tracks of selected items
+        if (joshnt_UniqueRegions.RRMLink_Child == 2 or joshnt_UniqueRegions.RRMLink_Child == 3) and joshnt_UniqueRegions.parentTrackForRRM == nil then
+            joshnt_UniqueRegions.RRMLink_Child = 1 -- set to master
+        end
 
     end
     

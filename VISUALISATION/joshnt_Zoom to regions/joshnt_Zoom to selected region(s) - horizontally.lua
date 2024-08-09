@@ -1,10 +1,4 @@
--- @description Zoom selected regions - horizontally
--- @version 1.0
--- @author Joshnt
--- @about
---    Zoom to regions selected in region/ marker manager
--- @changelog
---  + init
+-- @noindex
 
 local joshnt_LuaUtils = reaper.GetResourcePath()..'/Scripts/Joshnt_ReaScripts/DEVELOPMENT/joshnt_LuaUtilities.lua'
 if reaper.file_exists( joshnt_LuaUtils ) then 
