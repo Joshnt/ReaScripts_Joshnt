@@ -369,10 +369,21 @@ function joshnt.getOverlapPointsFromSelection(obeyRegionsBool, startOffset, endO
   -- find overlap of non-selected items with selected items
   if (reaper.CountSelectedMediaItems(0) == 0) then 
     if obeyRegionsBool then
-      if (joshnt.checkOverlapWithRegions(currentOriginalStart_TEMP,currentOriginalEnd_TEMP) == false) then
+      local table, _, _, totalStart, totalEnd = joshnt.getAllOverlappingRegion(currentOriginalStart_TEMP,currentOriginalEnd_TEMP) 
+      if table == {} or totalEnd == 0 then
+        joshnt.reselectItems(inputSelection)
         return nil
+      else
+        r.GetSet_LoopTimeRange(true, false, totalStart, totalEnd, false)
+        reaper.Main_OnCommand(40717,0) -- select all items in teimeselection
+        joshnt.unselectItems(inputSelection)
+        if (reaper.CountSelectedMediaItems(0) == 0) then
+          joshnt.reselectItems(inputSelection)
+          return nil
+        end
       end
     else
+      joshnt.reselectItems(inputSelection)
       return nil
     end
   end
@@ -580,7 +591,10 @@ function joshnt.isolate_MoveSelectedItems_InsertAtNextSilentPointInProject(minSi
   local originalSelStart, originalSelEnd = joshnt.startAndEndOfSelectedItems()
   r.PreventUIRefresh(1) 
   local overlappingItemsStart, overlappingItemsEnd = joshnt.getOverlapPointsFromSelection(true, minSilenceAtStart,minSilenceAtEnd)
-  if not overlappingItemsStart then r.PreventUIRefresh(-1) return 0 end -- if no overlap with other item or region, end here
+  if not overlappingItemsStart then 
+    r.PreventUIRefresh(-1) 
+    return 0 
+  end -- if no overlap with other item or region, end here
   
   -- copy parent envelopes with empty items
   r.GetSet_LoopTimeRange(true, false, originalSelStart+minSilenceAtStart, originalSelEnd+minSilenceAtEnd, false)

@@ -36,7 +36,7 @@ else
 end
 
 -- Load Unique Regions Core script
-local joshnt_UniqueRegions_Core = reaper.GetResourcePath()..'/Scripts/Joshnt_ReaScripts/ITEMS/joshnt_Auto-Color items/joshnt_Unique Regions for overlapping items - CORE.lua'
+local joshnt_UniqueRegions_Core = reaper.GetResourcePath()..'/Scripts/Joshnt_ReaScripts/VARIOUS/joshnt_Create unique regions for each group of overlapping items/joshnt_Unique Regions for overlapping items - CORE.lua'
 if reaper.file_exists( joshnt_UniqueRegions_Core ) then 
   dofile( joshnt_UniqueRegions_Core ) 
 else 

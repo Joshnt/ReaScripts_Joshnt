@@ -19,13 +19,13 @@ joshnt_UniqueRegions = {
     RRMLink_Child = 0, -- 1 = Master, 2 = Highest Parent, 3 = Parent, 4 = Track, 0 = no link
     RRMLink_Mother = 0, -- 1 = Master, 2 = Highest Parent, 3 = Parent, 4 = Track, 0 = no link
     createMotherRgn = false,
+    createChildRgn = true,
     t = {}, -- Table to store items grouped by track
     trackIDs = {}, -- table trackIDs to access keys more easily
-    d = nil, -- duration
     numItems = 0,
     lockedItems = {},
     -- global variables for grouping of items; used in getItemGroups()
-    itemGroups = nil, 
+    itemGroups = {}, 
     itemGroupsStartsArray = nil, 
     itemGroupsEndArray = nil,
     nudgeValues = {},
@@ -35,25 +35,26 @@ joshnt_UniqueRegions = {
 
 function joshnt_UniqueRegions.getDefaults()
     if reaper.HasExtState("joshnt_UniqueRegions", "Options") then
-        local tempArray = joshnt.splitStringToTable(reaper.GetExtState("joshnt_UniqueRegions", "Options", joshnt_UniqueRegions.isolateItems..","..joshnt_UniqueRegions.space_in_between..","..joshnt_UniqueRegions.start_silence..","..joshnt_UniqueRegions.end_silence..","..joshnt_UniqueRegions.lockBoolUser..","..joshnt_UniqueRegions.regionColor..","..joshnt_UniqueRegions.regionColorMother..","..joshnt_UniqueRegions.regionName..","..joshnt_UniqueRegions.motherRegionName..","..joshnt_UniqueRegions.RRMLink_Child..","..joshnt_UniqueRegions.RRMLink_Mother, true))
-        joshnt_UniqueRegions.isolateItems = tempArray[1]
-        joshnt_UniqueRegions.space_in_between = tempArray[2]
-        joshnt_UniqueRegions.start_silence = tempArray[3]
-        joshnt_UniqueRegions.end_silence = tempArray[4]
+        local tempArray = joshnt.splitStringToTable(reaper.GetExtState("joshnt_UniqueRegions", "Options"))
+        joshnt_UniqueRegions.isolateItems = tonumber(tempArray[1])
+        joshnt_UniqueRegions.space_in_between = tonumber(tempArray[2])
+        joshnt_UniqueRegions.start_silence = tonumber(tempArray[3])
+        joshnt_UniqueRegions.end_silence = tonumber(tempArray[4])
         joshnt_UniqueRegions.lockBoolUser = tempArray[5]
-        joshnt_UniqueRegions.regionColor = tempArray[6]
-        joshnt_UniqueRegions.regionColorMother = tempArray[7]
+        joshnt_UniqueRegions.regionColor = tonumber(tempArray[6])
+        joshnt_UniqueRegions.regionColorMother = tonumber(tempArray[7])
         joshnt_UniqueRegions.regionName = tempArray[8]
         joshnt_UniqueRegions.motherRegionName = tempArray[9]
-        joshnt_UniqueRegions.RRMLink_Child = tempArray[10]
-        joshnt_UniqueRegions.RRMLink_Mother = tempArray[11]
+        joshnt_UniqueRegions.RRMLink_Child = tonumber(tempArray[10])
+        joshnt_UniqueRegions.RRMLink_Mother = tonumber(tempArray[11])
         joshnt_UniqueRegions.createMotherRgn = tempArray[12]
-        joshnt_UniqueRegions.groupToleranceTime = tempArray[13]
+        joshnt_UniqueRegions.groupToleranceTime = tonumber(tempArray[13])
+        joshnt_UniqueRegions.createChildRgn = tempArray[14]
     end
 end
 
 function joshnt_UniqueRegions.saveDefaults()
-    reaper.SetExtState("joshnt_UniqueRegions", "Options", joshnt_UniqueRegions.isolateItems..","..joshnt_UniqueRegions.space_in_between..","..joshnt_UniqueRegions.start_silence..","..joshnt_UniqueRegions.end_silence..","..joshnt_UniqueRegions.lockBoolUser..","..joshnt_UniqueRegions.regionColor..","..joshnt_UniqueRegions.regionColorMother..","..joshnt_UniqueRegions.regionName..","..joshnt_UniqueRegions.motherRegionName..","..joshnt_UniqueRegions.RRMLink_Child..","..joshnt_UniqueRegions.RRMLink_Mother..","..joshnt_UniqueRegions.createMotherRgn..","..joshnt_UniqueRegions.groupToleranceTime, true)
+    reaper.SetExtState("joshnt_UniqueRegions", "Options", joshnt_UniqueRegions.isolateItems..","..joshnt_UniqueRegions.space_in_between..","..joshnt_UniqueRegions.start_silence..","..joshnt_UniqueRegions.end_silence..","..tostring(joshnt_UniqueRegions.lockBoolUser)..","..joshnt_UniqueRegions.regionColor..","..joshnt_UniqueRegions.regionColorMother..","..joshnt_UniqueRegions.regionName..","..joshnt_UniqueRegions.motherRegionName..","..joshnt_UniqueRegions.RRMLink_Child..","..joshnt_UniqueRegions.RRMLink_Mother..","..tostring(joshnt_UniqueRegions.createMotherRgn)..","..joshnt_UniqueRegions.groupToleranceTime..","..tostring(joshnt_UniqueRegions.createChildRgn), true)
 end
 
 function joshnt_UniqueRegions.initReaGlue()
@@ -97,7 +98,7 @@ function joshnt_UniqueRegions.getItemGroups()
     if joshnt_UniqueRegions.itemGroups and joshnt_UniqueRegions.itemGroupsStartsArray and joshnt_UniqueRegions.itemGroupsEndArray then
         for i = 1, #joshnt_UniqueRegions.itemGroups do
             if i > 1 then
-                joshnt_UniqueRegions.nudgeValues[i] = joshnt_UniqueRegions.d - (joshnt_UniqueRegions.itemGroupsStartsArray[i] - joshnt_UniqueRegions.itemGroupsEndArray[i-1])
+                joshnt_UniqueRegions.nudgeValues[i] = joshnt_UniqueRegions.space_in_between - ((joshnt_UniqueRegions.itemGroupsStartsArray[i] - joshnt_UniqueRegions.start_silence) - (joshnt_UniqueRegions.itemGroupsEndArray[i-1] + joshnt_UniqueRegions.end_silence))
             else 
                 joshnt_UniqueRegions.nudgeValues[i] = 0
             end
@@ -110,7 +111,6 @@ function joshnt_UniqueRegions.adjustItemPositions()
     -- move Groups, starting from last Group (and last item in Group)
       -- Deselect all items
       reaper.SelectAllMediaItems(0, false)
-      
       for j = #joshnt_UniqueRegions.itemGroups-1, 1, -1 do
         local reverse = joshnt_UniqueRegions.nudgeValues[j+1] < 0  -- Determine if we need to move backward
         local absNudge = math.abs(joshnt_UniqueRegions.nudgeValues[j+1])  -- Get the absolute value of seconds
@@ -136,7 +136,7 @@ function joshnt_UniqueRegions.adjustItemPositions()
       -- Deselect all items
       reaper.SelectAllMediaItems(0, false)
       -- Reselect Items
-      selectOriginalSelection(true) 
+      joshnt_UniqueRegions.selectOriginalSelection(true) 
 end
 
 -- function to adjust existing region over selected items
@@ -161,7 +161,7 @@ function joshnt_UniqueRegions.setRegionLength()
   
   -- Move overlapping region
   if joshnt_UniqueRegions.regionColor ~= 0 then
-    reaper.SetProjectMarker3(0, region_to_move, 1, start_time, end_time, joshnt_UniqueRegions.regionName, joshnt_UniqueRegions.regionColor) 
+    reaper.SetProjectMarker3(0, region_to_move, 1, start_time, end_time, joshnt_UniqueRegions.regionName, joshnt_UniqueRegions.regionColor | 0x1000000) 
   else
     reaper.SetProjectMarker( region_to_move, 1, start_time, end_time, joshnt_UniqueRegions.regionName )
   end
@@ -183,15 +183,15 @@ function joshnt_UniqueRegions.createRegionOverItems()
         startTime = 0
     end
     -- Create the region
-    return reaper.AddProjectMarker2(0, true, startTime, endTime, joshnt_UniqueRegions.regionName, -1, joshnt_UniqueRegions.regionColor)
+    return reaper.AddProjectMarker2(0, true, startTime, endTime, joshnt_UniqueRegions.regionName, -1, joshnt_UniqueRegions.regionColor | 0x1000000)
 end
 
 function joshnt_UniqueRegions.createRRMLink(RRMLink_Target,rgnIndex)
-    if joshnt_UniqueRegions["RRMLink"..RRMLink_Target] == 2 or joshnt_UniqueRegions["RRMLink"..RRMLink_Target] == 3 then -- highest common parent or first common parent
+    if joshnt_UniqueRegions["RRMLink_"..RRMLink_Target] == 2 or joshnt_UniqueRegions["RRMLink_"..RRMLink_Target] == 3 then -- highest common parent or first common parent
         reaper.SetRegionRenderMatrix(0, rgnIndex,joshnt_UniqueRegions.parentTrackForRRM,1)
-    elseif joshnt_UniqueRegions["RRMLink"..RRMLink_Target] == 1 then -- Master track
+    elseif joshnt_UniqueRegions["RRMLink_"..RRMLink_Target] == 1 then -- Master track
         reaper.SetRegionRenderMatrix(0, rgnIndex,reaper.GetMasterTrack(0),1)
-    elseif joshnt_UniqueRegions["RRMLink"..RRMLink_Target] == 4 then -- indiv. tracks
+    elseif joshnt_UniqueRegions["RRMLink_"..RRMLink_Target] == 4 then -- indiv. tracks
         local groupTracks = joshnt.getTracksOfSelectedItems()
         for _, val in ipairs (groupTracks) do
             reaper.SetRegionRenderMatrix(0, rgnIndex,val,1)
@@ -212,7 +212,7 @@ function joshnt_UniqueRegions.setRegionsForitemGroups()
 
         if joshnt_UniqueRegions.regionNameNumber then
             local regionNameNumber_TEMP = tostring(joshnt_UniqueRegions.regionNameNumber)
-            if regionNameNumber_TEMP < 10 then
+            if joshnt_UniqueRegions.regionNameNumber < 10 then
                 regionNameNumber_TEMP = "0"..regionNameNumber_TEMP
             end
         
@@ -239,6 +239,7 @@ function joshnt_UniqueRegions.setRegionsForitemGroups()
 end
 
 function joshnt_UniqueRegions.setMotherRegion(tableWithChildRgnIndex)
+    tableWithChildRgnIndex = tableWithChildRgnIndex or {}
     joshnt_UniqueRegions.selectOriginalSelection(true)
     local startTime_TEMP, endTime_TEMP = joshnt.startAndEndOfSelectedItems()
 
@@ -259,13 +260,13 @@ function joshnt_UniqueRegions.setMotherRegion(tableWithChildRgnIndex)
 
         
         if joshnt_UniqueRegions.regionColorMother ~= 0 then
-            reaper.SetProjectMarker3(0, differentRgns_TEMP, 1, motherRegionStart, motherRegionEnd, joshnt_UniqueRegions.motherRegionName, joshnt_UniqueRegions.regionColor) 
+            reaper.SetProjectMarker3(0, differentRgns_TEMP, 1, motherRegionStart, motherRegionEnd, joshnt_UniqueRegions.motherRegionName, joshnt_UniqueRegions.regionColor | 0x1000000) 
         else
             reaper.SetProjectMarker( differentRgns_TEMP, 1, motherRegionStart, motherRegionEnd, joshnt_UniqueRegions.motherRegionName )
         end
         addedRegion = differentRgns_TEMP
     else
-        addedRegion = reaper.AddProjectMarker2(0, true, motherRegionStart, motherRegionEnd, joshnt_UniqueRegions.motherRegionName, -1, joshnt_UniqueRegions.regionColorMother)
+        addedRegion = reaper.AddProjectMarker2(0, true, motherRegionStart, motherRegionEnd, joshnt_UniqueRegions.motherRegionName, -1, joshnt_UniqueRegions.regionColorMother | 0x1000000)
     end
 
     joshnt_UniqueRegions.createRRMLink("Mother",addedRegion)
@@ -306,21 +307,20 @@ function joshnt_UniqueRegions.main()
     joshnt_UniqueRegions.lockedItems = joshnt.saveLockedItems()
     joshnt.lockItemsState(joshnt_UniqueRegions.lockedItems,0)
     -- remove selected items from locked item array
-    if joshnt_UniqueRegions.lockedItems then
-    local i = 1
-    while i <= #joshnt_UniqueRegions.lockedItems do
-        local item = joshnt_UniqueRegions.lockedItems[i]
-        if reaper.IsMediaItemSelected(item) then
-            table.remove(joshnt_UniqueRegions.lockedItems, i)
-        else
-            i = i + 1
+    if joshnt_UniqueRegions.lockedItems and joshnt_UniqueRegions.lockedItems ~= {} then
+        local i = 1
+        while i <= #joshnt_UniqueRegions.lockedItems do
+            local item = joshnt_UniqueRegions.lockedItems[i]
+            if reaper.IsMediaItemSelected(item) then
+                table.remove(joshnt_UniqueRegions.lockedItems, i)
+            else
+                i = i + 1
+            end
         end
     end
-    end
-    
 
     -- get all parent Tracks
-    local parentTracks = joshnt.getParentTracksWithoutDuplicates(trackIDs)
+    local parentTracks = joshnt.getParentTracksWithoutDuplicates(joshnt_UniqueRegions.trackIDs)
 
     if parentTracks[1] == nil and (joshnt_UniqueRegions.RRMLink_Child == 2 or joshnt_UniqueRegions.RRMLink_Child == 3) then -- falls keine Parents, Master als RRM
         joshnt_UniqueRegions.RRMLink_Child = 1
@@ -364,27 +364,30 @@ function joshnt_UniqueRegions.main()
 
     -- isolate
     if joshnt_UniqueRegions.isolateItems == 1 then 
-        joshnt.isolate_MoveSelectedItems_InsertAtNextSilentPointInProject(joshnt_UniqueRegions.start_silence, joshnt_UniqueRegions.end_silence, joshnt_UniqueRegions.end_silence)
+        local retval, itemTable = joshnt.isolate_MoveSelectedItems_InsertAtNextSilentPointInProject(joshnt_UniqueRegions.start_silence, joshnt_UniqueRegions.end_silence, joshnt_UniqueRegions.end_silence)
+        if retval == 1 then joshnt.reselectItems(itemTable) end
         joshnt_UniqueRegions.initReaGlue()
     elseif joshnt_UniqueRegions.isolateItems == 2 then 
         joshnt.isolate_MoveOtherItems_ToEndOfSelectedItems(joshnt_UniqueRegions.start_silence, joshnt_UniqueRegions.end_silence, joshnt_UniqueRegions.start_silence, joshnt_UniqueRegions.end_silence) 
     end
-    joshnt_UniqueRegions.getitemGroups()
+
+    joshnt_UniqueRegions.getItemGroups()
+    if not joshnt_UniqueRegions.itemGroups then reaper.ShowConsoleMsg("\nNo Item groups found") return end
     joshnt_UniqueRegions.adjustItemPositions()
     joshnt.lockItemsState(joshnt_UniqueRegions.lockedItems,1)
     joshnt.setRippleEditingMode(originalRippleEditState)
     if joshnt_UniqueRegions.boolNeedActivateEnvelopeOption then
         reaper.Main_OnCommand(40070, 0)
     end
-    reaper.Undo_EndBlock("Move Items", -1)
-    
-    reaper.Undo_BeginBlock()  
+
     if joshnt_UniqueRegions.lockBoolUser == true then
     joshnt.lockSelectedItems()
     end
-    local childRegionIndex = joshnt_UniqueRegions.setRegionsForitemGroups()
-    if joshnt_UniqueRegions.createMotherRgn then joshnt_UniqueRegions.setMotherRegion(childRegionIndex) end
-    reaper.Undo_EndBlock("Create Regions", -1)
+    local childRegionIndex = nil 
+    if joshnt_UniqueRegions.createChildRgn then childRegionIndex = joshnt_UniqueRegions.setRegionsForitemGroups() end
+    if joshnt_UniqueRegions.createMotherRgn and joshnt_UniqueRegions.createChildRgn then joshnt_UniqueRegions.setMotherRegion(childRegionIndex) 
+    elseif joshnt_UniqueRegions.createMotherRgn then joshnt_UniqueRegions.setMotherRegion(childRegionIndex) end
+    reaper.Undo_EndBlock("joshnt Create Regions", -1)
 
     reaper.PreventUIRefresh(-1)
     reaper.UpdateArrange()

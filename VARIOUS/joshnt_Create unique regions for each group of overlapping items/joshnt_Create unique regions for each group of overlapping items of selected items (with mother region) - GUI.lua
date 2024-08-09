@@ -2,15 +2,13 @@
 
 -- load 'externals'
 -- Load Unique Regions Core script
---[[
-local joshnt_UniqueRegions_Core = reaper.GetResourcePath()..'/Scripts/Joshnt_ReaScripts/ITEMS/joshnt_Auto-Color items/joshnt_Unique Regions for overlapping items - CORE.lua'
+local joshnt_UniqueRegions_Core = reaper.GetResourcePath()..'/Scripts/Joshnt_ReaScripts/VARIOUS/joshnt_Create unique regions for each group of overlapping items/joshnt_Unique Regions for overlapping items - CORE.lua'
 if reaper.file_exists( joshnt_UniqueRegions_Core ) then 
   dofile( joshnt_UniqueRegions_Core ) 
 else 
   reaper.MB("This script requires an additional script, which gets installed over ReaPack as well. Please re-install the whole 'Unique Regions' Pack here:\n\nExtensions > ReaPack > Browse Packages > 'joshnt_Create unique regions for overlapping items'","Error",0)
   return
 end 
-]]--
 
 -- Load lua utilities
 local joshnt_LuaUtils = reaper.GetResourcePath()..'/Scripts/Joshnt_ReaScripts/DEVELOPMENT/joshnt_LuaUtilities.lua'
@@ -49,12 +47,12 @@ if missing_lib then return 0 end
 
 
 GUI.name = "joshnt_Unique Regions - Settings-GUI"
-GUI.x, GUI.y, GUI.w, GUI.h = 0, 0, 800, 425
+GUI.x, GUI.y, GUI.w, GUI.h = 0, 0, 400, 675
 GUI.anchor, GUI.corner = "screen", "C"
 
 -- additional GUI variables
-local previewWithTimeSelection = false -- saved as settings to external states
-local focusArray, focusIndex = {"TimeBefore_Text","TimeAfter_Text","TimeBetween_Text","RegionNameChild","RegionNameMother"}, 0
+local previewWithTimeSelection, saveGUI, closeGUI = false, false, false -- saved as settings to external states
+local focusArray, focusIndex = {"TimeBefore_Text","TimeAfter_Text","TimeBetween_Text","TimeInclude_Text","RegionNameChild","RegionNameMother"}, 0
 local tabPressed, enterPressed = false, false
 local timeSliderVals = {
     TimeBefore = {min = -10, max = 0, defaults = 100, val = 0},
@@ -64,29 +62,43 @@ local timeSliderVals = {
 }
 
 
-local function exitFunction()
-    joshnt_UniqueRegions.saveDefaults()
-    reaper.SetExtState("joshnt_UniqueRegions", "GUI_Options", tostring(previewWithTimeSelection), true)
-    joshnt_UniqueRegions.Quit()
-end
-
 local function run_Button()
-    joshnt_UniqueRegions.main()
+    -- set values from GUI to func; color is first stored and then set to visualize, so no need to do it here
     local optionsTable = GUI.Val("options") -- Lock, Save as default, Close GUI
-    if optionsTable[2] then
-        joshnt_UniqueRegions.saveDefaults()
-    end
-    if optionsTable[3] then
-        GUI.quit = true
+
+    joshnt_UniqueRegions.isolateItems = GUI.Val("isolateItems")
+    joshnt_UniqueRegions.start_silence = GUI.Val("TimeBefore")
+    joshnt_UniqueRegions.end_silence = GUI.Val("TimeAfter")
+    joshnt_UniqueRegions.space_in_between = GUI.Val("TimeBetween")
+    joshnt_UniqueRegions.lockBoolUser = optionsTable[1]
+    joshnt_UniqueRegions.regionName = GUI.Val("RegionNameChild")
+    joshnt_UniqueRegions.motherRegionName = GUI.Val("RegionNameMother")
+    joshnt_UniqueRegions.RRMLink_Child = GUI.Val("RRMChild")
+    joshnt_UniqueRegions.RRMLink_Mother = GUI.Val("RRMMother") 
+    joshnt_UniqueRegions.createMotherRgn = GUI.Val("MotherRgnBool")
+    joshnt_UniqueRegions.createChildRgn = GUI.Val("ChildRgnBool")
+    joshnt_UniqueRegions.groupToleranceTime = GUI.Val("TimeInclude")
+
+    joshnt_UniqueRegions.main()
+    if optionsTable then
+        if optionsTable[2] then
+            joshnt_UniqueRegions.saveDefaults()
+            local optionsArray = GUI.Val("options")
+            reaper.SetExtState("joshnt_UniqueRegions", "OptionsGUI", tostring(previewWithTimeSelection)..","..tostring(optionsArray[3]), true)
+        end
+        if optionsTable[3] then
+            joshnt_UniqueRegions.Quit()
+            GUI.quit = true
+        end
     end
 end
 
 local function adjustTimeselection()
-    if previewWithTimeSelection then
-        local _, itemStarts, itemEnds = joshnt.getOverlappingItemGroupsOfSelectedItems(joshnt_UniqueRegions.groupToleranceTime)
+    if previewWithTimeSelection == true then
+        local _, itemStarts, itemEnds = joshnt.getOverlappingItemGroupsOfSelectedItems(GUI.Val("TimeInclude"))
         if itemStarts and itemEnds then
             local startTime, endTime = itemStarts[1], itemEnds[1]
-            reaper.GetSet_LoopTimeRange(true, false, startTime - joshnt_UniqueRegions.start_silence, endTime + joshnt_UniqueRegions.end_silence, false)
+            reaper.GetSet_LoopTimeRange(true, false, startTime + GUI.Val("TimeBefore"), endTime + GUI.Val("TimeAfter"), false)
         end
     end
 end
@@ -102,24 +114,48 @@ local function setSliderSize(SliderName_String, newSliderValue_Input)
 
     local tb_to_num = tonumber(newSliderValue)
     if tb_to_num then
+        local redraw = false
         if SliderName_String ~= "TimeBefore" then
             tb_to_num = math.max(0, tb_to_num)
             if tb_to_num > GUI.elms[SliderName_String]["max"] or GUI.elms[SliderName_String]["max"] > 10 then
                 timeSliderVals[SliderName_String]["max"] = math.max(tb_to_num,10)
+                GUI.elms[SliderName_String]["max"] = timeSliderVals[SliderName_String]["max"]
+                redraw = true
             end
-            local newVal = (tb_to_num-GUI[SliderName_String]["min"])/GUI.elms[SliderName_String]["inc"]
-            timeSliderVals[SliderName_String]["val"] = newVal
-            GUI.Val(SliderName_String,{newVal})
         else
+            tb_to_num = math.abs(tb_to_num) * -1
+            if tb_to_num < GUI.elms.TimeBefore.min or GUI.elms.TimeBefore.min < -10 then
+                timeSliderVals[SliderName_String]["min"] = math.min(tb_to_num,-10)
+                GUI.elms.TimeBefore.min = timeSliderVals[SliderName_String]["min"]
+                redraw = true
+            end
         end
-
-        local sliderTemp = GUI.elms[SliderName_String]
-        sliderTemp:init_handles()
+        local newVal = (tb_to_num-GUI.elms[SliderName_String]["min"])/GUI.elms[SliderName_String]["inc"]
+        if redraw == true then GUI.elms[SliderName_String]:init_handles() end
+        timeSliderVals[SliderName_String]["val"] = newVal
+        GUI.Val(SliderName_String,newVal)
+        adjustTimeselection()
     end
 end
 
+local function setVisibilityChildRgn()
+    if GUI.Val("ChildRgnBool") == true then
+        GUI.elms.RRMChild.z = 21
+        GUI.elms.RegionNameChild.z = 21
+        GUI.elms.Child_Label.z = 21
+        GUI.elms.ColSelFrame_Child.z = 21
+    else
+        GUI.elms.RRMChild.z = 5
+        GUI.elms.RegionNameChild.z = 5
+        GUI.elms.Child_Label.z = 5
+        GUI.elms.ColSelFrame_Child.z = 5
+    end
+    GUI.redraw_z[5] = true
+    GUI.redraw_z[21] = true
+end
+
 local function setVisibilityMotherRgn()
-    if joshnt_UniqueRegions.createMotherRgn then
+    if GUI.Val("MotherRgnBool") == true then
         GUI.elms.RRMMother.z = 21
         GUI.elms.RegionNameMother.z = 21
         GUI.elms.Mother_Label.z = 21
@@ -207,7 +243,7 @@ local function redrawSliders()
         x = 144,
         y = 192,
         w = 150,
-        caption = "Group tolerance",
+        caption = "Group tolerance (s)",
         min = timeSliderVals.TimeInclude.min,
         max = timeSliderVals.TimeInclude.max,
         defaults = timeSliderVals.TimeInclude.defaults,
@@ -223,19 +259,67 @@ local function redrawSliders()
         cap_x = -140,
         cap_y = 20
     })
+
+    function GUI.elms.TimeBefore:onmouseup()
+        GUI.Slider.onmouseup(self)
+        adjustTimeselection()
+        GUI.Val("TimeBefore_Text", GUI.Val("TimeBefore"))
+    end
+    function GUI.elms.TimeBefore:ondrag()
+        GUI.Slider.ondrag(self)
+        adjustTimeselection()
+    end
+    function GUI.elms.TimeBefore:ondoubleclick()
+        GUI.Slider.ondrag(self)
+        adjustTimeselection()
+    end
+
+    function GUI.elms.TimeAfter:onmouseup()
+        GUI.Slider.onmouseup(self)
+        adjustTimeselection()
+        GUI.Val("TimeAfter_Text", GUI.Val("TimeAfter"))
+    end
+    function GUI.elms.TimeAfter:ondrag()
+        GUI.Slider.ondrag(self)
+        adjustTimeselection()
+    end
+    function GUI.elms.TimeAfter:ondoubleclick()
+        GUI.Slider.ondrag(self)
+        adjustTimeselection()
+    end
+
+    function GUI.elms.TimeBetween:onmouseup()
+        GUI.Slider.onmouseup(self)
+        GUI.Val("TimeBetween_Text", GUI.Val("TimeBetween"))
+    end
+
+    function GUI.elms.TimeInclude:onmouseup()
+        GUI.Slider.onmouseup(self)
+        GUI.Val("TimeInclude_Text", GUI.Val("TimeInclude"))
+    end
+
+    GUI.elms.TimeBefore.tooltip = "Adjust how many seconds before each overlapping item group should be part of the corresponding region."
+    GUI.elms.TimeAfter.tooltip = "Adjust how many seconds after each overlapping item group should be part of the corresponding region."
+    GUI.elms.TimeBetween.tooltip = "Adjust how many seconds between each item group's region should be empty."
+    GUI.elms.TimeInclude.tooltip = "Adjust how far away from each other items can be to still be considered as one 'group'.\n\nE.g. 0 means only actually overlapping items count as one group.\n1 means items within 1 second of each others start/ end still count as one group."
+   
 end
 
 local function redrawColFrames()
+    local zChild, zMother;
+    if GUI.Val("ChildRgnBool") == true then zChild = 21 else zChild = 5 end
+    if GUI.Val("MotherRgnBool") == true then zMother = 21 else zMother = 5 end
+
     GUI.New("ColSelFrame_Child", "Frame", {
-        z = 11,
-        x = 486,
-        y = 187,
+        z = zChild,
+        x = 86,
+        y = 467,
         w = 80,
         h = 25,
         shadow = false,
         fill = false,
         color = "elm_frame",
-        bg = "wnd_bg",
+        bg = "ChildCol",
         round = 0,
         text = "      Color ",
         txt_indent = 0,
@@ -247,15 +331,15 @@ local function redrawColFrames()
 
     
     GUI.New("ColSelFrame_Mother", "Frame", {
-        z = 21,
-        x = 630,
-        y = 187,
+        z = zMother,
+        x = 230,
+        y = 467,
         w = 80,
         h = 25,
         shadow = false,
         fill = false,
         color = "elm_frame",
-        bg = "wnd_bg",
+        bg = "MotherCol",
         round = 0,
         text = "      Color ",
         txt_indent = 0,
@@ -265,15 +349,33 @@ local function redrawColFrames()
         col_txt = "txt"
     })
 
+    function GUI.elms.ColSelFrame_Child:onmouseup()
+        local retval, newColor = reaper.GR_SelectColor(nil)
+        if retval then 
+            joshnt_UniqueRegions.regionColor = newColor 
+        else
+            joshnt_UniqueRegions.regionColor = 0
+        end
+        setFrameColors("Child",newColor)
+    end
 
+    function GUI.elms.ColSelFrame_Mother:onmouseup()
+        local retval, newColor = reaper.GR_SelectColor(nil)
+        if retval then 
+            joshnt_UniqueRegions.regionColorMother = newColor 
+        else
+            joshnt_UniqueRegions.regionColorMother = 0
+        end
+        setFrameColors("Mother",newColor)
+    end
+
+    GUI.elms.ColSelFrame_Child.tooltip = "Click here to choose a color for each individual region.\nCancelling the color-picker dialog will use the default region color."
+    GUI.elms.ColSelFrame_Mother.tooltip = "Click here to choose a color for the mother region.\nCancelling the color-picker dialog will use the default region color."
 end
 
-local function setFrameColors(frameTargetString)
-    local targetColor = nil
-    if frameTargetString == "Child" then targetColor = joshnt_UniqueRegions.regionColor
-    else targetColor = joshnt_UniqueRegions.regionColorMother end
-
-    if targetColor then 
+-- global because redraw needs to access it
+function setFrameColors(frameTargetString, targetColor)
+    if targetColor and targetColor ~= 0 then 
         local r,g,b = reaper.ColorFromNative(targetColor)
         r = r/255
         g = g/255
@@ -286,11 +388,9 @@ local function setFrameColors(frameTargetString)
     redrawColFrames()
 end
 
+
 local function redrawAll ()
     GUI.elms_hide[5] = true
-
-    redrawSliders()
-    redrawColFrames()
 
     GUI.New("TimeBefore_Text", "Textbox", {
         z = 11,
@@ -363,7 +463,7 @@ local function redrawAll ()
     GUI.New("Preview", "Checklist", {
         z = 11,
         x = 56,
-        y = 238,
+        y = 234,
         w = 300,
         h = 30,
         caption = "",
@@ -381,10 +481,32 @@ local function redrawAll ()
         opt_size = 20
     })
 
+    -- Region creation
+    GUI.New("ChildRgnBool", "Checklist", {
+        z = 11,
+        x = 60,
+        y = 299,
+        w = 155,
+        h = 30,
+        caption = "",
+        optarray = {"Create indiv. Regions"},
+        dir = "v",
+        pad = 4,
+        font_a = 2,
+        font_b = 3,
+        col_txt = "txt",
+        col_fill = "elm_fill",
+        bg = "wnd_bg",
+        frame = false,
+        shadow = true,
+        swap = nil,
+        opt_size = 20
+    })
+
     GUI.New("Child_Label", "Label", {
         z = 11,
-        x = 470,
-        y = 59,
+        x = 70,
+        y = 339,
         caption = "Region per Item group",
         font = 3,
         color = "txt",
@@ -394,8 +516,8 @@ local function redrawAll ()
 
     GUI.New("RegionNameChild", "Textbox", {
         z = 11,
-        x = 486,
-        y = 91,
+        x = 86,
+        y = 371,
         w = 100,
         h = 20,
         caption = "Region Name",
@@ -411,12 +533,12 @@ local function redrawAll ()
 
     GUI.New("RRMChild", "Menubox", {
         z = 11,
-        x = 486,
-        y = 139,
+        x = 86,
+        y = 419,
         w = 100,
         h = 20,
         caption = "Link to RRM",
-        optarray = {"Master", "First Parent", "Highest Parent", "Each Track", "None"},
+        optarray = {"Master", "Highest Parent", "First Parent", "Each Track", "None"},
         retval = 2.0,
         font_a = 3,
         font_b = 4,
@@ -430,8 +552,8 @@ local function redrawAll ()
 
     GUI.New("MotherRgnBool", "Checklist", {
         z = 11,
-        x = 625,
-        y = 19,
+        x = 225,
+        y = 299,
         w = 155,
         h = 30,
         caption = "",
@@ -451,8 +573,8 @@ local function redrawAll ()
 
     GUI.New("Mother_Label", "Label", {
         z = 21,
-        x = 630,
-        y = 59,
+        x = 230,
+        y = 339,
         caption = "Mother region",
         font = 3,
         color = "txt",
@@ -462,8 +584,8 @@ local function redrawAll ()
 
     GUI.New("RegionNameMother", "Textbox", {
         z = 21,
-        x = 630,
-        y = 91,
+        x = 230,
+        y = 371,
         w = 100,
         h = 20,
         caption = "",
@@ -479,8 +601,8 @@ local function redrawAll ()
 
     GUI.New("RRMMother", "Menubox", {
         z = 21,
-        x = 630,
-        y = 139,
+        x = 230,
+        y = 419,
         w = 100,
         h = 20,
         caption = "",
@@ -496,10 +618,12 @@ local function redrawAll ()
         align = 0
     })
 
+
+    -- run and settings
     GUI.New("isolateItems", "Radio", {
         z = 11,
         x = 24,
-        y = 315,
+        y = 550,
         w = 120,
         h = 80,
         caption = "Isolate options",
@@ -519,7 +643,7 @@ local function redrawAll ()
     GUI.New("Run", "Button", {
         z = 11,
         x = 308,
-        y = 305,
+        y = 540,
         w = 72,
         h = 30,
         caption = "Run",
@@ -532,7 +656,7 @@ local function redrawAll ()
     GUI.New("options", "Checklist", {
         z = 11,
         x = 174,
-        y = 315,
+        y = 550,
         w = 120,
         h = 85,
         caption = "On run:",
@@ -550,13 +674,14 @@ local function redrawAll ()
         opt_size = 20
     })
 
-    -- seperation frames
-    GUI.New("Frame_TimeSel", "Frame", {
+    -- seperation frames - visualisation only
+
+    GUI.New("Frame_hor1", "Frame", {
         z = 30,
         x = 12,
-        y = 16,
-        w = 365,
-        h = 260,
+        y = 276,
+        w = 376,
+        h = 2,
         shadow = false,
         fill = false,
         color = "elm_frame",
@@ -570,31 +695,12 @@ local function redrawAll ()
         col_txt = "txt"
     })
 
-    GUI.New("Frame_RegionOptions", "Frame", {
-        z = 30,
-        x = 400,
-        y = 16,
-        w = 390,
-        h = 220,
-        shadow = false,
-        fill = false,
-        color = "elm_frame",
-        bg = "wnd_bg",
-        round = 0,
-        text = "",
-        txt_indent = 0,
-        txt_pad = 0,
-        pad = 4,
-        font = 4,
-        col_txt = "txt"
-    })
-
-    GUI.New("Frame_OtherObjects", "Frame", {
+    GUI.New("Frame_hor2", "Frame", {
         z = 30,
         x = 12,
-        y = 290,
-        w = 385,
-        h = 124,
+        y = 510,
+        w = 376,
+        h = 2,
         shadow = false,
         fill = false,
         color = "elm_frame",
@@ -608,15 +714,45 @@ local function redrawAll ()
         col_txt = "txt"
     })
 
+    for i = 1, #focusArray do
+        local currTextboxName = focusArray[i]
+        local tempTextbox = GUI.elms[currTextboxName]
+        function tempTextbox:lostfocus()
+            GUI.Textbox.lostfocus(self)
+            setSliderSize(string.gsub(currTextboxName, "_Text", ""),GUI.Val(currTextboxName))
+        end
+    end
+
+    function GUI.elms.ChildRgnBool:onmousedown()
+        GUI.Checklist.onmousedown(self)
+        setVisibilityChildRgn()
+    end
+
+    function GUI.elms.ChildRgnBool:onmouseup()
+        GUI.Checklist.onmouseup(self)
+        setVisibilityChildRgn()
+    end
+
+    function GUI.elms.MotherRgnBool:onmousedown()
+        GUI.Checklist.onmousedown(self)
+        setVisibilityMotherRgn()
+    end
+
+    function GUI.elms.MotherRgnBool:onmouseup()
+        GUI.Checklist.onmouseup(self)
+        setVisibilityMotherRgn()
+    end
+
+    function GUI.elms.Preview:onmouseup()
+        GUI.Checklist.onmouseup(self)
+        previewWithTimeSelection = GUI.Val("Preview")
+        if previewWithTimeSelection then adjustTimeselection() end
+    end
 
     -- Tooltips
-    GUI.elms.TimeBefore.tooltip = "Adjust how many seconds before each overlapping item group should be part of the corresponding region."
     GUI.elms.TimeBefore_Text.tooltip = "Corresponding textinput to slider to the left.\nIf input is out of slider bounds, slider gets rescaled automatically.\nUse 'TAB' to cycle between all text-input boxes."
-    GUI.elms.TimeAfter.tooltip = "Adjust how many seconds after each overlapping item group should be part of the corresponding region."
     GUI.elms.TimeAfter_Text.tooltip = "Corresponding textinput to slider to the left.\nIf input is out of slider bounds, slider gets rescaled automatically.\nUse 'TAB' to cycle between all text-input boxes."
-    GUI.elms.TimeBetween.tooltip = "Adjust how many seconds between each item group's region should be empty."
     GUI.elms.TimeBetween_Text.tooltip = "Corresponding textinput to slider to the left.\nIf input is out of slider bounds, slider gets rescaled automatically.\nUse 'TAB' to cycle between all text-input boxes."
-    GUI.elms.TimeInclude.tooltip = "Adjust how far away from each other items can be to still be considered as one 'group'.\n\nE.g. 0 means only actually overlapping items count as one group.\n1 means items within 1 second of each others start/ end still count as one group."
     GUI.elms.TimeInclude_Text.tooltip = "Corresponding textinput to slider to the left.\nIf input is out of slider bounds, slider gets rescaled automatically.\nUse 'TAB' to cycle between all text-input boxes."
     GUI.elms.Preview.tooltip = "Use REAPER's 'Time-Selection' to visualize the first group's region bounds.\nRefreshes on time-value changes; to refresh after a item-selection change, press 'R'."
     GUI.elms.RegionNameChild.tooltip = "Set the name of the individual regions. Use '/E' to enumerate from 1 or '/E(Number), e.g. '/E(3)' to enumerate from that number onwards."
@@ -624,35 +760,44 @@ local function redrawAll ()
     GUI.elms.RRMChild.tooltip = "Choose over which track to route the newly created regions in the region render matrix.\n\n'Master' routes over the Master-Track.\n'First Parent' routes over the first found parent of all selected items (without any selected items on it) or the Master if no parent can be found.\n'Highest Parent' uses the highest common parent of all selected items or the Master if no parent can be found.\n'Each Track' only routes over a track if the track has items from the selection on it.\n'None' doesn't set a link in the RRM."
     GUI.elms.RRMMother.tooltip = "Choose over which track to route the newly created mother region in the region render matrix.\n\n'Master' routes over the Master-Track.\n'First Parent' routes over the first found parent of all selected items (without any selected items on it) or the Master if no parent can be found.\n'Highest Parent' uses the highest common parent of all selected items or the Master if no parent can be found.\n'Each Track' only routes over a track if the track has items from the selection on it.\n'None' doesn't set a link in the RRM."
     GUI.elms.MotherRgnBool.tooltip = "Toogle if a 'Mother-Region' (a region over all other newly created regions) should be created."
-    GUI.elms.ColSelFrame_Child.tooltip = "Click here to choose a color for each individual region.\nCancelling the color-picker dialog will use the default region color."
-    GUI.elms.ColSelFrame_Mother.tooltip = "Click here to choose a color for the mother region.\nCancelling the color-picker dialog will use the default region color."
     GUI.elms.isolateItems.tooltip = "Sets if any and which items should be moved to avoid overlaps of the selected items with non-selected items.\nWARNING: Not moving items if there are other items on the track with the selected items may result in deleting those items between."
-    GUI.elms.Run.tooltip = "Execute the script with the current Settings.\nShortcut - 'RETURN'"
+    GUI.elms.Run.tooltip = "Execute the script with the current Settings.\nShortcut - 'Shift + RETURN'"
     GUI.elms.options.tooltip = "Additional options for when this script gets executed via the 'Run' button.\n\nLock items - locks the selected items after creating the regions and eventually moving them.\nSave as default - save current setttings as defaults (for the next start of this GUI and the GUI-less versions of this script).\nClose GUI - Close GUI after executing this script."
 
+    redrawSliders()
+    redrawColFrames()
+
+    GUI.Val("options",{joshnt_UniqueRegions.lockBoolUser, false, closeGUI})
 end
 
 local function Loop()
+
+    -- keyinput
     if GUI.char == 9.0 and tabPressed == false then
-        if type(focusIndex) == "number" and type(focusIndex) ~= 0 then
+        if type(focusIndex) == "number" and focusIndex ~= 0 then
             GUI.elms[focusArray[focusIndex]].focus = false
-            if GUI.mouse.cap == 8 then
-                focusIndex = ((focusIndex-2) % #focusArray) +1
-            else
-                focusIndex = (focusIndex % #focusArray) +1
+
+            local function getNextFocusIndex()
+                if GUI.mouse.cap == 8 then
+                    focusIndex = ((focusIndex-2) % #focusArray) +1
+                else
+                    focusIndex = (focusIndex % #focusArray) +1
+                end
+                if GUI.elms[focusArray[focusIndex]].z == 5 then getNextFocusIndex() end
             end
+            getNextFocusIndex()
         else 
             focusIndex = 1
         end
         GUI.elms[focusArray[focusIndex]].focus = true
         tabPressed = true
-    elseif GUI.char == 13.0 and enterPressed == false then -- Return pressed
+    elseif GUI.char == 13.0 and GUI.mouse.cap == 8 and enterPressed == false then -- Shift Return pressed
+        enterPressed = true
+        run_Button()
+    elseif GUI.char == 114 then -- R für refresh
         for i = 1, #focusArray do
             if GUI.elms[focusArray[i]].focus == true then return end
         end
-        run_Button()
-        enterPressed = true
-    elseif GUI.char == 114 then -- R für refresh
         adjustTimeselection()
     elseif GUI.char == 0.0 then
         if tabPressed == true then tabPressed = false
@@ -662,28 +807,31 @@ end
 
 -- load default values to GUI interface
 local function loadDefaultValues()
-    if joshnt_UniqueRegions.isolateItems then GUI.Val("isolateItems",joshnt_UniqueRegions.isolateItems) end
+    if joshnt_UniqueRegions.isolateItems then GUI.Val("isolateItems",joshnt_UniqueRegions.isolateItems) else GUI.Val("isolateItems",1) end
     if joshnt_UniqueRegions.space_in_between then GUI.Val("TimeBetween",joshnt_UniqueRegions.space_in_between) GUI.Val("TimeBetween_Text",joshnt_UniqueRegions.space_in_between) end
     if joshnt_UniqueRegions.groupToleranceTime then GUI.Val("TimeInclude",joshnt_UniqueRegions.groupToleranceTime) GUI.Val("TimeInclude_Text",joshnt_UniqueRegions.groupToleranceTime) end
     if joshnt_UniqueRegions.start_silence then GUI.Val("TimeBefore",joshnt_UniqueRegions.start_silence) GUI.Val("TimeBefore_Text",joshnt_UniqueRegions.start_silence) end
     if joshnt_UniqueRegions.end_silence then GUI.Val("TimeAfter",joshnt_UniqueRegions.end_silence) GUI.Val("TimeAfter_Text",joshnt_UniqueRegions.end_silence) end
-    if joshnt_UniqueRegions.lockBoolUser then GUI.Val("isolateItems",joshnt_UniqueRegions.lockBoolUser) end
+    if joshnt_UniqueRegions.lockBoolUser then GUI.Val("options",{joshnt_UniqueRegions.lockBoolUser,false,closeGUI}) end
     if joshnt_UniqueRegions.regionName then GUI.Val("RegionNameChild",joshnt_UniqueRegions.regionName) end
-    if joshnt_UniqueRegions.motherRegionName then GUI.Val("isolateItems",joshnt_UniqueRegions.motherRegionName) end
+    if joshnt_UniqueRegions.motherRegionName then GUI.Val("RegionNameMother",joshnt_UniqueRegions.motherRegionName) end
     if joshnt_UniqueRegions.RRMLink_Child then GUI.Val("RRMChild",joshnt_UniqueRegions.RRMLink_Child) end
-    if joshnt_UniqueRegions.RRMLink_Mother then GUI.Val("isolateItems",joshnt_UniqueRegions.RRMLink_Mother) end
+    if joshnt_UniqueRegions.RRMLink_Mother then GUI.Val("RRMMother",joshnt_UniqueRegions.RRMLink_Mother) end
+    if joshnt_UniqueRegions.createMotherRgn == true then GUI.Val("MotherRgnBool", true) end
+    if joshnt_UniqueRegions.createChildRgn == true then GUI.Val("ChildRgnBool", true) end
     GUI.Val("Preview",previewWithTimeSelection)
-    setFrameColors("Child")
-    setFrameColors("Mother")
+    setFrameColors("Child",joshnt_UniqueRegions.regionColor)
+    setFrameColors("Mother",joshnt_UniqueRegions.regionColorMother)
     setVisibilityMotherRgn()
+    setVisibilityChildRgn()
 end
 
 local function init()
     joshnt_UniqueRegions.getDefaults()
     GUI.colors["ChildCol"] = GUI.colors["wnd_bg"] 
     GUI.colors["MotherCol"] = GUI.colors["wnd_bg"] 
-    local tempOption_Array = joshnt.splitStringToTable(reaper.GetExtState("joshnt_UniqueRegions", "GUI_Options", tostring(previewWithTimeSelection)))
-    previewWithTimeSelection = tempOption_Array[1] == "true"
+    local tempOption_Array = joshnt.splitStringToTable(reaper.GetExtState("joshnt_UniqueRegions", "OptionsGUI"))
+    previewWithTimeSelection = tempOption_Array[1]
     redrawAll()
     loadDefaultValues()
     for sliderName, _ in pairs(timeSliderVals) do
@@ -692,17 +840,9 @@ local function init()
 end
 
 
-
-init()
 GUI.Init()
+init()
 GUI.func = Loop
 GUI.freq = 0
 GUI.onresize = redrawAll
-GUI.exit = exitFunction
 GUI.Main()
-
---
---[[
-- input options with clicks to trigger functions + hide/ show mother region
-
-]]--
