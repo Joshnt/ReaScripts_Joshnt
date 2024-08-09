@@ -1,12 +1,12 @@
 -- @description Variation Verfier
--- @version 1.01
+-- @version 1.1
 -- @author Joshnt
 -- @about
 --    Marks/ Colors/ Hides Tracks or regions if different than given number of items
 --    Useful for checking number of Variations of multiple files after dynamic splitting them
 --    
 -- @changelog
---  + init
+--  minor bug fix for print to console
 
 
 
@@ -68,6 +68,7 @@ local tabPosition = 0
 local keyPress = false
 
 local function checkOptionDefaults()
+    local retvalRedraw = false
     if reaper.HasExtState("joshnt_VariationVerifier_Interface", "printMatching") then
         -- print default values
         local defaultsTable1 = {}
@@ -90,7 +91,11 @@ local function checkOptionDefaults()
         GUI.Val("mathCompare",tonumber(reaper.GetExtState("joshnt_VariationVerifier_Interface", "mathCompare")))
         GUI.Val("actionMain",tonumber(reaper.GetExtState("joshnt_VariationVerifier_Interface", "actionMain")))
         GUI.Val("actionsOther",tonumber(reaper.GetExtState("joshnt_VariationVerifier_Interface", "actionsOther")))
+        local colorsTEMP = joshnt.splitStringToTable(reaper.GetExtState("joshnt_VariationVerifier_Interface", "Colors"))
+        if tonumber(colorsTEMP[1]) then colors.main = tonumber(colorsTEMP[1]) retvalRedraw = true end
+        if tonumber(colorsTEMP[2]) then colors.other = tonumber(colorsTEMP[2]) retvalRedraw = true end
     end
+    return retvalRedraw
 end
 
 local function saveOptions()
@@ -114,6 +119,7 @@ local function saveOptions()
     reaper.SetExtState("joshnt_VariationVerifier_Interface", "mathCompare", tostring(GUI.Val("mathCompare")), true)
     reaper.SetExtState("joshnt_VariationVerifier_Interface", "actionMain", tostring(GUI.Val("actionMain")), true)
     reaper.SetExtState("joshnt_VariationVerifier_Interface", "actionsOther", tostring(GUI.Val("actionsOther")), true)
+    reaper.SetExtState("joshnt_VariationVerifier_Interface", "Colors", tostring(colors.main)..","..tostring(colors.other), true)
 end
 
 local function updateDescription()
@@ -357,12 +363,12 @@ local function run_VariationVerifier()
         -- print to console
         if string.find(textArrayDescription.printWhere,"console") then
             reaper.ClearConsole()
-            reaper.ShowConsoleMsg("Mark Tracks with different item numbers (Variation Verifier) - Track Name Output:")
+            reaper.ShowConsoleMsg("Variation Verifier - Target Name Output:")
 
             if string.find(textArrayDescription.print,"matching") then
                 reaper.ShowConsoleMsg("\n\nFollowing "..textArrayDescription.target.." had items " .. textArrayDescription.mathCompare .. " to "..textArrayDescription.numItems..":")
                 for key, subtable in pairs(mainTarget_Table) do
-                    local name, itemNum = mainTarget_Table[key][1], mainTarget_Table[key][2]
+                    local name, itemNum = subtable[1], subtable[2]
                     reaper.ShowConsoleMsg("\n"..name.." - "..itemNum)
                 end
             end
@@ -370,34 +376,11 @@ local function run_VariationVerifier()
             if string.find(textArrayDescription.print,"others") then
                 reaper.ShowConsoleMsg("\n\nFollowing "..textArrayDescription.target.." had items different than " .. textArrayDescription.mathCompare .. " to "..textArrayDescription.numItems..":")
                 for key, subtable in pairs(otherTarget_Table) do
-                    local name, itemNum = otherTarget_Table[key][1], otherTarget_Table[key][2]
+                    local name, itemNum = subtable[1], subtable[2]
                     reaper.ShowConsoleMsg("\n"..name.." - "..itemNum)
                 end
             end
         end
-
-        local function printTable(t, indent)
-            -- Set the default indent value to an empty string if it's not provided
-            indent = indent or ""
-            
-            -- Loop through each key-value pair in the table
-            for key, value in pairs(t) do
-              -- Check if the value is a table
-              if type(value) == "table" then
-                -- Print the key and indicate that it's a table
-                reaper.ShowConsoleMsg(indent .. tostring(key) .. ":\n")
-                -- Recursively print the subtable with increased indentation
-                printTable(value, indent .. "  ")
-              else
-                -- Print the key-value pair
-                reaper.ShowConsoleMsg(indent .. tostring(key) .. ": " .. tostring(value) .. "\n")
-              end
-            end
-        end
-        reaper.ShowConsoleMsg("\n\nMain\n")
-        printTable(mainTarget_Table)
-        reaper.ShowConsoleMsg("\n\nOther\n")
-        printTable(otherTarget_Table)
 
         -- print to CSV
         if string.find(textArrayDescription.printWhere,"CSV") then
@@ -884,9 +867,9 @@ end
 
 local function Loop()
     if redrawAction ~= nil then
-        if redrawAction == "main" then
-            redraw_ActionMain()
-        else redraw_ActionOthers()
+        if redrawAction == "main" then redraw_ActionMain()
+        elseif redrawAction == "other" then redraw_ActionOthers()
+        else redraw_ActionMain() redraw_ActionOthers()
         end
         redrawAction = nil
     end
@@ -947,7 +930,12 @@ GUI.Init()
 setActionColors("other")
 setActionColors("main")
 redrawAll()
-checkOptionDefaults()
+if checkOptionDefaults() == true then 
+    setActionColors("main")
+    setActionColors("other")
+    redrawAction = "all"
+end
+
 updateActions()
 updateTextArrayDescription_Full()
 updateActions()
