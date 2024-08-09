@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Joshnt_ReaScripts" commit="b2227fccf31896f035de8ec53e67f928c4202aa7">
+<index version="1" name="Joshnt_ReaScripts" commit="2ffe865ec3aee1bc1fee43721df56a476d2827c4">
   <category name="DEVELOPMENT">
     <reapack name="joshnt_LuaUtilities.lua" type="script" desc="Adding own functions and functionalities as lua-functions">
       <metadata>
@@ -458,6 +458,10 @@
       <version name="1.01" author="Joshnt" time="2024-08-09T19:12:46Z">
         <changelog><![CDATA[+ init]]></changelog>
         <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/VARIOUS/joshnt_Variation%20Verifier%20-%20highlight%20tracks%20or%20regions%20depending%20on%20items%20and%20print%20to%20console%20or%20CSV.lua</source>
+      </version>
+      <version name="1.2" author="Joshnt" time="2024-08-09T19:53:15Z">
+        <changelog><![CDATA[minor bug fix for print to console]]></changelog>
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/2ffe865ec3aee1bc1fee43721df56a476d2827c4/VARIOUS/joshnt_Variation%20Verifier%20-%20highlight%20tracks%20or%20regions%20depending%20on%20items%20and%20print%20to%20console%20or%20CSV.lua</source>
       </version>
     </reapack>
   </category>
