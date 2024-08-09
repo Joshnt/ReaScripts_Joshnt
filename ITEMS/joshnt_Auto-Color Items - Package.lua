@@ -1,7 +1,8 @@
--- @description Automatic coloring of selected items - similar to SWS Auto-Color for tracks
--- @version 1.1
+-- @description Items Auto-Coloring
+-- @version 1.2
 -- @author Joshnt
 -- @about
+--      Automatic coloring of selected items - similar to SWS Auto-Color for tracks
 --      use the GUI to create your own rule set with item conditions etc.
 --      after previewing it, save it in the GUI and the run the normal function (which can be toggled on and off)
 -- @changelog
