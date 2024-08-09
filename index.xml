@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Joshnt_ReaScripts" commit="3b824e3d331a55d0734573765ec218de49fdb9f4">
+<index version="1" name="Joshnt_ReaScripts" commit="abc5dd8f871671ab335dc708d6fac3c2b4eec4ad">
   <category name="DEVELOPMENT">
     <reapack name="joshnt_LuaUtilities.lua" type="script" desc="Adding own functions and functionalities as lua-functions">
       <metadata>
@@ -149,6 +149,24 @@
       </metadata>
       <version name="1.0" author="Joshnt" time="2024-07-25T02:50:10Z">
         <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/7b096b58ce84b20fcdeda63c40cb5c88e51b9795/ITEMS/joshnt_Cycle%20selected%20item(s)%20channel%20mapper%20preset.lua</source>
+      </version>
+    </reapack>
+    <reapack name="joshnt_Fade Utility - Package.lua" type="script" desc="Fade Utility">
+      <metadata>
+        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 Multiple single actions for creating fades\par}
+}
+]]></description>
+      </metadata>
+      <version name="1.02" author="Joshnt" time="2024-08-09T11:33:03Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main" file="joshnt_Fade Utility/joshnt_Set minimal fade-in and -out for selected items if no fade.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/abc5dd8f871671ab335dc708d6fac3c2b4eec4ad/ITEMS/joshnt_Fade%20Utility/joshnt_Set%20minimal%20fade-in%20and%20-out%20for%20selected%20items%20if%20no%20fade.lua</source>
+        <source main="main" file="joshnt_Fade Utility/joshnt_Toggle change selected items fade to S- or Log-Shape (fade in or out depending on mouse position).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/abc5dd8f871671ab335dc708d6fac3c2b4eec4ad/ITEMS/joshnt_Fade%20Utility/joshnt_Toggle%20change%20selected%20items%20fade%20to%20S-%20or%20Log-Shape%20(fade%20in%20or%20out%20depending%20on%20mouse%20position).lua</source>
+        <source main="main" file="joshnt_Fade Utility/joshnt_Trim left edge of selected item(s) to edit cursor without changing fade-in end.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/abc5dd8f871671ab335dc708d6fac3c2b4eec4ad/ITEMS/joshnt_Fade%20Utility/joshnt_Trim%20left%20edge%20of%20selected%20item(s)%20to%20edit%20cursor%20without%20changing%20fade-in%20end.lua</source>
+        <source main="main" file="joshnt_Fade Utility/joshnt_Trim right edge of selected item(s) to edit cursor without changing fade-out start.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/abc5dd8f871671ab335dc708d6fac3c2b4eec4ad/ITEMS/joshnt_Fade%20Utility/joshnt_Trim%20right%20edge%20of%20selected%20item(s)%20to%20edit%20cursor%20without%20changing%20fade-out%20start.lua</source>
       </version>
     </reapack>
     <reapack name="joshnt_Isolate selected items (avoid overlap with non-selected) - Package.lua" type="script" desc="Multiple actions to isolate the selected items">
