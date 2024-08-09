@@ -580,7 +580,7 @@ local function redraw_ActionMain()
         local prevColor = colors.main
         if GUI.Val("actionMain") == 1 then
             local retval, newColor = reaper.GR_SelectColor(nil)
-            if retval then
+            if retval and retval ~= 0 then
                 colors.main = newColor
             else
                 GUI.Val("actionMain",5)
