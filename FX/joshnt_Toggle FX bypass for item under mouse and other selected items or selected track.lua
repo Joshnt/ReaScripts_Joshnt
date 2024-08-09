@@ -1,5 +1,5 @@
 -- @description Toggle FX Bypass for item under mouse or selected Track
--- @version 1.1
+-- @version 1.11
 -- @changelog
 --  + init
 -- @author Joshnt

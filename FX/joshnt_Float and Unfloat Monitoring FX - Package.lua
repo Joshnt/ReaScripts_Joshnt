@@ -1,5 +1,5 @@
 -- @description Float/ Unfloat Monitoring FX
--- @version 1.1
+-- @version 1.11
 -- @author Joshnt
 -- @changelog
 --  + init

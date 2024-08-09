@@ -1,5 +1,5 @@
 -- @description Normalize selected items seperatly with recent settings - prompt for max. dB Change.lua
--- @version 1.0
+-- @version 1.01
 -- @author Joshnt
 -- @about
 --    Usecase: "rough" normalization as something between common gain and seperatly normalizing

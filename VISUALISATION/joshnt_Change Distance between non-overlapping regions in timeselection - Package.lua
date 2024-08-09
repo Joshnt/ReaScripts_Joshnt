@@ -1,5 +1,5 @@
 -- @description Change distance between regions
--- @version 1.01
+-- @version 1.02
 -- @author Joshnt
 -- @about
 --    Various actions for zooming/ scrolling to overlapping item group at cursor

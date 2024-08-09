@@ -1,5 +1,5 @@
 -- @description Items Auto-Coloring
--- @version 1.2
+-- @version 1.21
 -- @author Joshnt
 -- @about
 --      Automatic coloring of selected items - similar to SWS Auto-Color for tracks

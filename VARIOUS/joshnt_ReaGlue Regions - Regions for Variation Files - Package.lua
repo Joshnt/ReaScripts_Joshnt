@@ -1,5 +1,5 @@
 -- @description ReaGlue adaption to Regions (with user input)
--- @version 4.02
+-- @version 4.03
 -- @changelog 
 --      minor bug fixes
 -- @author Joshnt

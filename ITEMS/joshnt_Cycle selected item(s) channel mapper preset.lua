@@ -1,5 +1,5 @@
 -- @description Cycle through presets for channel mapper on selected item - accessing unusal channel mappings like in 1/4 to 1/2 out more easily
--- @version 1.0
+-- @version 1.01
 -- @author Joshnt
 -- @about
 --    You need to create presets for the channel mapper device for this script to work

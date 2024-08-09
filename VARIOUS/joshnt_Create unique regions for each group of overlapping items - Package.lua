@@ -1,5 +1,5 @@
 -- @description Unique Region per overlapping item bundle in selection (with Mother Region over them) - Game Audio/ SD Use
--- @version 2.0
+-- @version 2.01
 -- @changelog
 --  - added Lokasenna GUI + RRM Link
 -- @author Joshnt

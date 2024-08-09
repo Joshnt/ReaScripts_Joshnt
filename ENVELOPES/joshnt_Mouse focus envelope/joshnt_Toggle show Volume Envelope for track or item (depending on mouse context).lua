@@ -1,5 +1,5 @@
 -- @description Show volume for item or track depending on mouse context
--- @version 1.1
+-- @version 1.11
 -- @author Joshnt
 -- @about
 --    Adaption of amagalma's version of this idea; checks for items under mouse cursor, then selected track(s) then track under mouse cursor
