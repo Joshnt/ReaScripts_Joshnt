@@ -1,10 +1,10 @@
 -- @description Move sel. items to cursor
--- @version 1.1
+-- @version 1.2
 -- @author Joshnt
 -- @about
---      Moves items to the selected track - offers other actions to keep relative position between selected items
+--      Moves items to the selected track - offers other actions to keep relative position/ track position between selected items + variants to only move position or track (with addition "keep [x]")
 -- @changelog
---  - added "... - only time" and "... - only track" variants
+--  - added relative versions for only track and only position
 -- @metapackage
 -- @provides
 --   [main] joshnt_Move selected item(s) to cursor/joshnt_Move selected item(s) to mouse cursor.lua
@@ -12,3 +12,5 @@
 --   [main] joshnt_Move selected item(s) to cursor/joshnt_Move selected item(s) to mouse cursor - keep relative position (time+tracks).lua
 --   [main] joshnt_Move selected item(s) to cursor/joshnt_Move selected item(s) to track under mouse cursor - keep position.lua
 --   [main] joshnt_Move selected item(s) to cursor/joshnt_Move selected item(s) to position under mouse cursor - keep track.lua
+--   [main] joshnt_Move selected item(s) to cursor/joshnt_Move selected item(s) to position under mouse cursor (keep relative positions) - keep track.lua
+--   [main] joshnt_Move selected item(s) to cursor/joshnt_Move selected item(s) to track under mouse cursor (keep relative tracks) - keep positions.lua

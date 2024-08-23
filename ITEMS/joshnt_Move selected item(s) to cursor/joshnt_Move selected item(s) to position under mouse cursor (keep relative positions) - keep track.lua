@@ -13,6 +13,7 @@ else
   return
 end
 
+if not joshnt.checkSWS() then return end
 
 
 
@@ -21,10 +22,11 @@ local function main()
     if itemnum == 0 then joshnt.TooltipAtMouse("No items selected!") return end
     local window, segment, details = reaper.BR_GetMouseCursorContext()
     local mousePosX = reaper.BR_GetMouseCursorContext_Position()
-    if not window or window =="" or not mousePosX or mousePosX == -1 then joshnt.TooltipAtMouse("Unable to get mouse context or position") return end
+    if not window or window == "" or not mousePosX or mousePosX == -1 then joshnt.TooltipAtMouse("Unable to get mouse context or position") return end
 
     reaper.Undo_BeginBlock() reaper.PreventUIRefresh(1)
 
+    local startPos = reaper.GetMediaItemInfo_Value(reaper.GetSelectedMediaItem(0,0), "D_POSITION")
     local itemArray = {}
     for i = 0, itemnum -1 do
       itemArray[i] = reaper.GetSelectedMediaItem(0,i)
@@ -32,11 +34,12 @@ local function main()
 
     for i = 0, itemnum -1 do
         local item_TEMP = itemArray[i]
-        reaper.SetMediaItemInfo_Value(item_TEMP, "D_POSITION", mousePosX)
+        local oldPos_TEMP = reaper.GetMediaItemInfo_Value(item_TEMP, "D_POSITION")
+        reaper.SetMediaItemInfo_Value(item_TEMP, "D_POSITION", mousePosX + oldPos_TEMP - startPos)
     end
 
     reaper.UpdateArrange() reaper.PreventUIRefresh(-1)
-    reaper.Undo_EndBlock('Move selected items to mouse - only time', -1)
+    reaper.Undo_EndBlock('Move selected items to mouse - time relative on same track', -1)
 end
 
 main()

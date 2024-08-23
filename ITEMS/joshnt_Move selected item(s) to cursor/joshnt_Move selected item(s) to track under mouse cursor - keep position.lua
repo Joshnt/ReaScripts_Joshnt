@@ -20,9 +20,8 @@ local function main()
     local itemnum = reaper.CountSelectedMediaItems(0)
     if itemnum == 0 then joshnt.TooltipAtMouse("No items selected!") return end
     local window, segment, details = reaper.BR_GetMouseCursorContext()
-    local mousePosX = reaper.BR_GetMouseCursorContext_Position()
     local trackUnderMouse = reaper.BR_GetMouseCursorContext_Track()
-    if not window or window =="" or not mousePosX or mousePosX == -1 then joshnt.TooltipAtMouse("Unable to get mouse context or position") return end
+    if not window or window =="" then joshnt.TooltipAtMouse("Unable to get mouse context or position") return end
     if not trackUnderMouse then joshnt.TooltipAtMouse("Unable to get track under mouse") return end
 
     reaper.Undo_BeginBlock() reaper.PreventUIRefresh(1)
