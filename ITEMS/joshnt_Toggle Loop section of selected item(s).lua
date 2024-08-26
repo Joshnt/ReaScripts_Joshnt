@@ -1,4 +1,3 @@
-    
 -- @description Toggle Loop of item (visible section)
 -- @version 1.0
 -- @author Joshnt, Archie
