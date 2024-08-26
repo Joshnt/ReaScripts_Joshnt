@@ -1,6 +1,6 @@
     
 -- @description Toggle Loop item section
--- @version 1.0
+-- @version 1.00001
 -- @author Joshnt, Archie
 -- @about
 --      adjusted version of archie's 'Script: Archie_Item; 'Toggle (Loop source OFF) - (SWS Loop section of selected item(s)).lua'
