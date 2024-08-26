@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Joshnt_ReaScripts" commit="97c92a80e6a287e2114b9dfb667ebbf0b36a8e77">
+<index version="1" name="Joshnt_ReaScripts" commit="c425a5a5eda548f3be69038be580e4c111697eb9">
   <category name="DEVELOPMENT">
     <reapack name="joshnt_LuaUtilities.lua" type="script" desc="Adding own functions and functionalities as lua-functions">
       <metadata>
@@ -284,6 +284,21 @@
       </version>
       <version name="1.01" author="Joshnt" time="2024-08-09T19:12:46Z">
         <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/ITEMS/joshnt_Normalize%20selected%20items%20-%20prompt%20for%20max.%20dB%20Change.lua</source>
+      </version>
+    </reapack>
+    <reapack name="joshnt_Toggle Loop section of selected item(s).lua" type="script" desc="Toggle Loop of item (visible section)">
+      <metadata>
+        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 adjusted version of archie's 'Script: Archie_Item; 'Toggle (Loop source OFF) - (SWS Loop section of selected item(s)).lua' as his version keeps the section bounds set of the loop section\par}
+}
+]]></description>
+      </metadata>
+      <version name="1.0" author="Joshnt, Archie" time="2024-08-26T19:16:20Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/c425a5a5eda548f3be69038be580e4c111697eb9/ITEMS/joshnt_Toggle%20Loop%20section%20of%20selected%20item(s).lua</source>
       </version>
     </reapack>
   </category>
