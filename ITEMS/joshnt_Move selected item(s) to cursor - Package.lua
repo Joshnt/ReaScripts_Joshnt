@@ -1,10 +1,10 @@
 -- @description Move sel. items to cursor
--- @version 1.2
+-- @version 1.3
 -- @author Joshnt
 -- @about
 --      Moves items to the selected track - offers other actions to keep relative position/ track position between selected items + variants to only move position or track (with addition "keep [x]")
 -- @changelog
---  - added relative versions for only track and only position
+--  - added snap to grid (if toggled) for all position including variants
 -- @metapackage
 -- @provides
 --   [main] joshnt_Move selected item(s) to cursor/joshnt_Move selected item(s) to mouse cursor.lua

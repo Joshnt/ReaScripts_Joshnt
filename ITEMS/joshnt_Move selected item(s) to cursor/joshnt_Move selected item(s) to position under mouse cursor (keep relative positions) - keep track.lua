@@ -25,6 +25,11 @@ local function main()
     if not window or window == "" or not mousePosX or mousePosX == -1 then joshnt.TooltipAtMouse("Unable to get mouse context or position") return end
 
     reaper.Undo_BeginBlock() reaper.PreventUIRefresh(1)
+    
+    -- Snap xPos to grid (if snapping is toggled & grid active)
+    if reaper.GetToggleCommandState(1157) == 1 then -- options: toggle snapping
+      mousePosX = reaper.SnapToGrid(0,mousePosX)
+    end
 
     local startPos = reaper.GetMediaItemInfo_Value(reaper.GetSelectedMediaItem(0,0), "D_POSITION")
     local itemArray = {}

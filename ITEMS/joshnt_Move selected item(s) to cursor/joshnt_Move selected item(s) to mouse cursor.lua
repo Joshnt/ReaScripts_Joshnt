@@ -27,6 +27,11 @@ local function main()
 
     reaper.Undo_BeginBlock() reaper.PreventUIRefresh(1)
 
+    -- Snap xPos to grid (if snapping is toggled & grid active)
+    if reaper.GetToggleCommandState(1157) == 1 then -- options: toggle snapping
+      mousePosX = reaper.SnapToGrid(0,mousePosX)
+    end
+
     local itemArray = {}
     for i = 0, itemnum -1 do
       itemArray[i] = reaper.GetSelectedMediaItem(0,i)
