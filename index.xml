@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Joshnt_ReaScripts" commit="029b30a32360da468bc32c5a8afb8989b6f5f670">
+<index version="1" name="Joshnt_ReaScripts" commit="35b692f4e1265e6858178f6e9d16e961b910aebe">
   <category name="DEVELOPMENT">
     <reapack name="joshnt_LuaUtilities.lua" type="script" desc="Adding own functions and functionalities as lua-functions">
       <metadata>
@@ -22,6 +22,9 @@
       </version>
       <version name="2.11" author="Joshnt" time="2024-08-09T10:35:20Z">
         <source>https://github.com/Joshnt/ReaScripts_Joshnt/raw/a720dae26dac22a76e710f264b8625e1cd2e3642/DEVELOPMENT/joshnt_LuaUtilities.lua</source>
+      </version>
+      <version name="2.2" author="Joshnt" time="2024-08-27T17:32:45Z">
+        <source>https://github.com/Joshnt/ReaScripts_Joshnt/raw/35b692f4e1265e6858178f6e9d16e961b910aebe/DEVELOPMENT/joshnt_LuaUtilities.lua</source>
       </version>
     </reapack>
   </category>
