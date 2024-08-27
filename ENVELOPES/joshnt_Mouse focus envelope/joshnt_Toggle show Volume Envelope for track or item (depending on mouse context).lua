@@ -1,10 +1,10 @@
 -- @description Show volume for item or track depending on mouse context
--- @version 1.11
+-- @version 1.2
 -- @author Joshnt
 -- @about
 --    Adaption of amagalma's version of this idea; checks for items under mouse cursor, then selected track(s) then track under mouse cursor
 -- @changelog
---  + init
+--  - fixed script not working for master track
 
 -- Load lua utilities
 local joshnt_LuaUtils = reaper.GetResourcePath()..'/Scripts/Joshnt_ReaScripts/DEVELOPMENT/joshnt_LuaUtilities.lua'
@@ -71,7 +71,7 @@ local function volEnvTrack(trackUnderMouse)
   local isVisibleMain;
   local selTracks = joshnt.saveTrackSelection()
   local selTrackNum = #selTracks
-  local trackMain = reaper.GetSelectedTrack(0, 0)
+  local trackMain = reaper.GetSelectedTrack2(0, 0, true)
 
   if not trackMain then
     if trackUnderMouse then
@@ -138,9 +138,8 @@ end
 local function main()
     local window, segment, details = reaper.BR_GetMouseCursorContext()
     local mouse = reaper.BR_GetMouseCursorContext_Position()
-    if not mouse or mouse ==-1 then volEnvTrack() return end
-
     local trackUnderMouse = reaper.BR_GetMouseCursorContext_Track()
+    if not mouse or mouse ==-1 then volEnvTrack(trackUnderMouse) return end
 
     local mainItem = reaper.BR_GetMouseCursorContext_Item()
     if not mainItem or mainItem ==-1 then volEnvTrack(trackUnderMouse) return else

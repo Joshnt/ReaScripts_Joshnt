@@ -1,7 +1,9 @@
 -- @description Adding own functions and functionalities as lua-functions
--- @version 2.11
+-- @version 2.2
 -- @author Joshnt
 -- @provides [nomain] .
+-- @changelog
+-- - adjusted get/ set selected Region/ Marker in Region/ Marker Manager functions to close again, if not opened before
 -- @about
 --    Credits to Aaron Cendan https://aaroncendan.me - I partly straight up copied code from him; as well thanks for the awesome work in the scripting domain of reaper!
 
@@ -1334,6 +1336,8 @@ function joshnt.getSelectedMarkerAndRegionIndex()
   
   if not joshnt.checkJS_API() then return end
 
+  local RgnMgn_isOpen = reaper.GetToggleCommandState(40326) == 1 -- Show region/marker manager window
+
   local rgn_list, item_count = joshnt.getRegionManagerListAndItemCount()
   if not rgn_list then return end
   local regionOrderInManager, markerOrderInManager = joshnt.GetRegionsAndMarkerInManagerOrder(rgn_list, item_count)
@@ -1360,6 +1364,8 @@ function joshnt.getSelectedMarkerAndRegionIndex()
 
   if #indexSelRgn == 0 then indexSelRgn = nil end
   if #indexSelMrk == 0 then indexSelMrk = nil end
+
+  if not RgnMgn_isOpen then reaper.Main_OnCommand(40326,1) end -- Show region/marker manager window
   -- Return table of selected regions
   return indexSelRgn, indexSelMrk
 end
@@ -1367,6 +1373,8 @@ end
 -- set Region selected in Region/ Marker Manager by index - adapted from edgemeal: Select next region in region manager window.lua
 function joshnt.setRegionSelectedByIndex(RegionIndexTable, boolUnselectOthers)
   
+  local RgnMgn_isOpen = reaper.GetToggleCommandState(40326) == 1 -- Show region/marker manager window
+
   if not RegionIndexTable or not joshnt.checkJS_API() then return end
   if type(RegionIndexTable) == "number" then
     RegionIndexTable = {RegionIndexTable}
@@ -1395,6 +1403,8 @@ function joshnt.setRegionSelectedByIndex(RegionIndexTable, boolUnselectOthers)
       reaper.JS_ListView_EnsureVisible(lv, regionPositionInManager, false) -- OPTIONAL: scroll item into view
     end
   end
+
+  if not RgnMgn_isOpen then reaper.Main_OnCommand(40326,1) end -- Show region/marker manager window
 end
 
 function joshnt.getRegionManagerListAndItemCount()
