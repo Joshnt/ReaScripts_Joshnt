@@ -2,8 +2,6 @@
 -- @version 2.2
 -- @author Joshnt
 -- @provides [nomain] .
--- @changelog
--- - adjusted get/ set selected Region/ Marker in Region/ Marker Manager functions to close again, if not opened before
 -- @about
 --    Credits to Aaron Cendan https://aaroncendan.me - I partly straight up copied code from him; as well thanks for the awesome work in the scripting domain of reaper!
 

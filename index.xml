@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Joshnt_ReaScripts" commit="48bfde9ef85ea78766e9865a13322596596a1819">
+<index version="1" name="Joshnt_ReaScripts" commit="029b30a32360da468bc32c5a8afb8989b6f5f670">
   <category name="DEVELOPMENT">
     <reapack name="joshnt_LuaUtilities.lua" type="script" desc="Adding own functions and functionalities as lua-functions">
       <metadata>
@@ -47,6 +47,10 @@
       <version name="1.11" author="Joshnt" time="2024-08-09T19:12:46Z">
         <changelog><![CDATA[+ init]]></changelog>
         <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/ENVELOPES/joshnt_Mouse%20focus%20envelope/joshnt_Toggle%20show%20Volume%20Envelope%20for%20track%20or%20item%20(depending%20on%20mouse%20context).lua</source>
+      </version>
+      <version name="1.2" author="Joshnt" time="2024-08-27T17:31:18Z">
+        <changelog><![CDATA[- fixed script not working for master track]]></changelog>
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/029b30a32360da468bc32c5a8afb8989b6f5f670/ENVELOPES/joshnt_Mouse%20focus%20envelope/joshnt_Toggle%20show%20Volume%20Envelope%20for%20track%20or%20item%20(depending%20on%20mouse%20context).lua</source>
       </version>
     </reapack>
   </category>
