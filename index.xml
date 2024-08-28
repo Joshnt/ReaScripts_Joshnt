@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Joshnt_ReaScripts" commit="d6c8ec71f3d1c9a385724abb439b7c23f586284f">
+<index version="1" name="Joshnt_ReaScripts" commit="342fdc8984b1e07ae57952b50a09881da0346fdf">
   <category name="DEVELOPMENT">
     <reapack name="joshnt_LuaUtilities.lua" type="script" desc="Adding own functions and functionalities as lua-functions">
       <metadata>
@@ -230,6 +230,24 @@
         <source main="main" file="joshnt_Isolate selected items/joshnt_Isolate - Move selected items to project end.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/58788911bf6fad10a0ae0d3c2279bb058d296725/ITEMS/joshnt_Isolate%20selected%20items/joshnt_Isolate%20-%20Move%20selected%20items%20to%20project%20end.lua</source>
       </version>
     </reapack>
+    <reapack name="joshnt_Loop item(s) - Package.lua" type="script" desc="var. actions to Loop item (visible section)">
+      <metadata>
+        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 Trying to fix REAPERS cringe Item Loop behaviour (especially for MIDI)\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 Toggle Loop section of selected item(s) = adjusted version of archie's 'Script: Archie_Item; 'Toggle (Loop source OFF) - (SWS Loop section of selected item(s)).lua' as his version keeps the section bounds set of the loop section Create Loop from visible section of selected MIDI item(s) = adaption of 'Script: rodilab_Loop section of audiomidi item source within time selection, if any.lua' to work without time selection/ for the visible part of the midi item\par}
+}
+]]></description>
+      </metadata>
+      <version name="1.0" author="Joshnt, Archie, Rodilab" time="2024-08-28T20:12:12Z">
+        <changelog><![CDATA[+ init (folder restructure)]]></changelog>
+        <source main="main" file="joshnt_Loop item(s)/joshnt_Toggle Loop visible section of selected item(s).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/342fdc8984b1e07ae57952b50a09881da0346fdf/ITEMS/joshnt_Loop%20item(s)/joshnt_Toggle%20Loop%20visible%20section%20of%20selected%20item(s).lua</source>
+        <source main="main" file="joshnt_Loop item(s)/joshnt_Create Loop from visible section of selected MIDI item(s) - destructive.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/342fdc8984b1e07ae57952b50a09881da0346fdf/ITEMS/joshnt_Loop%20item(s)/joshnt_Create%20Loop%20from%20visible%20section%20of%20selected%20MIDI%20item(s)%20-%20destructive.lua</source>
+        <source main="main" file="joshnt_Loop item(s)/joshnt_Create Loop from visible section of selected MIDI item(s) - paste as new take.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/342fdc8984b1e07ae57952b50a09881da0346fdf/ITEMS/joshnt_Loop%20item(s)/joshnt_Create%20Loop%20from%20visible%20section%20of%20selected%20MIDI%20item(s)%20-%20paste%20as%20new%20take.lua</source>
+      </version>
+    </reapack>
     <reapack name="joshnt_Move Items to marker - Package.lua" type="script" desc="Move items to numbered, named or selected marker">
       <version name="1.0" author="Joshnt" time="2024-08-09T09:48:10Z">
         <changelog><![CDATA[+ init]]></changelog>
@@ -308,21 +326,6 @@
       </version>
       <version name="1.01" author="Joshnt" time="2024-08-09T19:12:46Z">
         <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/ITEMS/joshnt_Normalize%20selected%20items%20-%20prompt%20for%20max.%20dB%20Change.lua</source>
-      </version>
-    </reapack>
-    <reapack name="joshnt_Toggle Loop section of selected item(s).lua" type="script" desc="Toggle Loop of item (visible section)">
-      <metadata>
-        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
-{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
-\widowctrl\hyphauto
-
-{\pard \ql \f0 \sa180 \li0 \fi0 adjusted version of archie's 'Script: Archie_Item; 'Toggle (Loop source OFF) - (SWS Loop section of selected item(s)).lua' as his version keeps the section bounds set of the loop section\par}
-}
-]]></description>
-      </metadata>
-      <version name="1.0" author="Joshnt, Archie" time="2024-08-26T19:16:20Z">
-        <changelog><![CDATA[+ init]]></changelog>
-        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/c425a5a5eda548f3be69038be580e4c111697eb9/ITEMS/joshnt_Toggle%20Loop%20section%20of%20selected%20item(s).lua</source>
       </version>
     </reapack>
   </category>
