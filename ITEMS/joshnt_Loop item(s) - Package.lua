@@ -1,0 +1,15 @@
+-- @description var. actions to Loop item (visible section)
+-- @version 1.0
+-- @author Joshnt, Archie, Rodilab
+-- @about
+--     Trying to fix REAPERS cringe Item Loop behaviour (especially for MIDI)
+--
+--     Toggle Loop section of selected item(s) = adjusted version of archie's 'Script: Archie_Item; 'Toggle (Loop source OFF) - (SWS Loop section of selected item(s)).lua' as his version keeps the section bounds set of the loop section
+--     Create Loop from visible section of selected MIDI item(s) = adaption of 'Script: rodilab_Loop section of audiomidi item source within time selection, if any.lua' to work without time selection/ for the visible part of the midi item
+-- @changelog
+--  + init (folder restructure)
+-- @metapackage
+-- @provides
+--   [main] joshnt_Loop item(s)/joshnt_Toggle Loop visible section of selected item(s).lua
+--   [main] joshnt_Loop item(s)/joshnt_Create Loop from visible section of selected MIDI item(s) - destructive.lua
+--   [main] joshnt_Loop item(s)/joshnt_Create Loop from visible section of selected MIDI item(s) - paste as new take.lua

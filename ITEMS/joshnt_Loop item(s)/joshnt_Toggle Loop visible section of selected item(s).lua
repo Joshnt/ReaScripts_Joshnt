@@ -1,15 +1,7 @@
--- @description Toggle Loop of item (visible section)
--- @version 1.0
--- @author Joshnt, Archie
--- @about
---      adjusted version of archie's 'Script: Archie_Item; 'Toggle (Loop source OFF) - (SWS Loop section of selected item(s)).lua'
---      as his version keeps the section bounds set of the loop section
--- @changelog
---  + init
+-- @noindex
     -------------------------------------------------------
     local function no_undo()reaper.defer(function()end)end;
     -------------------------------------------------------
-
 
 
     local item_cnt = reaper.CountSelectedMediaItems(0);
@@ -31,8 +23,7 @@
         reaper.Undo_EndBlock('Loop source OFF',-1);
         Tip = 'Loop source OFF';
     else;
-        reaper.Main_OnCommand(reaper.NamedCommandLookup('_SWS_LOOPITEMSECTION'),0);
-        -- SWS: Loop section of selected item(s)
+        reaper.Main_OnCommand(reaper.NamedCommandLookup('_SWS_LOOPITEMSECTION'),0); -- SWS: Loop section of selected item(s)
         Tip = 'SWS: Loop section of selected item(s)';
     end;
 
