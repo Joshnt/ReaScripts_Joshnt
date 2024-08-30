@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Joshnt_ReaScripts" commit="342fdc8984b1e07ae57952b50a09881da0346fdf">
+<index version="1" name="Joshnt_ReaScripts" commit="7c541be88e98b2eac39d42c50dc8fb4ed5d0380b">
   <category name="DEVELOPMENT">
     <reapack name="joshnt_LuaUtilities.lua" type="script" desc="Adding own functions and functionalities as lua-functions">
       <metadata>
@@ -236,7 +236,7 @@
 {\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
 \widowctrl\hyphauto
 
-{\pard \ql \f0 \sa180 \li0 \fi0 Trying to fix REAPERS cringe Item Loop behaviour (especially for MIDI)\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 Trying to fix REAPERS cringe Item Loop behaviour (especially for MIDI) ! MIDI Loop scripts with saving originals use copy and paste and thus overwrite your last copied item/ track/ ...\par}
 {\pard \ql \f0 \sa180 \li0 \fi0 Toggle Loop section of selected item(s) = adjusted version of archie's 'Script: Archie_Item; 'Toggle (Loop source OFF) - (SWS Loop section of selected item(s)).lua' as his version keeps the section bounds set of the loop section Create Loop from visible section of selected MIDI item(s) = adaption of 'Script: rodilab_Loop section of audiomidi item source within time selection, if any.lua' to work without time selection/ for the visible part of the midi item\par}
 }
 ]]></description>
@@ -246,6 +246,15 @@
         <source main="main" file="joshnt_Loop item(s)/joshnt_Toggle Loop visible section of selected item(s).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/342fdc8984b1e07ae57952b50a09881da0346fdf/ITEMS/joshnt_Loop%20item(s)/joshnt_Toggle%20Loop%20visible%20section%20of%20selected%20item(s).lua</source>
         <source main="main" file="joshnt_Loop item(s)/joshnt_Create Loop from visible section of selected MIDI item(s) - destructive.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/342fdc8984b1e07ae57952b50a09881da0346fdf/ITEMS/joshnt_Loop%20item(s)/joshnt_Create%20Loop%20from%20visible%20section%20of%20selected%20MIDI%20item(s)%20-%20destructive.lua</source>
         <source main="main" file="joshnt_Loop item(s)/joshnt_Create Loop from visible section of selected MIDI item(s) - paste as new take.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/342fdc8984b1e07ae57952b50a09881da0346fdf/ITEMS/joshnt_Loop%20item(s)/joshnt_Create%20Loop%20from%20visible%20section%20of%20selected%20MIDI%20item(s)%20-%20paste%20as%20new%20take.lua</source>
+      </version>
+      <version name="1.1" author="Joshnt, Archie, Rodilab" time="2024-08-30T12:42:00Z">
+        <changelog><![CDATA[- added lane and track variants for midi item loops]]></changelog>
+        <source main="main" file="joshnt_Loop item(s)/joshnt_Toggle Loop visible section of selected item(s).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/7c541be88e98b2eac39d42c50dc8fb4ed5d0380b/ITEMS/joshnt_Loop%20item(s)/joshnt_Toggle%20Loop%20visible%20section%20of%20selected%20item(s).lua</source>
+        <source main="main" file="joshnt_Loop item(s)/joshnt_Create Loop from visible section of selected MIDI item(s) - destructive.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/7c541be88e98b2eac39d42c50dc8fb4ed5d0380b/ITEMS/joshnt_Loop%20item(s)/joshnt_Create%20Loop%20from%20visible%20section%20of%20selected%20MIDI%20item(s)%20-%20destructive.lua</source>
+        <source main="main" file="joshnt_Loop item(s)/joshnt_Create Loop from visible section of selected MIDI item(s) - paste as new take.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/7c541be88e98b2eac39d42c50dc8fb4ed5d0380b/ITEMS/joshnt_Loop%20item(s)/joshnt_Create%20Loop%20from%20visible%20section%20of%20selected%20MIDI%20item(s)%20-%20paste%20as%20new%20take.lua</source>
+        <source main="main" file="joshnt_Loop item(s)/joshnt_Create Loop from visible section of selected MIDI item(s) - paste original on new track lane.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/7c541be88e98b2eac39d42c50dc8fb4ed5d0380b/ITEMS/joshnt_Loop%20item(s)/joshnt_Create%20Loop%20from%20visible%20section%20of%20selected%20MIDI%20item(s)%20-%20paste%20original%20on%20new%20track%20lane.lua</source>
+        <source main="main" file="joshnt_Loop item(s)/joshnt_Create Loop from visible section of selected MIDI item(s) - paste original on next track lane.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/7c541be88e98b2eac39d42c50dc8fb4ed5d0380b/ITEMS/joshnt_Loop%20item(s)/joshnt_Create%20Loop%20from%20visible%20section%20of%20selected%20MIDI%20item(s)%20-%20paste%20original%20on%20next%20track%20lane.lua</source>
+        <source main="main" file="joshnt_Loop item(s)/joshnt_Create Loop from visible section of selected MIDI item(s) - paste original on new track.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/7c541be88e98b2eac39d42c50dc8fb4ed5d0380b/ITEMS/joshnt_Loop%20item(s)/joshnt_Create%20Loop%20from%20visible%20section%20of%20selected%20MIDI%20item(s)%20-%20paste%20original%20on%20new%20track.lua</source>
       </version>
     </reapack>
     <reapack name="joshnt_Move Items to marker - Package.lua" type="script" desc="Move items to numbered, named or selected marker">
