@@ -1,5 +1,5 @@
 -- @description Adding own functions and functionalities as lua-functions
--- @version 2.20
+-- @version 2.21
 -- @author Joshnt
 -- @provides [nomain] .
 -- @about
@@ -1285,7 +1285,7 @@ function joshnt.getRegionAtPosition(startTimeInput)
     local retval, isrgn, pos, rgnend, name, markrgnindexnumber = reaper.EnumProjectMarkers( j )
     if isrgn then
         if (pos <= startTimeInput and rgnend > startTimeInput) then -- if given input is in region
-          return markrgnindexnumber, pos, rgnend
+          return markrgnindexnumber, pos, rgnend, name
         end
     end
   end
