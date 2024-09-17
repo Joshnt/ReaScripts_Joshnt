@@ -1,7 +1,9 @@
 -- @description Unique Region per overlapping item bundle in selection (with Mother Region over them) - Game Audio/ SD Use
--- @version 2.11
+-- @version 2.20
 -- @changelog
---  - added Lokasenna GUI + RRM Link
+--  - added 'Parent per item' as RRM link
+--  - added toggle to reposition 
+--  - adjusted GUI
 -- @author Joshnt
 -- @about 
 --    ## Unique Regions - Joshnt

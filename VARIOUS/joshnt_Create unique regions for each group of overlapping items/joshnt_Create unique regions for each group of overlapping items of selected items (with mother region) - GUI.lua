@@ -78,6 +78,7 @@ local function run_Button()
     joshnt_UniqueRegions.createMotherRgn = GUI.Val("MotherRgnBool")
     joshnt_UniqueRegions.createChildRgn = GUI.Val("ChildRgnBool")
     joshnt_UniqueRegions.groupToleranceTime = GUI.Val("TimeInclude")
+    joshnt_UniqueRegions.repositionToggle = GUI.Val("RepositionToggle")
 
     joshnt_UniqueRegions.main()
     if optionsTable then
@@ -313,7 +314,7 @@ local function redrawColFrames()
     GUI.New("ColSelFrame_Child", "Frame", {
         z = zChild,
         x = 86,
-        y = 467,
+        y = 492,
         w = 80,
         h = 25,
         shadow = false,
@@ -333,7 +334,7 @@ local function redrawColFrames()
     GUI.New("ColSelFrame_Mother", "Frame", {
         z = zMother,
         x = 230,
-        y = 467,
+        y = 492,
         w = 80,
         h = 25,
         shadow = false,
@@ -351,7 +352,7 @@ local function redrawColFrames()
 
     function GUI.elms.ColSelFrame_Child:onmouseup()
         local retval, newColor = reaper.GR_SelectColor(nil)
-        if retval then 
+        if retval ~= 0 then 
             joshnt_UniqueRegions.regionColor = newColor 
         else
             joshnt_UniqueRegions.regionColor = nil
@@ -391,6 +392,17 @@ end
 
 local function redrawAll ()
     GUI.elms_hide[5] = true
+
+    GUI.New("Cat1", "Label", {
+        z = 11,
+        x = 2,
+        y = 7,
+        caption = "Adjust Region Length and Distance",
+        font = 2,
+        color = "elm_fill",
+        bg = "txt",
+        shadow = false
+    })
 
     GUI.New("TimeBefore_Text", "Textbox", {
         z = 11,
@@ -481,11 +493,32 @@ local function redrawAll ()
         opt_size = 20
     })
 
+    GUI.New("RepositionToggle", "Checklist", {
+        z = 10,
+        x = 56,
+        y = 262,
+        w = 300,
+        h = 30,
+        caption = "",
+        optarray = {"Toggle Reposition"},
+        dir = "v",
+        pad = 4,
+        font_a = 2,
+        font_b = 3,
+        col_txt = "txt",
+        col_fill = "elm_fill",
+        bg = "wnd_bg",
+        frame = false,
+        shadow = true,
+        swap = nil,
+        opt_size = 20
+    })
+
     -- Region creation
     GUI.New("ChildRgnBool", "Checklist", {
         z = 11,
         x = 60,
-        y = 299,
+        y = 324,
         w = 155,
         h = 30,
         caption = "",
@@ -506,7 +539,7 @@ local function redrawAll ()
     GUI.New("Child_Label", "Label", {
         z = 11,
         x = 70,
-        y = 339,
+        y = 364,
         caption = "Region per Item group",
         font = 3,
         color = "txt",
@@ -517,7 +550,7 @@ local function redrawAll ()
     GUI.New("RegionNameChild", "Textbox", {
         z = 11,
         x = 86,
-        y = 371,
+        y = 396,
         w = 100,
         h = 20,
         caption = "Region Name",
@@ -534,11 +567,11 @@ local function redrawAll ()
     GUI.New("RRMChild", "Menubox", {
         z = 11,
         x = 86,
-        y = 419,
+        y = 444,
         w = 100,
         h = 20,
         caption = "Link to RRM",
-        optarray = {"Master", "Highest Parent", "First Parent", "Each Track", "None"},
+        optarray = {"Master", "Highest common Parent", "First common Parent", "First parent per item", "Each Track", "None"},
         retval = 2.0,
         font_a = 3,
         font_b = 4,
@@ -553,7 +586,7 @@ local function redrawAll ()
     GUI.New("MotherRgnBool", "Checklist", {
         z = 11,
         x = 225,
-        y = 299,
+        y = 324,
         w = 155,
         h = 30,
         caption = "",
@@ -574,7 +607,7 @@ local function redrawAll ()
     GUI.New("Mother_Label", "Label", {
         z = 21,
         x = 230,
-        y = 339,
+        y = 364,
         caption = "Mother region",
         font = 3,
         color = "txt",
@@ -585,7 +618,7 @@ local function redrawAll ()
     GUI.New("RegionNameMother", "Textbox", {
         z = 21,
         x = 230,
-        y = 371,
+        y = 396,
         w = 100,
         h = 20,
         caption = "",
@@ -602,11 +635,11 @@ local function redrawAll ()
     GUI.New("RRMMother", "Menubox", {
         z = 21,
         x = 230,
-        y = 419,
+        y = 444,
         w = 100,
         h = 20,
         caption = "",
-        optarray = {"Master", "First Parent", "Highest Parent", "Each Track", "None"},
+        optarray = {"Master", "Highest common Parent", "First common Parent", "First parent per item", "Each Track", "None"},
         retval = 1,
         font_a = 3,
         font_b = 4,
@@ -623,7 +656,7 @@ local function redrawAll ()
     GUI.New("isolateItems", "Radio", {
         z = 11,
         x = 24,
-        y = 550,
+        y = 575,
         w = 120,
         h = 80,
         caption = "Isolate options",
@@ -643,7 +676,7 @@ local function redrawAll ()
     GUI.New("Run", "Button", {
         z = 11,
         x = 308,
-        y = 540,
+        y = 565,
         w = 72,
         h = 30,
         caption = "Run",
@@ -656,7 +689,7 @@ local function redrawAll ()
     GUI.New("options", "Checklist", {
         z = 11,
         x = 174,
-        y = 550,
+        y = 575,
         w = 120,
         h = 85,
         caption = "On run:",
@@ -679,7 +712,7 @@ local function redrawAll ()
     GUI.New("Frame_hor1", "Frame", {
         z = 30,
         x = 12,
-        y = 276,
+        y = 306,
         w = 376,
         h = 2,
         shadow = false,
@@ -698,7 +731,7 @@ local function redrawAll ()
     GUI.New("Frame_hor2", "Frame", {
         z = 30,
         x = 12,
-        y = 510,
+        y = 535,
         w = 376,
         h = 2,
         shadow = false,
@@ -755,10 +788,11 @@ local function redrawAll ()
     GUI.elms.TimeBetween_Text.tooltip = "Corresponding textinput to slider to the left.\nIf input is out of slider bounds, slider gets rescaled automatically.\nUse 'TAB' to cycle between all text-input boxes."
     GUI.elms.TimeInclude_Text.tooltip = "Corresponding textinput to slider to the left.\nIf input is out of slider bounds, slider gets rescaled automatically.\nUse 'TAB' to cycle between all text-input boxes."
     GUI.elms.Preview.tooltip = "Use REAPER's 'Time-Selection' to visualize the first group's region bounds.\nRefreshes on time-value changes; to refresh after a item-selection change, press 'R'."
+    GUI.elms.RepositionToggle.tooltip = "Toggle whether or not the selected items should get moved according to the sliders above."
     GUI.elms.RegionNameChild.tooltip = "Set the name of the individual regions. Use '/E' to enumerate from 1 or '/E(Number), e.g. '/E(3)' to enumerate from that number onwards."
     GUI.elms.RegionNameMother.tooltip = "Set the name of the mother regions."
-    GUI.elms.RRMChild.tooltip = "Choose over which track to route the newly created regions in the region render matrix.\n\n'Master' routes over the Master-Track.\n'First Parent' routes over the first found parent of all selected items (without any selected items on it) or the Master if no parent can be found.\n'Highest Parent' uses the highest common parent of all selected items or the Master if no parent can be found.\n'Each Track' only routes over a track if the track has items from the selection on it.\n'None' doesn't set a link in the RRM."
-    GUI.elms.RRMMother.tooltip = "Choose over which track to route the newly created mother region in the region render matrix.\n\n'Master' routes over the Master-Track.\n'First Parent' routes over the first found parent of all selected items (without any selected items on it) or the Master if no parent can be found.\n'Highest Parent' uses the highest common parent of all selected items or the Master if no parent can be found.\n'Each Track' only routes over a track if the track has items from the selection on it.\n'None' doesn't set a link in the RRM."
+    GUI.elms.RRMChild.tooltip = "Choose over which track to route the newly created regions in the region render matrix.\n\n'Master' routes over the Master-Track.\n'First common Parent' routes over the first found parent of all selected items (without any selected items on it) or the Master if no parent can be found.\n'Highest common Parent' uses the highest common parent of all selected items or the Master if no parent can be found.\n'First parent per item' routes over all parent tracks of any items.\n'Each Track' only routes over a track if the track has items from the selection on it.\n'None' doesn't set a link in the RRM."
+    GUI.elms.RRMMother.tooltip = "Choose over which track to route the newly created mother region in the region render matrix.\n\n'Master' routes over the Master-Track.\n'First common Parent' routes over the first found parent of all selected items (without any selected items on it) or the Master if no parent can be found.\n'Highest common Parent' uses the highest common parent of all selected items or the Master if no parent can be found.\n'First parent per item' routes over all parent tracks of any items.\n'Each Track' only routes over a track if the track has items from the selection on it.\n'None' doesn't set a link in the RRM."
     GUI.elms.MotherRgnBool.tooltip = "Toogle if a 'Mother-Region' (a region over all other newly created regions) should be created."
     GUI.elms.isolateItems.tooltip = "Sets if any and which items should be moved to avoid overlaps of the selected items with non-selected items.\nWARNING: Not moving items if there are other items on the track with the selected items may result in deleting those items between."
     GUI.elms.Run.tooltip = "Execute the script with the current Settings.\nShortcut - 'Shift + RETURN'"
@@ -819,6 +853,7 @@ local function loadDefaultValues()
     if joshnt_UniqueRegions.RRMLink_Mother then GUI.Val("RRMMother",joshnt_UniqueRegions.RRMLink_Mother) end
     if joshnt_UniqueRegions.createMotherRgn == true then GUI.Val("MotherRgnBool", true) end
     if joshnt_UniqueRegions.createChildRgn == true then GUI.Val("ChildRgnBool", true) end
+    if joshnt_UniqueRegions.repositionToggle == true or not joshnt_UniqueRegions.repositionToggle then GUI.Val("RepositionToggle", true) end
     GUI.Val("Preview",previewWithTimeSelection)
     setFrameColors("Child",joshnt_UniqueRegions.regionColor)
     setFrameColors("Mother",joshnt_UniqueRegions.regionColorMother)
@@ -839,10 +874,30 @@ local function init()
     end
 end
 
+local function resize()
+    joshnt_UniqueRegions.isolateItems = GUI.Val("isolateItems")
+    joshnt_UniqueRegions.start_silence = GUI.Val("TimeBefore")
+    joshnt_UniqueRegions.end_silence = GUI.Val("TimeAfter")
+    joshnt_UniqueRegions.space_in_between = GUI.Val("TimeBetween")
+    joshnt_UniqueRegions.regionName = GUI.Val("RegionNameChild")
+    joshnt_UniqueRegions.motherRegionName = GUI.Val("RegionNameMother")
+    joshnt_UniqueRegions.RRMLink_Child = GUI.Val("RRMChild")
+    joshnt_UniqueRegions.RRMLink_Mother = GUI.Val("RRMMother") 
+    joshnt_UniqueRegions.createMotherRgn = GUI.Val("MotherRgnBool")
+    joshnt_UniqueRegions.createChildRgn = GUI.Val("ChildRgnBool")
+    joshnt_UniqueRegions.groupToleranceTime = GUI.Val("TimeInclude")
+
+    redrawAll()
+    loadDefaultValues()
+    for sliderName, _ in pairs(timeSliderVals) do
+        setSliderSize(sliderName)
+    end
+end
+
 
 GUI.Init()
 init()
 GUI.func = Loop
 GUI.freq = 0
-GUI.onresize = redrawAll
+GUI.onresize = resize
 GUI.Main()

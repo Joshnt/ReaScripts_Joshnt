@@ -14,8 +14,8 @@ local GroupTolerance_USER = nil -- Time in Seconds
 local Lock_Items_USER = nil -- write true or false to lock selected items after moving them
 local Region_Name_USER = nil -- Insert name as string between ""
 local Mother_Region_Name_USER = nil -- Insert name as string between ""
-local LinkToRRM_ChildRgn_USER = nil -- sets Region Manager Link for individual item Groups; 1 = Master, 2 = Highest Parent, 3 = Parent, 4 = Track, 0 = no link
-local LinkToRRM_MotherRgn_USER = nil -- sets Region Manager Link for individual item Groups; 1 = Master, 2 = Highest Parent, 3 = Parent, 4 = Track
+local LinkToRRM_ChildRgn_USER = nil -- sets Region Manager Link for individual item Groups; 1 = Master, 2 = Highest common Parent, 3 = first common Parent, 4 = Track,  5 = each track, 0 = no link
+local LinkToRRM_MotherRgn_USER = nil -- sets Region Manager Link for individual item Groups; 1 = Master, 2 = Highest common Parent, 3 = first common Parent, 4 = Parent per item, 5 = each track, 0 = no link
 
 ---------------------------------------
 ---------- USER CONFIG END ------------

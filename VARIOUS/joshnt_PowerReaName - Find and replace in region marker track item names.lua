@@ -1,5 +1,5 @@
 -- @description PowerReaName - Find and Replace in Track, Items, Regions or Marker Names
--- @version 1.01
+-- @version 1.2
 -- @author Joshnt
 -- @about
 --      Various possibilities to reliable rename most things in REAPER
@@ -47,7 +47,7 @@ GUI.anchor, GUI.corner = "screen", "C"
 local joshnt_LuaUtils = reaper.GetResourcePath()..'/Scripts/Joshnt_ReaScripts/DEVELOPMENT/joshnt_LuaUtilities.lua'
 if reaper.file_exists( joshnt_LuaUtils ) then 
   dofile( joshnt_LuaUtils ) 
-  if not joshnt or joshnt.version() < 1.0 then 
+  if not joshnt or joshnt.version() < 2.21 then 
     reaper.MB("This script requires a newer version of joshnt Lua Utilities. Please run:\n\nExtensions > ReaPack > Synchronize Packages, 'joshnt_LuaUtilities.lua'","Error",0); 
     return 
   end
@@ -259,10 +259,11 @@ local functionTables = {
 local function executeRename()
     local selTargetTable = GUI.Val("Target")
     local selSelectionTarget = GUI.Val("selectionTarget")
-    insertEndString = GUI.Val("insertEnd")
-    insertStartString = GUI.Val("InsertStart")
-    replaceString = GUI.Val("Replace")
-    searchString = GUI.Val("Find")
+    insertEndString = tostring(GUI.Val("insertEnd"))
+    insertStartString = tostring(GUI.Val("InsertStart"))
+    replaceString = tostring(GUI.Val("Replace"))
+    searchString = tostring(GUI.Val("Find"))
+    reaper.ShowConsoleMsg("\n"..searchString)
     truncateStartInt = GUI.Val("TruncateStart")
     truncateEndInt = GUI.Val("TruncateEnd")
 
