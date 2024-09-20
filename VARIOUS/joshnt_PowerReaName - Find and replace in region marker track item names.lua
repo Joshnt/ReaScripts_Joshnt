@@ -5,7 +5,9 @@
 --      Various possibilities to reliable rename most things in REAPER
 --      Requires Lokasenna_GUI Library
 -- @changelog
---  + init
+--  - added case-sensetive search
+--  - Bug fix for special characters in searchbar
+--  - added option to toggle replace (offers option to add or truncate only on matching names without replacing)
 
 local lib_path = reaper.GetExtState("Lokasenna_GUI", "lib_path_v2")
 if not lib_path or lib_path == "" then
@@ -27,6 +29,7 @@ if missing_lib then return 0 end
 
 local searchString, replaceString, insertStartString, insertEndString, truncateStartInt, truncateEndInt;
 local boolJustReturn = true
+local boolReplace = true
 local oldNameString, newNameString = "", ""
 local markersToRename, regionsToRename = {},{} -- both include subarrays on each index with 1 = rgnIndex, 2 = rgnName, 3 = rgnStart and for regions 4 = rgnEnd
 local startTime, endTime = -1,-1
@@ -39,7 +42,7 @@ local focusedText = nil
 local focusArray = {"Find", "Replace","InsertStart","insertEnd"}
 
 GUI.name = "joshnt_PowerReaName"
-GUI.x, GUI.y, GUI.w, GUI.h = 0, 0, 400, 380
+GUI.x, GUI.y, GUI.w, GUI.h = 0, 0, 430, 380
 GUI.cur_w, GUI.cur_h = GUI.w, GUI.h
 GUI.anchor, GUI.corner = "screen", "C"
 
@@ -56,6 +59,25 @@ else
   return
 end
 
+-- Function to escape special characters in the pattern
+local function escapePattern(inputString)
+    return string.gsub(inputString, "([%%%-%+%.%*%?%[%]%^%$%(%)])", "%%%1")
+end
+
+local function caseSensetiveFind(inputString)
+    inputString = tostring(inputString)
+    if not GUI.Val("ToggleCaseFind") then
+        -- Convert both the searchString and the originalString to lowercase
+        local lowerSearchString = string.lower(searchString)
+        local lowerOriginalString = string.lower(inputString)
+
+        -- Find the pattern in the lower case string
+        return string.find(lowerOriginalString, escapePattern(lowerSearchString))
+    else
+        return string.find(inputString, searchString)
+    end
+end
+
 -- utility functions
 local function getMarkersAndRegionsInTimeFrame_WithName()
     local numRegions = reaper.CountProjectMarkers(0, 0)
@@ -69,11 +91,11 @@ local function getMarkersAndRegionsInTimeFrame_WithName()
         local retval, isrgn, rgnstart, rgnend, rgnName, rgnIndex = reaper.EnumProjectMarkers( j)
         if retval then
             if isrgn then
-                if startTime <= rgnend and endTime > rgnstart and rgnName:find(searchString) then
+                if startTime <= rgnend and endTime > rgnstart and caseSensetiveFind(rgnName) then
                     table.insert(regionsInTime,{rgnIndex, rgnName, rgnstart, rgnend})
                 end
             else
-                if startTime <= rgnstart and endTime > rgnstart and rgnName:find(searchString) then
+                if startTime <= rgnstart and endTime > rgnstart and caseSensetiveFind(rgnName) then
                     table.insert(markersInTime,{rgnIndex,rgnName, rgnstart})
                 end
             end
@@ -83,24 +105,38 @@ local function getMarkersAndRegionsInTimeFrame_WithName()
     return markersInTime, regionsInTime
 end
 
-
 -- Naming related Functions
 local function getNewName(oldName)
-  local newName = oldName
+    local newName = oldName
     if truncateStartInt ~= 0 then newName = string.sub(newName, (truncateStartInt+1)) end -- remove start
     if truncateEndInt ~= 0 then newName = string.sub(newName, 1, -(truncateEndInt+1)) end -- remove end
-    if searchString == "" and enumNameIndex.replace == nil then 
-        newName = replaceString 
-    elseif searchString == "" and enumNameIndex.replace ~= nil then
-        enumNameIndex.replace = enumNameIndex.replace + 1
-        newName = string.gsub(replaceString, enumReplaceString.replace, enumNameIndex.replace) 
-    else 
-        local replaceStringTemp = replaceString
-        if enumNameIndex.replace ~= nil then 
+    if boolReplace then -- check if replace is toggled
+        if searchString == "" and enumNameIndex.replace == nil then 
+            newName = replaceString 
+        elseif searchString == "" and enumNameIndex.replace ~= nil then
             enumNameIndex.replace = enumNameIndex.replace + 1
-            replaceStringTemp = string.gsub(replaceString, enumReplaceString.replace, enumNameIndex.replace) 
+            newName = string.gsub(replaceString, enumReplaceString.replace, enumNameIndex.replace) 
+        else 
+            local replaceStringTemp = replaceString
+            if enumNameIndex.replace ~= nil then 
+                enumNameIndex.replace = enumNameIndex.replace + 1
+                replaceStringTemp = string.gsub(replaceString, enumReplaceString.replace, enumNameIndex.replace) 
+            end
+            if not GUI.Val("ToggleCaseFind") then
+                -- Convert both the searchString and the originalString to lowercase
+                local lowerSearchString = string.lower(searchString)
+                local lowerOriginalString = string.lower(newName)
+
+                -- Find the pattern in the lower case string
+                local startPos, endPos = string.find(lowerOriginalString, escapePattern(lowerSearchString))
+                -- If the pattern is found, remove it from the original string (case-sensitive)
+                if startPos then
+                    newName = string.sub(newName, 1, startPos - 1) .. replaceString .. string.sub(newName, endPos + 1)
+                end
+            else
+                newName = string.gsub(newName, escapePattern(searchString), replaceStringTemp) 
+            end
         end
-        newName = string.gsub(newName, searchString, replaceStringTemp) 
     end
     local insertStartString_Temp, insertEndString_Temp = insertStartString, insertEndString
     if enumNameIndex.insertStart ~= nil then
@@ -120,7 +156,7 @@ local function searchReplaceTrackName(track)
   if not track or not reaper.ValidatePtr(track, "MediaTrack") == false then return end
   local _,trackName = reaper.GetTrackName(track)
   if trackName == "Track "..math.floor(reaper.GetMediaTrackInfo_Value(track, "IP_TRACKNUMBER")) then trackName = "" end
-  if trackName:find(searchString) then
+  if caseSensetiveFind(caseSensetiveFind) then
     local newName = getNewName(trackName)
     if boolJustReturn == true then 
       oldNameString = oldNameString .. "\n"..trackName
@@ -134,7 +170,7 @@ local function searchReplaceItemName(item)
     local take = reaper.GetActiveTake(item)
     if take then
         local takeName = reaper.GetTakeName(take)
-        if takeName:find(searchString) then
+        if caseSensetiveFind(takeName) then
             local newName = getNewName(takeName)
             if boolJustReturn == true then 
             oldNameString = oldNameString .. "\n"..takeName
@@ -206,7 +242,7 @@ local function renameAllMarkersOrRegions(boolRegion)
   
     for j = 0, numRegions - 1 do
         local retval, isrgn, rgnstart, rgnend, rgnName, rgnIndex = reaper.EnumProjectMarkers( j)
-        if retval and isrgn == boolRegion and rgnName:find(searchString) then
+        if retval and isrgn == boolRegion and caseSensetiveFind(rgnName) then
             local newName = getNewName(rgnName)
             if boolJustReturn == true then 
                 oldNameString = oldNameString .. "\n"..rgnName
@@ -263,7 +299,6 @@ local function executeRename()
     insertStartString = tostring(GUI.Val("InsertStart"))
     replaceString = tostring(GUI.Val("Replace"))
     searchString = tostring(GUI.Val("Find"))
-    reaper.ShowConsoleMsg("\n"..searchString)
     truncateStartInt = GUI.Val("TruncateStart")
     truncateEndInt = GUI.Val("TruncateEnd")
 
@@ -274,7 +309,7 @@ local function executeRename()
     reaper.SetExtState("joshnt_PowerReaName", "Target", joshnt.tableToCSVString(selTargetTable), true)
     reaper.SetExtState("joshnt_PowerReaName", "OtherSettings", selSelectionTarget..","..searchString..","..replaceString..","..insertStartString..","..insertEndString..","..truncateStartInt..","..truncateEndInt, true)
 
-    if selSelectionTarget == 3 then
+    if selSelectionTarget == 3 then -- if minimal time selection, quit
         startTime, endTime = reaper.GetSet_LoopTimeRange(false, false, 0, 0, false)
         if endTime - startTime < 0.001 then return end
     end
@@ -289,7 +324,7 @@ local function executeRename()
                 local _, isrgn, rgnpos, rgnend, rgnname, rgnIndex = reaper.EnumProjectMarkers( j)
                 if tempMarker then
                     for i = 1, #tempMarker do
-                        if not isrgn and rgnIndex == tempMarker[i] and rgnname:find(searchString) then
+                        if not isrgn and rgnIndex == tempMarker[i] and caseSensetiveFind(rgnname) then
                             table.insert(markersToRename,{rgnIndex, rgnname, rgnpos})
                             break
                         end
@@ -297,7 +332,7 @@ local function executeRename()
                 end
                 if tempRegions then
                     for i = 1, #tempRegions do
-                        if isrgn and rgnIndex == tempRegions[i] and rgnname:find(searchString) then
+                        if isrgn and rgnIndex == tempRegions[i] and caseSensetiveFind(rgnname) then
                             table.insert(regionsToRename,{rgnIndex, rgnname, rgnpos, rgnend})
                             break
                         end
@@ -490,6 +525,29 @@ GUI.New("Replace", "Textbox", {
     undo_limit = 20
 })
 
+GUI.New("ToggleReplace", "Checklist", {
+    z = 11,
+    x = 390,
+    y = 74,
+    w = 300,
+    h = 30,
+    caption = "",
+    optarray = {""},
+    dir = "v",
+    pad = 4,
+    font_a = 2,
+    font_b = 3,
+    col_txt = "txt",
+    col_fill = "elm_fill",
+    bg = "wnd_bg",
+    frame = false,
+    shadow = true,
+    swap = nil,
+    opt_size = 20
+})
+
+GUI.Val("ToggleReplace", true)
+
 GUI.New("Find", "Textbox", {
     z = 11,
     x = 230,
@@ -505,6 +563,27 @@ GUI.New("Find", "Textbox", {
     shadow = true,
     pad = 4,
     undo_limit = 20
+})
+
+GUI.New("ToggleCaseFind", "Checklist", {
+    z = 11,
+    x = 390,
+    y = 42,
+    w = 300,
+    h = 30,
+    caption = "",
+    optarray = {""},
+    dir = "v",
+    pad = 4,
+    font_a = 2,
+    font_b = 3,
+    col_txt = "txt",
+    col_fill = "elm_fill",
+    bg = "wnd_bg",
+    frame = false,
+    shadow = true,
+    swap = nil,
+    opt_size = 20
 })
 
 GUI.New("TruncateEnd", "Slider", {
@@ -653,6 +732,8 @@ GUI.elms.TruncateStart.tooltip = "How many charactes to cut at the beginning of 
 GUI.elms.TruncateEnd.tooltip = "How many charactes to cut at the end of the target's name"
 GUI.elms.selectionTarget.tooltip = "Sets which targets exactly to check"
 GUI.elms.Target.tooltip = "Sets the target to search and rename"
+GUI.elms.ToggleReplace.tooltip = "Toggle if the text in the 'find' field should be replaced."
+GUI.elms.ToggleCaseFind.tooltip = "Toggle case sensetive search"
 
 redrawFrame()
 
@@ -660,6 +741,18 @@ GUI.elms.Tabs:update_sets({
     [1] = {11},
     [2] = {21}
 })
+
+function GUI.elms.ToggleReplace:onmouseup()
+    GUI.Checklist.onmouseup(self)        
+    if GUI.Val("ToggleReplace") then 
+        GUI.elms.Replace.z = 11
+        GUI.redraw_z[11] = true
+    else
+        GUI.elms.Replace.z = 5
+        GUI.redraw_z[11] = true
+    end
+    boolReplace = GUI.Val("ToggleReplace")
+end
 
 function GUI.elms.Tabs:onmousedown()
     GUI.Tabs.onmousedown(self)        

@@ -314,7 +314,7 @@ local function redrawColFrames()
     GUI.New("ColSelFrame_Child", "Frame", {
         z = zChild,
         x = 86,
-        y = 492,
+        y = 476,
         w = 80,
         h = 25,
         shadow = false,
@@ -334,7 +334,7 @@ local function redrawColFrames()
     GUI.New("ColSelFrame_Mother", "Frame", {
         z = zMother,
         x = 230,
-        y = 492,
+        y = 476,
         w = 80,
         h = 25,
         shadow = false,
@@ -395,18 +395,18 @@ local function redrawAll ()
 
     GUI.New("Cat1", "Label", {
         z = 11,
-        x = 2,
-        y = 7,
+        x = 5,
+        y = 5,
         caption = "Adjust Region Length and Distance",
         font = 2,
         color = "elm_fill",
-        bg = "txt",
-        shadow = false
+        bg = "elm_frame",
+        shadow = true
     })
 
     GUI.New("TimeBefore_Text", "Textbox", {
         z = 11,
-        x = 320,
+        x = 315,
         y = 43,
         w = 40,
         h = 20,
@@ -423,7 +423,7 @@ local function redrawAll ()
 
     GUI.New("TimeAfter_Text", "Textbox", {
         z = 11,
-        x = 320,
+        x = 315,
         y = 91,
         w = 40,
         h = 20,
@@ -440,7 +440,7 @@ local function redrawAll ()
 
     GUI.New("TimeBetween_Text", "Textbox", {
         z = 11,
-        x = 320,
+        x = 315,
         y = 139,
         w = 40,
         h = 20,
@@ -455,9 +455,30 @@ local function redrawAll ()
         undo_limit = 20
     })
 
+    GUI.New("RepositionToggle", "Checklist", {
+        z = 10,
+        x = 368,
+        y = 133,
+        w = 300,
+        h = 30,
+        caption = "",
+        optarray = {""},
+        dir = "v",
+        pad = 4,
+        font_a = 2,
+        font_b = 3,
+        col_txt = "txt",
+        col_fill = "elm_fill",
+        bg = "wnd_bg",
+        frame = false,
+        shadow = true,
+        swap = nil,
+        opt_size = 20
+    })
+
     GUI.New("TimeInclude_Text", "Textbox", {
         z = 11,
-        x = 320,
+        x = 315,
         y = 187,
         w = 40,
         h = 20,
@@ -475,7 +496,7 @@ local function redrawAll ()
     GUI.New("Preview", "Checklist", {
         z = 11,
         x = 56,
-        y = 234,
+        y = 228,
         w = 300,
         h = 30,
         caption = "",
@@ -493,32 +514,22 @@ local function redrawAll ()
         opt_size = 20
     })
 
-    GUI.New("RepositionToggle", "Checklist", {
-        z = 10,
-        x = 56,
-        y = 262,
-        w = 300,
-        h = 30,
-        caption = "",
-        optarray = {"Toggle Reposition"},
-        dir = "v",
-        pad = 4,
-        font_a = 2,
-        font_b = 3,
-        col_txt = "txt",
-        col_fill = "elm_fill",
-        bg = "wnd_bg",
-        frame = false,
-        shadow = true,
-        swap = nil,
-        opt_size = 20
+    -- Region creation
+    GUI.New("Cat2", "Label", {
+        z = 11,
+        x = 5,
+        y = 280,
+        caption = "Create Region(s)",
+        font = 2,
+        color = "elm_fill",
+        bg = "elm_frame",
+        shadow = true
     })
 
-    -- Region creation
     GUI.New("ChildRgnBool", "Checklist", {
         z = 11,
         x = 60,
-        y = 324,
+        y = 308,
         w = 155,
         h = 30,
         caption = "",
@@ -539,7 +550,7 @@ local function redrawAll ()
     GUI.New("Child_Label", "Label", {
         z = 11,
         x = 70,
-        y = 364,
+        y = 348,
         caption = "Region per Item group",
         font = 3,
         color = "txt",
@@ -550,7 +561,7 @@ local function redrawAll ()
     GUI.New("RegionNameChild", "Textbox", {
         z = 11,
         x = 86,
-        y = 396,
+        y = 380,
         w = 100,
         h = 20,
         caption = "Region Name",
@@ -567,7 +578,7 @@ local function redrawAll ()
     GUI.New("RRMChild", "Menubox", {
         z = 11,
         x = 86,
-        y = 444,
+        y = 428,
         w = 100,
         h = 20,
         caption = "Link to RRM",
@@ -586,7 +597,7 @@ local function redrawAll ()
     GUI.New("MotherRgnBool", "Checklist", {
         z = 11,
         x = 225,
-        y = 324,
+        y = 308,
         w = 155,
         h = 30,
         caption = "",
@@ -607,7 +618,7 @@ local function redrawAll ()
     GUI.New("Mother_Label", "Label", {
         z = 21,
         x = 230,
-        y = 364,
+        y = 348,
         caption = "Mother region",
         font = 3,
         color = "txt",
@@ -618,7 +629,7 @@ local function redrawAll ()
     GUI.New("RegionNameMother", "Textbox", {
         z = 21,
         x = 230,
-        y = 396,
+        y = 380,
         w = 100,
         h = 20,
         caption = "",
@@ -635,7 +646,7 @@ local function redrawAll ()
     GUI.New("RRMMother", "Menubox", {
         z = 21,
         x = 230,
-        y = 444,
+        y = 428,
         w = 100,
         h = 20,
         caption = "",
@@ -653,6 +664,17 @@ local function redrawAll ()
 
 
     -- run and settings
+    GUI.New("Cat3", "Label", {
+        z = 11,
+        x = 5,
+        y = 530,
+        caption = "Other settings",
+        font = 2,
+        color = "elm_fill",
+        bg = "elm_frame",
+        shadow = true
+    })
+
     GUI.New("isolateItems", "Radio", {
         z = 11,
         x = 24,
@@ -712,7 +734,7 @@ local function redrawAll ()
     GUI.New("Frame_hor1", "Frame", {
         z = 30,
         x = 12,
-        y = 306,
+        y = 270,
         w = 376,
         h = 2,
         shadow = false,
@@ -731,7 +753,7 @@ local function redrawAll ()
     GUI.New("Frame_hor2", "Frame", {
         z = 30,
         x = 12,
-        y = 535,
+        y = 520,
         w = 376,
         h = 2,
         shadow = false,
@@ -782,13 +804,30 @@ local function redrawAll ()
         if previewWithTimeSelection then adjustTimeselection() end
     end
 
+    function GUI.elms.RepositionToggle:onmouseup()
+        GUI.Checklist.onmouseup(self)
+        if GUI.Val("RepositionToggle") then 
+            GUI.elms.TimeBetween.z = 15
+            GUI.elms.TimeBetween_Text.z = 11
+            GUI.redraw_z[5] = true
+            GUI.redraw_z[11] = true
+            GUI.redraw_z[15] = true
+        else
+            GUI.elms.TimeBetween.z = 5
+            GUI.elms.TimeBetween_Text.z = 5
+            GUI.redraw_z[5] = true
+            GUI.redraw_z[11] = true
+            GUI.redraw_z[15] = true
+        end
+    end
+
     -- Tooltips
     GUI.elms.TimeBefore_Text.tooltip = "Corresponding textinput to slider to the left.\nIf input is out of slider bounds, slider gets rescaled automatically.\nUse 'TAB' to cycle between all text-input boxes."
     GUI.elms.TimeAfter_Text.tooltip = "Corresponding textinput to slider to the left.\nIf input is out of slider bounds, slider gets rescaled automatically.\nUse 'TAB' to cycle between all text-input boxes."
     GUI.elms.TimeBetween_Text.tooltip = "Corresponding textinput to slider to the left.\nIf input is out of slider bounds, slider gets rescaled automatically.\nUse 'TAB' to cycle between all text-input boxes."
     GUI.elms.TimeInclude_Text.tooltip = "Corresponding textinput to slider to the left.\nIf input is out of slider bounds, slider gets rescaled automatically.\nUse 'TAB' to cycle between all text-input boxes."
     GUI.elms.Preview.tooltip = "Use REAPER's 'Time-Selection' to visualize the first group's region bounds.\nRefreshes on time-value changes; to refresh after a item-selection change, press 'R'."
-    GUI.elms.RepositionToggle.tooltip = "Toggle whether or not the selected items should get moved according to the sliders above."
+    GUI.elms.RepositionToggle.tooltip = "Toggle whether the selected items should get moved to ensure the region distance set with the slider to the left."
     GUI.elms.RegionNameChild.tooltip = "Set the name of the individual regions. Use '/E' to enumerate from 1 or '/E(Number), e.g. '/E(3)' to enumerate from that number onwards."
     GUI.elms.RegionNameMother.tooltip = "Set the name of the mother regions."
     GUI.elms.RRMChild.tooltip = "Choose over which track to route the newly created regions in the region render matrix.\n\n'Master' routes over the Master-Track.\n'First common Parent' routes over the first found parent of all selected items (without any selected items on it) or the Master if no parent can be found.\n'Highest common Parent' uses the highest common parent of all selected items or the Master if no parent can be found.\n'First parent per item' routes over all parent tracks of any items.\n'Each Track' only routes over a track if the track has items from the selection on it.\n'None' doesn't set a link in the RRM."

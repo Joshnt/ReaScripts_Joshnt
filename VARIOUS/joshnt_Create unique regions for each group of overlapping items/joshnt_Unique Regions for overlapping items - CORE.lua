@@ -217,12 +217,38 @@ function joshnt_UniqueRegions.createRRMLink(RRMLink_Target,rgnIndex)
     end   
 end
 
+-- Function to check for overlapping regions with given time, returns bool
+function joshnt_UniqueRegions.checkOverlapWithRegions(startTimeInput, endTimeInput, rgnTable)
+
+    local proj = reaper.EnumProjects(-1, "")
+    local numRegions = reaper.CountProjectMarkers(proj, 0)
+    if numRegions == 0 then
+        return false
+    end
+  
+    local overlapDetected = false
+  
+    for j = 0, numRegions - 1 do
+        local _, isrgn, rgnstart, rgnend, _, index = reaper.EnumProjectMarkers( j)
+        if isrgn and not joshnt.tableContainsVal(rgnTable, index) then -- is region and is not newly created region
+            if startTimeInput < rgnend and endTimeInput > rgnstart then -- region is in timeframe
+                overlapDetected = true
+                break
+            end
+        end
+    end
+  
+    return overlapDetected
+end
+
 function joshnt_UniqueRegions.setRegionsForitemGroups()
     local rgnIndexTable_TEMP = {}
     local rgnName_Save;
     if joshnt_UniqueRegions.regionNameReplaceString then
         rgnName_Save = joshnt_UniqueRegions.regionName
     end
+
+
 
     for i = 1, #joshnt_UniqueRegions.itemGroups do
         reaper.SelectAllMediaItems(0, false)
@@ -240,7 +266,7 @@ function joshnt_UniqueRegions.setRegionsForitemGroups()
         local currSelStart_TEMP, currSelEnd_TEMP = joshnt.startAndEndOfSelectedItems()
         local regionIndex_TEMP = nil
 
-        if joshnt.checkOverlapWithRegions(currSelStart_TEMP, currSelEnd_TEMP) then regionIndex_TEMP = joshnt_UniqueRegions.setRegionLength()
+        if joshnt_UniqueRegions.checkOverlapWithRegions(currSelStart_TEMP, currSelEnd_TEMP, rgnIndexTable_TEMP) then regionIndex_TEMP = joshnt_UniqueRegions.setRegionLength()
         else regionIndex_TEMP = joshnt_UniqueRegions.createRegionOverItems()
         end
         
