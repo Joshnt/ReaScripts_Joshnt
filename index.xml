@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Joshnt_ReaScripts" commit="7c541be88e98b2eac39d42c50dc8fb4ed5d0380b">
+<index version="1" name="Joshnt_ReaScripts" commit="66f5352590a2635de342128ea719835630fa5a7d">
   <category name="DEVELOPMENT">
     <reapack name="joshnt_LuaUtilities.lua" type="script" desc="Adding own functions and functionalities as lua-functions">
       <metadata>
@@ -29,9 +29,27 @@
       <version name="2.20" author="Joshnt" time="2024-08-27T17:58:35Z">
         <source>https://github.com/Joshnt/ReaScripts_Joshnt/raw/d6c8ec71f3d1c9a385724abb439b7c23f586284f/DEVELOPMENT/joshnt_LuaUtilities.lua</source>
       </version>
+      <version name="2.21" author="Joshnt" time="2024-09-16T00:45:53Z">
+        <source>https://github.com/Joshnt/ReaScripts_Joshnt/raw/682638eca93c84b3900d113205a72ec31e41c715/DEVELOPMENT/joshnt_LuaUtilities.lua</source>
+      </version>
     </reapack>
   </category>
   <category name="ENVELOPES/joshnt_Mouse focus envelope">
+    <reapack name="joshnt_Toggle show Pan Envelope for track or item (depending on mouse context).lua" type="script" desc="Show pan for item or track depending on mouse context">
+      <metadata>
+        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 Adaption of amagalma's version of this idea (pan instead of volume); checks for items under mouse cursor, then selected track(s) then track under mouse cursor\par}
+}
+]]></description>
+      </metadata>
+      <version name="1.0" author="Joshnt" time="2024-09-16T00:45:53Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/682638eca93c84b3900d113205a72ec31e41c715/ENVELOPES/joshnt_Mouse%20focus%20envelope/joshnt_Toggle%20show%20Pan%20Envelope%20for%20track%20or%20item%20(depending%20on%20mouse%20context).lua</source>
+      </version>
+    </reapack>
     <reapack name="joshnt_Toggle show Volume Envelope for track or item (depending on mouse context).lua" type="script" desc="Show volume for item or track depending on mouse context">
       <metadata>
         <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
@@ -361,6 +379,20 @@
         <source main="main" file="joshnt_Add to Region Render Matrix/joshnt_Copy region render matrix selection from region at cursor to selected region(s).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/REGIONS/joshnt_Add%20to%20Region%20Render%20Matrix/joshnt_Copy%20region%20render%20matrix%20selection%20from%20region%20at%20cursor%20to%20selected%20region(s).lua</source>
       </version>
     </reapack>
+    <reapack name="joshnt_Change Region Length - Package.lua" type="script" desc="Change Region Length - Package">
+      <version name="1.0" author="Joshnt" time="2024-09-16T00:45:53Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main" file="joshnt_Change Region Length/joshnt_Change selected region(s) length....lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/682638eca93c84b3900d113205a72ec31e41c715/REGIONS/joshnt_Change%20Region%20Length/joshnt_Change%20selected%20region(s)%20length....lua</source>
+        <source main="main" file="joshnt_Change Region Length/joshnt_Extend region(s) at edit cursor end by 1 second.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/682638eca93c84b3900d113205a72ec31e41c715/REGIONS/joshnt_Change%20Region%20Length/joshnt_Extend%20region(s)%20at%20edit%20cursor%20end%20by%201%20second.lua</source>
+        <source main="main" file="joshnt_Change Region Length/joshnt_Extend region(s) at edit cursor start by 1 second.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/682638eca93c84b3900d113205a72ec31e41c715/REGIONS/joshnt_Change%20Region%20Length/joshnt_Extend%20region(s)%20at%20edit%20cursor%20start%20by%201%20second.lua</source>
+        <source main="main" file="joshnt_Change Region Length/joshnt_Extend selected region(s) end by 1 second.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/682638eca93c84b3900d113205a72ec31e41c715/REGIONS/joshnt_Change%20Region%20Length/joshnt_Extend%20selected%20region(s)%20end%20by%201%20second.lua</source>
+        <source main="main" file="joshnt_Change Region Length/joshnt_Extend selected region(s) start by 1 second.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/682638eca93c84b3900d113205a72ec31e41c715/REGIONS/joshnt_Change%20Region%20Length/joshnt_Extend%20selected%20region(s)%20start%20by%201%20second.lua</source>
+        <source main="main" file="joshnt_Change Region Length/joshnt_Shorten region(s) at edit cursor end by 1 second.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/682638eca93c84b3900d113205a72ec31e41c715/REGIONS/joshnt_Change%20Region%20Length/joshnt_Shorten%20region(s)%20at%20edit%20cursor%20end%20by%201%20second.lua</source>
+        <source main="main" file="joshnt_Change Region Length/joshnt_Shorten region(s) at edit cursor start by 1 second.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/682638eca93c84b3900d113205a72ec31e41c715/REGIONS/joshnt_Change%20Region%20Length/joshnt_Shorten%20region(s)%20at%20edit%20cursor%20start%20by%201%20second.lua</source>
+        <source main="main" file="joshnt_Change Region Length/joshnt_Shorten selected region(s) end by 1 second.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/682638eca93c84b3900d113205a72ec31e41c715/REGIONS/joshnt_Change%20Region%20Length/joshnt_Shorten%20selected%20region(s)%20end%20by%201%20second.lua</source>
+        <source main="main" file="joshnt_Change Region Length/joshnt_Shorten selected region(s) start by 1 second.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/682638eca93c84b3900d113205a72ec31e41c715/REGIONS/joshnt_Change%20Region%20Length/joshnt_Shorten%20selected%20region(s)%20start%20by%201%20second.lua</source>
+      </version>
+    </reapack>
     <reapack name="joshnt_Select Regions - Package.lua" type="script" desc="Various Actions for selecting regions (in the region marker manager)">
       <version name="1.0" author="Joshnt" time="2024-08-09T05:52:53Z">
         <changelog><![CDATA[+ init]]></changelog>
@@ -440,6 +472,15 @@
         <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for each group of overlapping items of the selected items + isolate.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/03d9c0711973aed7bdf1643d5531d6c4d5bb8bbd/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items%20of%20the%20selected%20items%20+%20isolate.lua</source>
         <source file="joshnt_Create unique regions for each group of overlapping items/joshnt_Unique Regions for overlapping items - CORE.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/03d9c0711973aed7bdf1643d5531d6c4d5bb8bbd/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Unique%20Regions%20for%20overlapping%20items%20-%20CORE.lua</source>
       </version>
+      <version name="2.20" author="Joshnt" time="2024-09-17T16:51:00Z">
+        <changelog><![CDATA[- added 'Parent per item' as RRM link
+- added toggle to reposition 
+- adjusted GUI]]></changelog>
+        <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for each group of overlapping items of selected items (with mother region) - GUI.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/01833c6cdebe8d0c482e0341887831b327a4b99d/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items%20of%20selected%20items%20(with%20mother%20region)%20-%20GUI.lua</source>
+        <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for each group of overlapping items of the selected items + isolate (with mother region).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/01833c6cdebe8d0c482e0341887831b327a4b99d/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items%20of%20the%20selected%20items%20+%20isolate%20(with%20mother%20region).lua</source>
+        <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for each group of overlapping items of the selected items + isolate.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/01833c6cdebe8d0c482e0341887831b327a4b99d/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items%20of%20the%20selected%20items%20+%20isolate.lua</source>
+        <source file="joshnt_Create unique regions for each group of overlapping items/joshnt_Unique Regions for overlapping items - CORE.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/01833c6cdebe8d0c482e0341887831b327a4b99d/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Unique%20Regions%20for%20overlapping%20items%20-%20CORE.lua</source>
+      </version>
     </reapack>
     <reapack name="joshnt_Play only selected time (from time selection start or edit cursor).lua" type="script" desc="Play only selected Time">
       <metadata>
@@ -475,6 +516,10 @@
       <version name="1.01" author="Joshnt" time="2024-08-09T19:12:46Z">
         <changelog><![CDATA[+ init]]></changelog>
         <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b2227fccf31896f035de8ec53e67f928c4202aa7/VARIOUS/joshnt_PowerReaName%20-%20Find%20and%20replace%20in%20region%20marker%20track%20item%20names.lua</source>
+      </version>
+      <version name="1.2" author="Joshnt" time="2024-09-17T16:51:00Z">
+        <changelog><![CDATA[+ init]]></changelog>
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/01833c6cdebe8d0c482e0341887831b327a4b99d/VARIOUS/joshnt_PowerReaName%20-%20Find%20and%20replace%20in%20region%20marker%20track%20item%20names.lua</source>
       </version>
     </reapack>
     <reapack name="joshnt_ReaGlue Regions - Regions for Variation Files - Package.lua" type="script" desc="ReaGlue adaption to Regions (with user input)">
