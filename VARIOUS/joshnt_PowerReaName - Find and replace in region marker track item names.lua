@@ -1,5 +1,5 @@
 -- @description PowerReaName - Find and Replace in Track, Items, Regions or Marker Names
--- @version 1.2
+-- @version 1.2.1
 -- @author Joshnt
 -- @about
 --      Various possibilities to reliable rename most things in REAPER

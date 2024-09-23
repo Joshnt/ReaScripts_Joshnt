@@ -1,5 +1,5 @@
 -- @description Unique Region per overlapping item bundle in selection (with Mother Region over them) - Game Audio/ SD Use
--- @version 2.20
+-- @version 2.20.1
 -- @changelog
 --  - added 'Parent per item' as RRM link
 --  - added toggle to reposition 
