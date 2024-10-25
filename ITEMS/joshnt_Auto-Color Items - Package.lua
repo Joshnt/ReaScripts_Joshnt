@@ -6,7 +6,7 @@
 --      use the GUI to create your own rule set with item conditions etc.
 --      after previewing it, save it in the GUI and the run the normal function (which can be toggled on and off)
 -- @changelog
---  + init
+--  - show swobi what source control is
 -- @metapackage
 -- @provides
 --   [main] joshnt_Auto-Color items/joshnt_Auto-Color items.lua
