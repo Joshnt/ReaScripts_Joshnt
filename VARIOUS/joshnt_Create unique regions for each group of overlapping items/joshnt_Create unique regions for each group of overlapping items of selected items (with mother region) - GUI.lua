@@ -14,7 +14,7 @@ end
 local joshnt_LuaUtils = reaper.GetResourcePath()..'/Scripts/Joshnt_ReaScripts/DEVELOPMENT/joshnt_LuaUtilities.lua'
 if reaper.file_exists( joshnt_LuaUtils ) then 
   dofile( joshnt_LuaUtils ) 
-  if not joshnt or joshnt.version() < 1.0 then 
+  if not joshnt or joshnt.version() < 2.22 then 
     reaper.MB("This script requires a newer version of joshnt Lua Utilities. Please run:\n\nExtensions > ReaPack > Synchronize Packages, 'joshnt_LuaUtilities.lua'","Error",0); 
     return 
   end
@@ -828,8 +828,8 @@ local function redrawAll ()
     GUI.elms.TimeInclude_Text.tooltip = "Corresponding textinput to slider to the left.\nIf input is out of slider bounds, slider gets rescaled automatically.\nUse 'TAB' to cycle between all text-input boxes."
     GUI.elms.Preview.tooltip = "Use REAPER's 'Time-Selection' to visualize the first group's region bounds.\nRefreshes on time-value changes; to refresh after a item-selection change, press 'R'."
     GUI.elms.RepositionToggle.tooltip = "Toggle whether the selected items should get moved to ensure the region distance set with the slider to the left."
-    GUI.elms.RegionNameChild.tooltip = "Set the name of the individual regions. Use '/E' to enumerate from 1 or '/E(Number), e.g. '/E(3)' to enumerate from that number onwards."
-    GUI.elms.RegionNameMother.tooltip = "Set the name of the mother regions."
+    GUI.elms.RegionNameChild.tooltip = "Set the name of the individual regions.\nUse '/E(Number) to enumerate from that number, e.g. '/E(3)' to enumerate from 3 onwards. Accepts as well modulo in the syntax of /E(0%4).\nYou can offset that modulo by using /E('start'%'moduloValue''offset'), e.g. /E(1%3-2).\n\nUse '/M(Note_Start, Step)' to enumerate Midinotes starting from 'Note_Start' increasing with 'Step' each time, e.g. /M(C#1,4). No given step size defaults to 1. \nUse '/O() to reference the name of an existing region at the corresponding spot. /O(ALTERNATIVE) will either use the original name (if existing) or the given 'ALTERNATIVE'."
+    GUI.elms.RegionNameMother.tooltip = "Set the name of the mother regions. \nWildcards like '/E' don't work here, as there is only one 'Mother-Region' created."
     GUI.elms.RRMChild.tooltip = "Choose over which track to route the newly created regions in the region render matrix.\n\n'Master' routes over the Master-Track.\n'First common Parent' routes over the first found parent of all selected items (without any selected items on it) or the Master if no parent can be found.\n'Highest common Parent' uses the highest common parent of all selected items or the Master if no parent can be found.\n'First parent per item' routes over all parent tracks of any items.\n'Each Track' only routes over a track if the track has items from the selection on it.\n'None' doesn't set a link in the RRM."
     GUI.elms.RRMMother.tooltip = "Choose over which track to route the newly created mother region in the region render matrix.\n\n'Master' routes over the Master-Track.\n'First common Parent' routes over the first found parent of all selected items (without any selected items on it) or the Master if no parent can be found.\n'Highest common Parent' uses the highest common parent of all selected items or the Master if no parent can be found.\n'First parent per item' routes over all parent tracks of any items.\n'Each Track' only routes over a track if the track has items from the selection on it.\n'None' doesn't set a link in the RRM."
     GUI.elms.MotherRgnBool.tooltip = "Toogle if a 'Mother-Region' (a region over all other newly created regions) should be created."

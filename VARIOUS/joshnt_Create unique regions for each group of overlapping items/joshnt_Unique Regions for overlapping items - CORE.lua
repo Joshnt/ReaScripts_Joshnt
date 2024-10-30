@@ -3,26 +3,36 @@
 -- para-global variables for script
 joshnt_UniqueRegions = {
     -- para global variables; accessed from other scripts
-    isolateItems = 1, -- 1 = move selected, 2 = move others, 3 = dont move
+    repositionToggle = true,
     space_in_between = 0, -- Time in seconds
+
     start_silence = 0, -- Time in seconds
     end_silence = 0, -- Time in seconds
     groupToleranceTime = 0,  -- Time in seconds
-    lockBoolUser = false, -- bool to lock items after movement
-    boolNeedActivateEnvelopeOption = nil, 
+
+    createMotherRgn = false,
+    createChildRgn = true,
     regionColor = nil, 
     regionColorMother = nil, 
     regionName = "", 
-    regionNameNumber = nil, 
-    regionNameReplaceString = nil, 
+    regionNameReplaceString = {}, -- subarray with index of found wildcards with subarray with {stringToSearchFor, curr Index/ Value of that count/ Replacement [, modifier, modifierArgument1, modifierArgument2]}
     motherRegionName = "", 
     RRMLink_Child = 0, -- 1 = Master, 2 = Highest Parent, 3 = Parent, 4 = parent per item, 5 = Track, 0 = no link
     RRMLink_Mother = 0, -- 1 = Master, 2 = Highest Parent, 3 = Parent, 4 = parent per item, 5 = Track, 0 = no link
-    createMotherRgn = false,
-    createChildRgn = true,
-    repositionToggle = true,
+
+    -- Region/ Rarker by every X item tab 
+    isRgn_RMX = {}, 
+    everyX_RMX = {},
+    RRMLink_RMX = {}, -- 1 = Master, 2 = Highest Parent, 3 = Parent, 4 = parent per item, 5 = Track, 0 = no link
+    name_RMX = {}, 
+    name_RMXReplaceString = {}, -- subarray with {stringToSearchFor, curr Index of that count[, modifier, modifierArgument1, modifierArgument2]}
+    color_RMX = {}, 
+    
+    isolateItems = 1, -- 1 = move selected, 2 = move others, 3 = dont move
+    lockBoolUser = false, -- bool to lock items after movement
 
     -- only inside this script
+    boolNeedActivateEnvelopeOption = nil, 
     t = {}, -- Table to store items grouped by track
     trackIDs = {}, -- table trackIDs to access keys more easily
     numItems = 0,
@@ -33,7 +43,9 @@ joshnt_UniqueRegions = {
     itemGroupsEndArray = nil,
     nudgeValues = {},
     parentTracksWithEnvelopes = {},
-    parentTrackForRRM = nil
+    parentTrackForRRM = nil,
+    regionName_Rename = nil, -- single string
+    name_RMX_Rename = {} -- name array
 }
 
 function joshnt_UniqueRegions.getDefaults()
@@ -61,7 +73,8 @@ function joshnt_UniqueRegions.saveDefaults()
     reaper.SetExtState("joshnt_UniqueRegions", "Options", joshnt_UniqueRegions.isolateItems..","..joshnt_UniqueRegions.space_in_between..","..joshnt_UniqueRegions.start_silence..","..joshnt_UniqueRegions.end_silence..","..tostring(joshnt_UniqueRegions.lockBoolUser)..","..joshnt_UniqueRegions.regionColor..","..joshnt_UniqueRegions.regionColorMother..","..joshnt_UniqueRegions.regionName..","..joshnt_UniqueRegions.motherRegionName..","..joshnt_UniqueRegions.RRMLink_Child..","..joshnt_UniqueRegions.RRMLink_Mother..","..tostring(joshnt_UniqueRegions.createMotherRgn)..","..joshnt_UniqueRegions.groupToleranceTime..","..tostring(joshnt_UniqueRegions.createChildRgn..","..tostring(joshnt_UniqueRegions.repositionToggle)), true)
 end
 
-function joshnt_UniqueRegions.initReaGlue()
+-- gets items sorted by tracks
+function joshnt_UniqueRegions.sortItemsByTracks()
 
     joshnt_UniqueRegions.t = {} -- init table t
     -- Function to add items to the table
@@ -144,30 +157,43 @@ function joshnt_UniqueRegions.adjustItemPositions()
 end
 
 -- function to adjust existing region over selected items
-function joshnt_UniqueRegions.setRegionLength()
+function joshnt_UniqueRegions.setRegionLength(RMXIndex)
   reaper.Undo_BeginBlock()
 
-  local start_time, end_time = joshnt.startAndEndOfSelectedItems()
+  local start_time, end_time = 0, 0
+  local rgnNameReference, rgnColor = "", nil
+  if not RMXIndex or RMXIndex == 0 then start_time, end_time = joshnt.startAndEndOfSelectedItems() end -- child rgns
 
   -- Find region with most overlap
-  local region_to_move = joshnt.getMostOverlappingRegion(start_time,end_time)
-  
-  start_time = start_time - joshnt_UniqueRegions.start_silence
-  end_time = end_time + joshnt_UniqueRegions.end_silence
-  
-  if start_time < 0 then
-    reaper.GetSet_LoopTimeRange(true, false, 0, math.abs(start_time), false)
-    reaper.Main_OnCommand(40200, 0)
-    end_time = end_time + math.abs(start_time)
-    start_time = 0
-    joshnt_UniqueRegions.selectOriginalSelection(true)
+  local region_to_move, _, _, rgnName = joshnt.getMostOverlappingRegion(start_time,end_time)
+  joshnt_UniqueRegions.updateRgnRename(RMXIndex, rgnName)
+
+
+  if not RMXIndex or RMXIndex == 0 then
+    rgnNameReference = joshnt_UniqueRegions.regionName_Rename
+    rgnColor = joshnt_UniqueRegions.regionColor
+
+    start_time = start_time - joshnt_UniqueRegions.start_silence
+    end_time = end_time + joshnt_UniqueRegions.end_silence
+    if start_time < 0 then
+        reaper.GetSet_LoopTimeRange(true, false, 0, math.abs(start_time), false)
+        reaper.Main_OnCommand(40200, 0)
+        end_time = end_time + math.abs(start_time)
+        start_time = 0
+        joshnt_UniqueRegions.selectOriginalSelection(true)
+    end
+  else
+    rgnNameReference = joshnt_UniqueRegions.name_RMX_Rename[RMXIndex]
+    rgnColor = joshnt_UniqueRegions.color_RMX[RMXIndex]
   end
   
+
+  
   -- Move overlapping region
-  if joshnt_UniqueRegions.regionColor ~= nil then
-    reaper.SetProjectMarker3(0, region_to_move, 1, start_time, end_time, joshnt_UniqueRegions.regionName, joshnt_UniqueRegions.regionColor | 0x1000000) 
+  if rgnColor ~= nil then
+    reaper.SetProjectMarker3(0, region_to_move, 1, start_time, end_time, rgnNameReference, rgnColor | 0x1000000) 
   else
-    reaper.SetProjectMarker( region_to_move, 1, start_time, end_time, joshnt_UniqueRegions.regionName )
+    reaper.SetProjectMarker( region_to_move, 1, start_time, end_time, rgnNameReference )
   end
   reaper.Undo_EndBlock("Set Nearest Region", -1)
   return region_to_move
@@ -189,7 +215,7 @@ function joshnt_UniqueRegions.createRegionOverItems()
     -- Create the region
     local colorTEMP = 0;
     if joshnt_UniqueRegions.regionColor ~= nil then colorTEMP = joshnt_UniqueRegions.regionColor | 0x1000000 end
-    return reaper.AddProjectMarker2(0, true, startTime, endTime, joshnt_UniqueRegions.regionName, -1, colorTEMP)
+    return reaper.AddProjectMarker2(0, true, startTime, endTime, joshnt_UniqueRegions.regionName_Rename, -1, colorTEMP)
 end
 
 function joshnt_UniqueRegions.createRRMLink(RRMLink_Target,rgnIndex)
@@ -243,38 +269,21 @@ end
 
 function joshnt_UniqueRegions.setRegionsForitemGroups()
     local rgnIndexTable_TEMP = {}
-    local rgnName_Save;
-    if joshnt_UniqueRegions.regionNameReplaceString then
-        rgnName_Save = joshnt_UniqueRegions.regionName
-    end
 
 
 
     for i = 1, #joshnt_UniqueRegions.itemGroups do
         reaper.SelectAllMediaItems(0, false)
         joshnt.reselectItems(joshnt_UniqueRegions.itemGroups[i])
-
-        if joshnt_UniqueRegions.regionNameNumber then
-            local regionNameNumber_TEMP = tostring(joshnt_UniqueRegions.regionNameNumber)
-            if joshnt_UniqueRegions.regionNameNumber < 10 then
-                regionNameNumber_TEMP = "0"..regionNameNumber_TEMP
-            end
-        
-            joshnt_UniqueRegions.regionName = string.gsub(tostring(rgnName_Save), joshnt_UniqueRegions.regionNameReplaceString, regionNameNumber_TEMP) 
-        end
         
         local currSelStart_TEMP, currSelEnd_TEMP = joshnt.startAndEndOfSelectedItems()
         local regionIndex_TEMP = nil
 
-        if joshnt_UniqueRegions.checkOverlapWithRegions(currSelStart_TEMP, currSelEnd_TEMP, rgnIndexTable_TEMP) then regionIndex_TEMP = joshnt_UniqueRegions.setRegionLength()
+        if joshnt_UniqueRegions.checkOverlapWithRegions(currSelStart_TEMP, currSelEnd_TEMP, rgnIndexTable_TEMP) then regionIndex_TEMP = joshnt_UniqueRegions.setRegionLength(0)
         else regionIndex_TEMP = joshnt_UniqueRegions.createRegionOverItems()
         end
         
         joshnt_UniqueRegions.createRRMLink("Child",regionIndex_TEMP)
-
-        if joshnt_UniqueRegions.regionNameNumber then
-            joshnt_UniqueRegions.regionNameNumber = joshnt_UniqueRegions.regionNameNumber + 1
-        end
 
         table.insert(rgnIndexTable_TEMP,regionIndex_TEMP)
 
@@ -318,6 +327,139 @@ function joshnt_UniqueRegions.setMotherRegion(tableWithChildRgnIndex)
     joshnt_UniqueRegions.createRRMLink("Mother",addedRegion)
 end
 
+-- all wildcard-Functions look a bit weird with the if as RMX regions and more wildcards got added later
+-- all replace Strings will be used in a gmatch -> weird syntax
+-- check for /E's in region names
+function joshnt_UniqueRegions.wildcardsCheck_E(currName, currReplaceStr)
+    -- Check for "/E('Number')" - normal enumerate
+    for number in currName:gmatch("/E%((%d+)%)") do
+        currReplaceStr[#currReplaceStr + 1] = {}  
+        currReplaceStr[#currReplaceStr][1] = "/E%("..number.."%)"
+        currReplaceStr[#currReplaceStr][2] = number
+    end
+
+    -- Check for "/E('Number1'%'Number2')" - modulu enumerate 
+    for number1, number2 in currName:gmatch("/E%((%d+)%%(%d+)%)") do
+        currReplaceStr[#currReplaceStr + 1] = {}  
+        currReplaceStr[#currReplaceStr][1] = "/E%("..number1.."%%"..number2.."%)"
+        currReplaceStr[#currReplaceStr][2] = number1
+        currReplaceStr[#currReplaceStr][3] = "%"
+        currReplaceStr[#currReplaceStr][4] = number2
+    end
+    
+    -- Check for "/E('Number1'%'Number2''offset')" - modulu enumerate with offset
+    for number1, number2, offset in currName:gmatch("/E%((%d+)%%(%d+)([+-]%d+)%)") do
+        currReplaceStr[#currReplaceStr + 1] = {}  
+        currReplaceStr[#currReplaceStr][1] = "/E%("..number1.."%%"..number2..offset.."%)"
+        currReplaceStr[#currReplaceStr][2] = number1 % number2
+        currReplaceStr[#currReplaceStr][3] = "%"
+        currReplaceStr[#currReplaceStr][4] = number2
+        currReplaceStr[#currReplaceStr][5] = offset
+    end
+end
+
+-- check for /M's in region name
+function joshnt_UniqueRegions.wildcardsCheck_M(currName, currReplaceStr)
+    -- Check for "/M('MidiNote')" - normal stepsize
+    for midiNote, octave in currName:gmatch("/M%((..?)([+-]?%d+)%)") do
+        reaper.ShowConsoleMsg(tostring(#currReplaceStr).." and "..midiNote.." and "..octave.."\n")
+        currReplaceStr[#currReplaceStr + 1] = {}  
+        currReplaceStr[#currReplaceStr][1] = "/M%("..midiNote..octave.."%)"
+        currReplaceStr[#currReplaceStr][2] = midiNote
+    end
+
+    -- Check for "/M('MidiNote','stepsize')" - custom stepsize
+    for midiNote, octave, stepSize in currName:gmatch(("/M%((..?)([+-]?%d+),(%s*%-?%d+)%)")) do
+        local stepSizeNum = tonumber(stepSize) -- avoid getting some random swobi input
+        if stepSizeNum then
+            currReplaceStr[#currReplaceStr + 1] = {}  
+            currReplaceStr[#currReplaceStr][1] = "/M%("..midiNote..octave..","..stepSize.."%)"
+            currReplaceStr[#currReplaceStr][2] = {joshnt.findIndex(joshnt.midiNotes, midiNote), octave}
+            currReplaceStr[#currReplaceStr][3] = "STEPSIZE"
+            currReplaceStr[#currReplaceStr][4] = stepSize
+        end
+    end
+end
+
+-- check for /O's in child region name
+function joshnt_UniqueRegions.wildcardsCheck_O(currName, currReplaceStr)
+    -- Check for "/O('AlternativeName')"
+    for alternativeName in currName:gmatch("/O%((.-)%)") do
+        currReplaceStr[#currReplaceStr + 1] = {}  
+        currReplaceStr[#currReplaceStr][1] = "/O%("..alternativeName.."%)"
+        currReplaceStr[#currReplaceStr][2] = alternativeName
+    end
+end
+
+-- call function without RMXIndex/ RMXIndex = 0 to refer to childRgn
+function joshnt_UniqueRegions.wildcardsCheck(RMXIndex) 
+    local currName, currReplaceStr;
+    if RMXIndex ~= 0 then 
+        reaper.ShowConsoleMsg(tostring(RMXIndex).."\n")
+        currName = joshnt_UniqueRegions.name_RMX[RMXIndex]
+        currReplaceStr = joshnt_UniqueRegions.name_RMXReplaceString[RMXIndex]
+    else
+        currName = joshnt_UniqueRegions.regionName
+        currReplaceStr = joshnt_UniqueRegions.regionNameReplaceString
+    end
+    joshnt_UniqueRegions.wildcardsCheck_E(currName, currReplaceStr)
+    joshnt_UniqueRegions.wildcardsCheck_M(currName, currReplaceStr)
+    joshnt_UniqueRegions.wildcardsCheck_O(currName, currReplaceStr)
+end
+
+-- sets the desired name to the '_Rename' property of child rgns or RMX, referenced by moving or creating functions
+function joshnt_UniqueRegions.updateRgnRename(RMXIndex, oldName)
+    local currName, currReplaceStr, newName;
+    if RMXIndex ~= 0 then 
+        currName = joshnt_UniqueRegions.name_RMX[RMXIndex]
+        currReplaceStr = joshnt_UniqueRegions.name_RMXReplaceString[RMXIndex]
+    else
+        currName = joshnt_UniqueRegions.regionName
+        currReplaceStr = joshnt_UniqueRegions.regionNameReplaceString
+    end
+    newName = currName;
+
+    -- index of currReplaceStr see at start of script with variable define
+    for i = 1, #currReplaceStr do
+        if currReplaceStr[i][1]:find("/E") then
+            newName = string.gsub(newName, currReplaceStr[i][1], joshnt.addLeadingZero(currReplaceStr[i][1],2)) 
+
+            if currReplaceStr[i][3] == "%" then -- modulu addition/ increment
+                currReplaceStr[i][2] = (currReplaceStr[i][2] + 1) % currReplaceStr[i][4]
+                -- offset for modulu, if set
+                if currReplaceStr[i][5] then 
+                    currReplaceStr[i][2] = currReplaceStr[i][2] + currReplaceStr[i][5]
+                end
+            else -- normal addition/ increment
+                currReplaceStr[i][2] = currReplaceStr[i][2] + 1
+            end
+            
+        elseif currReplaceStr[i][1]:find("/M") then
+            newName = string.gsub(newName, currReplaceStr[i][1], joshnt.midiNotes[currReplaceStr[i][2][1]]..currReplaceStr[i][2][2])
+            if joshnt.midiNotes[currReplaceStr[i][2][1]] == "B" then
+                currReplaceStr[i][2][2] = currReplaceStr[i][2][2] + 1
+            end
+            currReplaceStr[i][2][1] = (currReplaceStr[i][2][1] %12) + 1
+        elseif currReplaceStr[i][1]:find("/O") then
+            if oldName then
+                newName = string.gsub(newName, currReplaceStr[i][1], oldName)
+            else
+                newName = string.gsub(newName, currReplaceStr[i][1], currReplaceStr[i][2])
+            end
+        end
+    end
+
+    
+
+
+    if RMXIndex ~= 0 then 
+        joshnt_UniqueRegions.regionName_Rename = newName
+    else
+        joshnt_UniqueRegions.name_RMX_Rename[RMXIndex] = newName
+    end
+
+end
+
 -- Call from outside
 -- Main function
 function joshnt_UniqueRegions.main()
@@ -332,14 +474,11 @@ function joshnt_UniqueRegions.main()
     joshnt_UniqueRegions.end_silence = math.abs(joshnt_UniqueRegions.end_silence)
     joshnt_UniqueRegions.boolNeedActivateEnvelopeOption = reaper.GetToggleCommandState(40070) == 0
 
-    local tempNumber = tonumber(joshnt_UniqueRegions.regionName:match("/E%((%d+)%)"))
-    if tempNumber then
-        joshnt_UniqueRegions.regionNameNumber = tempNumber
-        joshnt_UniqueRegions.regionNameReplaceString = "/E%("..tempNumber.."%)"
-    elseif joshnt_UniqueRegions.regionName:find("/E") then
-        joshnt_UniqueRegions.regionNameNumber = 1
-        joshnt_UniqueRegions.regionNameReplaceString = "/E"
+    joshnt_UniqueRegions.wildcardsCheck(0) -- child rgn = fucntion call without argument
+    for i = 1, #joshnt_UniqueRegions.name_RMX do
+        joshnt_UniqueRegions.wildcardsCheck(i)
     end
+    joshnt_UniqueRegions.regionName_Rename = joshnt_UniqueRegions.regionName
 
     reaper.PreventUIRefresh(1) 
     reaper.Undo_BeginBlock()  
@@ -347,7 +486,7 @@ function joshnt_UniqueRegions.main()
     if joshnt_UniqueRegions.boolNeedActivateEnvelopeOption then
         reaper.Main_OnCommand(40070, 0)
     end
-    joshnt_UniqueRegions.initReaGlue()
+    joshnt_UniqueRegions.sortItemsByTracks()
     
     --get locked Items and unlock them
     joshnt_UniqueRegions.lockedItems = joshnt.saveLockedItems()
@@ -377,12 +516,6 @@ function joshnt_UniqueRegions.main()
                 commonParents[#commonParents + 1] = parentTracks[i]
             end
 
-            -- get parent Tracks with envelopes
-            -- EDIT: RRM Link should be set despite any envelopes
-            --[[
-            if reaper.CountTrackEnvelopes(parentTracks[i]) > 0 then
-                table.insert(joshnt_UniqueRegions.parentTracksWithEnvelopes,parentTracks[i])
-            end--]]
         end
 
         -- set RRM ParentTrack
@@ -413,7 +546,7 @@ function joshnt_UniqueRegions.main()
     if joshnt_UniqueRegions.isolateItems == 1 then 
         local retval, itemTable = joshnt.isolate_MoveSelectedItems_InsertAtNextSilentPointInProject(joshnt_UniqueRegions.start_silence, joshnt_UniqueRegions.end_silence, joshnt_UniqueRegions.end_silence)
         if retval == 1 then joshnt.reselectItems(itemTable) end
-        joshnt_UniqueRegions.initReaGlue()
+        joshnt_UniqueRegions.sortItemsByTracks()
     elseif joshnt_UniqueRegions.isolateItems == 2 then 
         joshnt.isolate_MoveOtherItems_ToEndOfSelectedItems(joshnt_UniqueRegions.start_silence, joshnt_UniqueRegions.end_silence, joshnt_UniqueRegions.start_silence, joshnt_UniqueRegions.end_silence) 
     end
@@ -434,6 +567,10 @@ function joshnt_UniqueRegions.main()
     if joshnt_UniqueRegions.createChildRgn then childRegionIndex = joshnt_UniqueRegions.setRegionsForitemGroups() end
     if joshnt_UniqueRegions.createMotherRgn and joshnt_UniqueRegions.createChildRgn then joshnt_UniqueRegions.setMotherRegion(childRegionIndex) 
     elseif joshnt_UniqueRegions.createMotherRgn then joshnt_UniqueRegions.setMotherRegion(childRegionIndex) end
+    -- todo warum hier if elseif
+
+    -- todo add cleanup
+
     reaper.Undo_EndBlock("joshnt Create Regions", -1)
 
     reaper.PreventUIRefresh(-1)

@@ -1,5 +1,5 @@
 -- @description Adding own functions and functionalities as lua-functions
--- @version 2.21
+-- @version 2.22
 -- @author Joshnt
 -- @provides [nomain] .
 -- @about
@@ -1241,7 +1241,7 @@ function joshnt.getAllOverlappingRegion(startTimeInput, endTimeInput)
   return targetRegion, reg_Start, reg_End, reg_Start_total, reg_End_total
 end
 
--- Function to get most overlapping region, returns region number, reg start and end
+-- Function to get most overlapping region, returns region number, reg start, end and name
 function joshnt.getMostOverlappingRegion(startTimeInput, endTimeInput)
   local ret, num_markers, num_regions = reaper.CountProjectMarkers( 0 )
   local num_total = num_markers + num_regions
@@ -1490,6 +1490,16 @@ function joshnt.tableContainsVal(table, val)
   return false
 end
 
+-- Function to find the index of a value in a table
+function joshnt.findIndex(tbl, value)
+  for index, val in ipairs(tbl) do
+      if val == value then
+          return index  -- Return the index if the value is found
+      end
+  end
+  return nil  -- Return nil if the value is not found
+end
+
 ----------------
 ----- USER -----
 ----------------
@@ -1649,6 +1659,13 @@ function joshnt.getDBAsVolume(dB)
       return 10^(dB / 20)
   end
 end
+
+-------------------
+------- DATA ------
+-------------------
+joshnt.midiNotes = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"}
+
+
 -------------------
 ----- STRINGS -----
 -------------------
@@ -1753,6 +1770,34 @@ function joshnt.splitStringToTable(inputString)
   end
 
   return resultTable
+end
+
+-- input: provide positive number & length of target-output
+-- e.g. with input 3, 003 gets output
+function joshnt.addLeadingZero(input, digits)
+  if type(input) ~= "number" and input < 0 then return input end
+  
+  if digits == 4 then
+    if input < 1000 and input >= 100 then
+      input = "0"..tostring(input)
+    elseif input < 100 and input >= 10 then
+      input = "00"..tostring(input)
+    else 
+      input = "000"..tostring(input)
+    end
+  elseif digits == 3 then
+    if input < 100 and input >= 10 then
+      input = "0"..tostring(input)
+    else 
+      input = "00"..tostring(input)
+    end
+  else
+    if input < 10 then
+      input = "0"..tostring(input)
+    end
+  end
+
+  return input
 end
 
 -----------------
