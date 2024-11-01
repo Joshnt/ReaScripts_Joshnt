@@ -10,23 +10,27 @@ joshnt_UniqueRegions = {
     end_silence = 0, -- Time in seconds
     groupToleranceTime = 0,  -- Time in seconds
 
-    createMotherRgn = false,
-    createChildRgn = true,
-    regionColor = nil, 
-    regionColorMother = nil, 
-    regionName = "", 
-    regionNameReplaceString = {}, -- subarray with index of found wildcards with subarray with {stringToSearchFor, curr Index/ Value of that count/ Replacement [, modifier, modifierArgument1, modifierArgument2]}
-    motherRegionName = "", 
-    RRMLink_Child = 0, -- 1 = Master, 2 = Highest Parent, 3 = Parent, 4 = parent per item, 5 = Track, 0 = no link
-    RRMLink_Mother = 0, -- 1 = Master, 2 = Highest Parent, 3 = Parent, 4 = parent per item, 5 = Track, 0 = no link
+    -- copy to all rgns if existing
+    rgnProperties ={
+        create = false,
+        name = nil,
+        color = nil,
+        RRMLink = 0,
+        -- subarray with {stringToSearchFor, curr Index of that count[, modifier, modifierArgument1, modifierArgument2]}
+        replaceString = {
+            
+        },
 
-    -- Region/ Rarker by every X item tab 
-    isRgn_RMX = {}, 
-    everyX_RMX = {},
-    RRMLink_RMX = {}, -- 1 = Master, 2 = Highest Parent, 3 = Parent, 4 = parent per item, 5 = Track, 0 = no link
-    name_RMX = {}, 
-    name_RMXReplaceString = {}, -- subarray with {stringToSearchFor, curr Index of that count[, modifier, modifierArgument1, modifierArgument2]}
-    color_RMX = {}, 
+        isRgn = false, -- RMX only: rgn or marker
+        everyX = 0 -- RMX only: after x item groups
+    },
+
+    -- child rgn index 0, mother rgn index -1, RMX starting from 1
+    allRgnArray = {},
+
+    -- Region/ Marker by every X item tab 
+    -- index 0 = child rgn, index -1 = mother rgn - a bit brutal to re-assign, but lua is missing pointer
+    name_RMXReplaceString = {}, 
     
     isolateItems = 1, -- 1 = move selected, 2 = move others, 3 = dont move
     lockBoolUser = false, -- bool to lock items after movement
@@ -469,13 +473,13 @@ function joshnt_UniqueRegions.main()
         return 
     end
 
+
     joshnt_UniqueRegions.space_in_between = math.abs(joshnt_UniqueRegions.space_in_between)
     joshnt_UniqueRegions.start_silence = math.abs(joshnt_UniqueRegions.start_silence)
     joshnt_UniqueRegions.end_silence = math.abs(joshnt_UniqueRegions.end_silence)
     joshnt_UniqueRegions.boolNeedActivateEnvelopeOption = reaper.GetToggleCommandState(40070) == 0
 
-    joshnt_UniqueRegions.wildcardsCheck(0) -- child rgn = fucntion call without argument
-    for i = 1, #joshnt_UniqueRegions.name_RMX do
+    for i = 0, #joshnt_UniqueRegions.name_RMX do -- weird #table command in lua, always starting from 0 to count length
         joshnt_UniqueRegions.wildcardsCheck(i)
     end
     joshnt_UniqueRegions.regionName_Rename = joshnt_UniqueRegions.regionName
