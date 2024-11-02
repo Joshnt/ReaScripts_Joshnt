@@ -1,5 +1,5 @@
 -- @description Adding own functions and functionalities as lua-functions
--- @version 2.22
+-- @version 3.0
 -- @author Joshnt
 -- @provides [nomain] .
 -- @about
@@ -1159,11 +1159,12 @@ end
 ----- MARKER/ REGIONS -----
 ---------------------------
 
--- Function to check for overlapping regions with given time, returns bool
-function joshnt.checkOverlapWithRegions(startTimeInput, endTimeInput)
+-- Function to check for overlapping regions with given time, ignores regions in rgn indexes Table; returns bool
+function joshnt.checkOverlapWithRegions(startTimeInput, endTimeInput, rgnTable)
 
-  local proj = r.EnumProjects(-1, "")
-  local numRegions = r.CountProjectMarkers(proj, 0)
+  rgnTable = rgnTable or {}
+  local proj = reaper.EnumProjects(-1, "")
+  local numRegions = reaper.CountProjectMarkers(proj, 0)
   if numRegions == 0 then
       return false
   end
@@ -1171,9 +1172,9 @@ function joshnt.checkOverlapWithRegions(startTimeInput, endTimeInput)
   local overlapDetected = false
 
   for j = 0, numRegions - 1 do
-      local _, isrgn, rgnstart, rgnend = r.EnumProjectMarkers( j)
-      if isrgn then
-          if startTimeInput < rgnend and endTimeInput > rgnstart then
+      local _, isrgn, rgnstart, rgnend, _, index = reaper.EnumProjectMarkers( j)
+      if isrgn and not joshnt.tableContainsVal(rgnTable, index) then -- is region and is not newly created region
+          if startTimeInput < rgnend and endTimeInput > rgnstart then -- region is in timeframe
               overlapDetected = true
               break
           end
@@ -1242,7 +1243,8 @@ function joshnt.getAllOverlappingRegion(startTimeInput, endTimeInput)
 end
 
 -- Function to get most overlapping region, returns region number, reg start, end and name
-function joshnt.getMostOverlappingRegion(startTimeInput, endTimeInput)
+function joshnt.getMostOverlappingRegion(startTimeInput, endTimeInput, rgnTable)
+  rgnTable = rgnTable or {}
   local ret, num_markers, num_regions = reaper.CountProjectMarkers( 0 )
   local num_total = num_markers + num_regions
   local targetRegion = nil
@@ -1253,17 +1255,9 @@ function joshnt.getMostOverlappingRegion(startTimeInput, endTimeInput)
   for j=0, num_total - 1 do
     local retval, isrgn, pos, rgnend, nameTEMP, markrgnindexnumber = reaper.EnumProjectMarkers( j )
     local overlapRegion_TEMP = nil
-    if isrgn then
+    if isrgn and not joshnt.tableContainsVal(rgnTable, markrgnindexnumber) then
       if pos < endTimeInput and rgnend > startTimeInput then -- check for overlap
-        if pos >= startTimeInput and rgnend <= endTimeInput then -- if region completely overlaps with items
-          overlapRegion_TEMP = rgnend - pos
-        else
-          if pos < startTimeInput then -- if overlap is at beginning of items
-            overlapRegion_TEMP = rgnend - startTimeInput
-          else
-            overlapRegion_TEMP = endTimeInput - rgnend
-          end
-        end
+        overlapRegion_TEMP = math.abs(rgnend-endTimeInput) + math.abs(pos-startTimeInput)
         if overlapAmount > overlapRegion_TEMP then
           overlapAmount = overlapRegion_TEMP
           targetRegion = markrgnindexnumber
@@ -1441,10 +1435,26 @@ end
 -----------------
 ----- TABLE -----
 -----------------
+-- function to copy keys of a given table and set all keys to an init value
+-- returns the new copied table
 function joshnt.createTableWithSameKeys(originalTable, initValue)
   local newTable = {}
   for key, _ in pairs(originalTable) do
       newTable[key] = initValue
+  end
+  return newTable
+end
+
+-- function to fully copy a given table (keys & values)
+-- returns the new copied table
+function joshnt.copyTable(originalTable)
+  local newTable = {}
+  for key, value in pairs(originalTable) do
+    if type(value) == "table" then
+      newTable[key] = joshnt.copyTable(originalTable)(value)  -- Recursively copy sub-tables
+    else
+      newTable[key] = value
+    end
   end
   return newTable
 end
