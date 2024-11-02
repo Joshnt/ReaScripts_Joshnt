@@ -1743,7 +1743,7 @@ function joshnt.tableToCSVString(tableInput)
   return table.concat(result, ",")
 end
 
-
+-- splits string to table; expects items to be seperated with comma
 function joshnt.splitStringToTable(inputString)
   local function parseValue(value)
     if value:sub(1, 1) == "{" and value:sub(-1) == "}" then

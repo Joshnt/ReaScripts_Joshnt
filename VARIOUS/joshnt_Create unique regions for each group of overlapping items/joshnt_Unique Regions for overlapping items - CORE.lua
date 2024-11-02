@@ -2,7 +2,7 @@
 
 -- para-global variables for script
 joshnt_UniqueRegions = {
-    -- para global variables; accessed from other scripts
+    -- para global variables; accessed from other scripts/ user variables
     repositionToggle = true,
     -- unique because only relevant for group detection/ reposition
     space_in_between = 0, -- Time in seconds
@@ -25,7 +25,12 @@ joshnt_UniqueRegions = {
 
     allRgnArray = {}, -- master array with sub arrays per region with each having rgnProperties
 
-    customWildCard = {}, -- for /C
+    customWildCard = {
+        [1] = {},
+        [2] = {},
+        [3] = {},
+        [4] = {}
+    }, -- for /C; so far fixed length of 4 in GUI
 
     isolateItems = 1, -- 1 = move selected, 2 = move others, 3 = dont move
     lockBoolUser = false, -- bool to lock items after movement
@@ -48,28 +53,99 @@ joshnt_UniqueRegions = {
 }
 
 function joshnt_UniqueRegions.getDefaults()
-    if reaper.HasExtState("joshnt_UniqueRegions", "Options") then
-        local tempArray = joshnt.splitStringToTable(reaper.GetExtState("joshnt_UniqueRegions", "Options"))
+    -- get general settings
+    if reaper.HasExtState("joshnt_UniqueRegions", "GeneralSettings") then
+        local tempArray = joshnt.splitStringToTable(reaper.GetExtState("joshnt_UniqueRegions", "GeneralSettings"))
         joshnt_UniqueRegions.isolateItems = tonumber(tempArray[1])
         joshnt_UniqueRegions.space_in_between = tonumber(tempArray[2])
-        joshnt_UniqueRegions.start_silence = tonumber(tempArray[3])
-        joshnt_UniqueRegions.end_silence = tonumber(tempArray[4])
-        joshnt_UniqueRegions.lockBoolUser = tempArray[5]
-        joshnt_UniqueRegions.regionColor = tonumber(tempArray[6])
-        joshnt_UniqueRegions.regionColorMother = tonumber(tempArray[7])
-        joshnt_UniqueRegions.regionName = tempArray[8]
-        joshnt_UniqueRegions.motherRegionName = tempArray[9]
-        joshnt_UniqueRegions.RRMLink_Child = tonumber(tempArray[10])
-        joshnt_UniqueRegions.RRMLink_Mother = tonumber(tempArray[11])
-        joshnt_UniqueRegions.createMotherRgn = tempArray[12]
-        joshnt_UniqueRegions.groupToleranceTime = tonumber(tempArray[13])
-        joshnt_UniqueRegions.createChildRgn = tempArray[14]
-        joshnt_UniqueRegions.repositionToggle = tempArray[15]
+        joshnt_UniqueRegions.lockBoolUser = tempArray[3]
+        joshnt_UniqueRegions.groupToleranceTime = tonumber(tempArray[4])
+        joshnt_UniqueRegions.repositionToggle = tempArray[5]
+    end
+
+    local counter = 1
+    -- search region specific defaults
+    while true do
+        if not reaper.HasExtState("joshnt_UniqueRegions", "region"..counter) then break end
+        local tempArray = joshnt.splitStringToTable(reaper.GetExtState("joshnt_UniqueRegions", "region"..counter))
+        joshnt_UniqueRegions.allRgnArray[counter] = {}
+        joshnt.copyTableValues(tempArray, joshnt_UniqueRegions.allRgnArray[counter])
+        counter = counter + 1
+    end
+
+    counter = 1
+    -- search region specific defaults
+    while true do
+        if not reaper.HasExtState("joshnt_UniqueRegions", "customWildCard"..counter) then break end
+        local tempArray = joshnt.splitStringToTable(reaper.GetExtState("joshnt_UniqueRegions", "customWildCard"..counter))
+        joshnt_UniqueRegions.customWildCard[counter] = {}
+        joshnt.copyTableValues(tempArray, joshnt_UniqueRegions.customWildCard[counter])
+        counter = counter + 1
     end
 end
 
 function joshnt_UniqueRegions.saveDefaults()
-    reaper.SetExtState("joshnt_UniqueRegions", "Options", joshnt_UniqueRegions.isolateItems..","..joshnt_UniqueRegions.space_in_between..","..joshnt_UniqueRegions.start_silence..","..joshnt_UniqueRegions.end_silence..","..tostring(joshnt_UniqueRegions.lockBoolUser)..","..joshnt_UniqueRegions.regionColor..","..joshnt_UniqueRegions.regionColorMother..","..joshnt_UniqueRegions.regionName..","..joshnt_UniqueRegions.motherRegionName..","..joshnt_UniqueRegions.RRMLink_Child..","..joshnt_UniqueRegions.RRMLink_Mother..","..tostring(joshnt_UniqueRegions.createMotherRgn)..","..joshnt_UniqueRegions.groupToleranceTime..","..tostring(joshnt_UniqueRegions.createChildRgn..","..tostring(joshnt_UniqueRegions.repositionToggle)), true)
+    -- General Settings
+    reaper.SetExtState("joshnt_UniqueRegions", "GeneralSettings", joshnt_UniqueRegions.isolateItems..","..joshnt_UniqueRegions.space_in_between..","..tostring(joshnt_UniqueRegions.lockBoolUser)..","..joshnt_UniqueRegions.groupToleranceTime..","..tostring(joshnt_UniqueRegions.repositionToggle), true)
+    
+    -- region specific settings
+    for i = 1, #joshnt_UniqueRegions.allRgnArray do
+        reaper.SetExtState("joshnt_UniqueRegions", "region"..i, joshnt.tableToCSVString(joshnt_UniqueRegions.allRgnArray[i]))
+    end
+    
+    -- custom Wildcards for /C
+    for i = 1, #joshnt_UniqueRegions.customWildCard do
+        reaper.SetExtState("joshnt_UniqueRegions", "customWildCard"..i, joshnt.tableToCSVString(joshnt_UniqueRegions.customWildCard[i]))
+    end
+end
+
+function joshnt_UniqueRegions.settingsToClipboard()
+    local str = ""
+    -- general Settings - adding more settings here will change the index of regions and wildcards array!
+    local general = {
+        joshnt_UniqueRegions.isolateItems,
+        joshnt_UniqueRegions.space_in_between,
+        tostring(joshnt_UniqueRegions.lockBoolUser),
+        joshnt_UniqueRegions.groupToleranceTime,
+        tostring(joshnt_UniqueRegions.repositionToggle)
+    }
+    str = joshnt.tableToCSVString(general)
+
+    -- regions - additional array on index 6 in output string-array
+    str = str..",".."{"..joshnt.tableToCSVString(joshnt_UniqueRegions.allRgnArray).."}"
+
+    -- customWildCards - additional array on index 7 in output string-array
+    str = str..",".."{"..joshnt.tableToCSVString(joshnt_UniqueRegions.customWildCard).."}"
+    
+    reaper.CF_SetClipboard(str)
+end
+
+function joshnt_UniqueRegions.settingsFromClipboard()
+    local clipboardContent = reaper.CF_GetClipboard()
+    if clipboardContent  then
+        local settingsArray = joshnt.fromCSV(clipboardContent)
+
+        -- general
+        joshnt_UniqueRegions.isolateItems = tonumber(settingsArray[1])
+        joshnt_UniqueRegions.space_in_between = tonumber(settingsArray[2])
+        joshnt_UniqueRegions.lockBoolUser = settingsArray[3]
+        joshnt_UniqueRegions.groupToleranceTime = tonumber(settingsArray[4])
+        joshnt_UniqueRegions.repositionToggle = settingsArray[5]
+
+        -- regions
+        for i = 1, #settingsArray[6] do
+            joshnt_UniqueRegions.allRgnArray[i] = settingsArray[6][i]
+        end
+
+        -- custom wildcards
+        for i = 1, #settingsArray[7] do
+            joshnt_UniqueRegions.customWildCard[i] = settingsArray[7][i]
+        end
+        return true
+    else
+        joshnt.TooltipAtMouse("Clipboard is empty or not accessible.\nNo Settings have been changed.")
+        return false
+    end
 end
 
 -- gets items sorted by tracks
