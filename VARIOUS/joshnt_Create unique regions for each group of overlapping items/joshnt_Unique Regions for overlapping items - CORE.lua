@@ -13,8 +13,8 @@ function joshnt_UniqueRegions.Init()
     joshnt_UniqueRegions.rgnProperties = {
         create = false,
         name = "",
-        color = nil,
-        RRMLink = 0,
+        color = -1,
+        RRMLink = 0, -- 1 = Master, 2 = Highest common Parent (all),  3 = First common Parent (all), 4 = First common parent (per item group), 5 = Parent (per item), 6 = Each Track, 0 = None
         start_silence = 0,
         end_silence = 0,
         -- subarray per modifier with {stringToSearchFor, curr Index of that count/ default replace[, modifier, modifierArgument1, modifierArgument2]}
@@ -41,6 +41,7 @@ function joshnt_UniqueRegions.Init()
     joshnt_UniqueRegions.boolNeedActivateEnvelopeOption = nil
     joshnt_UniqueRegions.t = {} -- Table to store items grouped by track
     joshnt_UniqueRegions.trackIDs = {} -- table trackIDs to access keys more easily
+    joshnt_UniqueRegions.parentTracks = {}
     joshnt_UniqueRegions.numItems = 0
     joshnt_UniqueRegions.lockedItems = {}
     -- global variables for grouping of items; used in getItemGroups()
@@ -62,6 +63,7 @@ function joshnt_UniqueRegions.InitBackend()
     joshnt_UniqueRegions.boolNeedActivateEnvelopeOption = nil
     joshnt_UniqueRegions.t = {}
     joshnt_UniqueRegions.trackIDs = {}
+    joshnt_UniqueRegions.parentTracks = {}
     joshnt_UniqueRegions.numItems = 0
     joshnt_UniqueRegions.lockedItems = {}
 
@@ -166,7 +168,8 @@ function joshnt_UniqueRegions.getRgnSettingsFromTable(i, rgnSettingTable)
     end
 end
 
-function joshnt_UniqueRegions.settingsToClipboard()
+-- get String of all Settings
+function joshnt_UniqueRegions.getSettingsString()
     local str = ""
     -- general Settings - adding more settings here will change the index of regions and wildcards array!
     local general = {
@@ -195,43 +198,68 @@ function joshnt_UniqueRegions.settingsToClipboard()
     
     str = str..","..joshnt_UniqueRegions.leadingZero
 
+    return str
+end
+
+-- decode Settings string back to properties
+function joshnt_UniqueRegions.setSettingsByString(str)
+    local settingsArray = joshnt.fromCSV(str)
+    if settingsArray and #settingsArray == 8 then
+
+        -- general
+        joshnt_UniqueRegions.isolateItems = tonumber(settingsArray[1])
+        joshnt_UniqueRegions.space_in_between = tonumber(settingsArray[2])
+        joshnt_UniqueRegions.lockBoolUser = settingsArray[3] == "true"
+        joshnt_UniqueRegions.groupToleranceTime = tonumber(settingsArray[4])
+        joshnt_UniqueRegions.repositionToggle = settingsArray[5] == "true"
+        joshnt_UniqueRegions.leadingZero = tonumber(settingsArray[8])
+
+        -- regions
+        for i = 1, #settingsArray[6] do
+            joshnt_UniqueRegions.getRgnSettingsFromTable(i, settingsArray[6][i])
+        end
+
+        -- custom wildcards
+        for i = 1, #settingsArray[7] do
+            joshnt_UniqueRegions.customWildCard[i] = settingsArray[7][i]
+        end
+        if not joshnt_UniqueRegions.verifySettings() then joshnt_UniqueRegions.init() end
+        return true
+    else
+        joshnt.TooltipAtMouse("Tried to paste wrong/ corrupt settings.\nNo Settings have been changed.")
+        return false
+    end
+end
+
+function joshnt_UniqueRegions.settingsToClipboard()
+    local str = joshnt_UniqueRegions.getSettingsString()
     reaper.CF_SetClipboard(str)
 end
 
 function joshnt_UniqueRegions.settingsFromClipboard()
     local clipboardContent = reaper.CF_GetClipboard()
     if clipboardContent then
-        local settingsArray = joshnt.fromCSV(clipboardContent)
-            if settingsArray and #settingsArray == 8 then
-
-            -- general
-            joshnt_UniqueRegions.isolateItems = tonumber(settingsArray[1])
-            joshnt_UniqueRegions.space_in_between = tonumber(settingsArray[2])
-            joshnt_UniqueRegions.lockBoolUser = settingsArray[3] == "true"
-            joshnt_UniqueRegions.groupToleranceTime = tonumber(settingsArray[4])
-            joshnt_UniqueRegions.repositionToggle = settingsArray[5] == "true"
-            joshnt_UniqueRegions.leadingZero = tonumber(settingsArray[8])
-
-            -- regions
-            for i = 1, #settingsArray[6] do
-                joshnt_UniqueRegions.getRgnSettingsFromTable(i, settingsArray[6][i])
-            end
-
-            -- custom wildcards
-            for i = 1, #settingsArray[7] do
-                joshnt_UniqueRegions.customWildCard[i] = settingsArray[7][i]
-            end
-            if not joshnt_UniqueRegions.verifySettings() then joshnt_UniqueRegions.init() end
-            return true
-        else
-            joshnt.TooltipAtMouse("Wrong information in Clipboard.\nNo Settings have been changed.")
-            return false
-        end
+        return joshnt_UniqueRegions.setSettingsByString(clipboardContent)
     else
         joshnt.TooltipAtMouse("Clipboard is empty or not accessible.\nNo Settings have been changed.")
         return false
     end
 
+end
+
+function joshnt_UniqueRegions.writeSettingsToFile()
+    local str = joshnt_UniqueRegions.getSettingsString()
+    joshnt.toNewTXT(str, "UniqueRegions_Settings")
+end
+
+function joshnt_UniqueRegions.readSettingsFromFile()
+    local retval, settings = joshnt.readFromTXT("UniqueRegions_Settings")
+    if retval == 1 and settings ~= "" then
+        return joshnt_UniqueRegions.setSettingsByString(settings)
+    else
+        joshnt.TooltipAtMouse("Failed to read settings from file.")
+        return false
+    end
 end
 
 function joshnt_UniqueRegions.verifySettings()
@@ -281,6 +309,8 @@ function joshnt_UniqueRegions.verifySettings()
 
 end
 
+
+
 -- gets items sorted by tracks
 function joshnt_UniqueRegions.sortItemsByTracks()
 
@@ -303,9 +333,12 @@ function joshnt_UniqueRegions.sortItemsByTracks()
       end
   end
   
+  reaper.ShowConsoleMsg("\nCount Num tracks")
   for key, _ in pairs(joshnt_UniqueRegions.t) do
+    reaper.ShowConsoleMsg("X")
     table.insert(joshnt_UniqueRegions.trackIDs, key)
   end
+  reaper.ShowConsoleMsg("\n")
 end
 
 function joshnt_UniqueRegions.selectOriginalSelection(boolSelect)
@@ -342,6 +375,8 @@ function joshnt_UniqueRegions.getItemGroups()
     end
 end
     
+
+
 -- Function to adjust item positions/ move them
 function joshnt_UniqueRegions.adjustItemPositions()   
     -- move Groups, starting from last Group (and last item in Group)
@@ -417,7 +452,7 @@ function joshnt_UniqueRegions.repositionMarker(allRgnArrayIndex, startTime, igno
     end
   
     -- Move overlapping region
-    if mrkColor ~= nil then
+    if mrkColor ~= -1 then
         reaper.SetProjectMarker3(0, mrkIndex, false, startTime - startTimeOffset, _, mrkNameReference, mrkColor | 0x1000000) 
     else
         reaper.SetProjectMarker( mrkIndex, false, startTime - startTimeOffset, _, mrkNameReference )
@@ -447,7 +482,7 @@ function joshnt_UniqueRegions.setRegionLength(allRgnArrayIndex, start_time, end_
     local rgnColor = joshnt_UniqueRegions.allRgnArray[allRgnArrayIndex]["color"]
 
     -- Move overlapping region
-    if rgnColor ~= nil then
+    if rgnColor ~= -1 then
         reaper.SetProjectMarker3(0, region_to_move, true, start_time, end_time, rgnNameReference, rgnColor | 0x1000000) 
     else
         reaper.SetProjectMarker( region_to_move, true, start_time, end_time, rgnNameReference )
@@ -468,7 +503,7 @@ function joshnt_UniqueRegions.createMarker(allRgnArrayIndex, startTime)
     joshnt_UniqueRegions.updateRgnRename(allRgnArrayIndex)
     -- Create the region
     local colorTEMP = 0;
-    if joshnt_UniqueRegions.allRgnArray[allRgnArrayIndex]["color"] ~= nil then colorTEMP = joshnt_UniqueRegions.allRgnArray[allRgnArrayIndex]["color"] | 0x1000000 end
+    if joshnt_UniqueRegions.allRgnArray[allRgnArrayIndex]["color"] ~= -1 then colorTEMP = joshnt_UniqueRegions.allRgnArray[allRgnArrayIndex]["color"] | 0x1000000 end
     return reaper.AddProjectMarker2(0, false, startTime, 0, joshnt_UniqueRegions.allRgnArray[allRgnArrayIndex]["rename"], -1, colorTEMP)
 end
 
@@ -488,7 +523,7 @@ function joshnt_UniqueRegions.createRegionOverItems(allRgnArrayIndex,startTime, 
     joshnt_UniqueRegions.updateRgnRename(allRgnArrayIndex)
     -- Create the region
     local colorTEMP = 0;
-    if joshnt_UniqueRegions.allRgnArray[allRgnArrayIndex]["color"] ~= nil then colorTEMP = joshnt_UniqueRegions.allRgnArray[allRgnArrayIndex]["color"] | 0x1000000 end
+    if joshnt_UniqueRegions.allRgnArray[allRgnArrayIndex]["color"] ~= -1 then colorTEMP = joshnt_UniqueRegions.allRgnArray[allRgnArrayIndex]["color"] | 0x1000000 end
     return reaper.AddProjectMarker2(0, true, startTime, endTime, joshnt_UniqueRegions.allRgnArray[allRgnArrayIndex]["rename"], -1, colorTEMP)
 end
 
@@ -497,7 +532,10 @@ function joshnt_UniqueRegions.createRRMLink(allRgnIndex,rgnIndex)
         reaper.SetRegionRenderMatrix(0, rgnIndex,joshnt_UniqueRegions.highCom_Parent,1)
     elseif joshnt_UniqueRegions.allRgnArray[allRgnIndex]["RRMLink"] == 3 then -- first common parent
         reaper.SetRegionRenderMatrix(0, rgnIndex,joshnt_UniqueRegions.firstCom_Parent,1)
-    elseif joshnt_UniqueRegions.allRgnArray[allRgnIndex]["RRMLink"] == 4 then -- parent track per item
+    elseif joshnt_UniqueRegions.allRgnArray[allRgnIndex]["RRMLink"] == 4 then -- parent per item group 
+        local _, firstCommonParent = joshnt.getSpecificParentOfSelectedItems(joshnt_UniqueRegions.parentTracks)
+        reaper.SetRegionRenderMatrix(0, rgnIndex, firstCommonParent, 1)
+    elseif joshnt_UniqueRegions.allRgnArray[allRgnIndex]["RRMLink"] == 5 then -- parent track per item
         local parentTracks = {}
         for i = 0, reaper.CountSelectedMediaItems(0) - 1 do
             local trackTemp = reaper.GetMediaItem_Track(reaper.GetSelectedMediaItem(0,i))
@@ -511,7 +549,7 @@ function joshnt_UniqueRegions.createRRMLink(allRgnIndex,rgnIndex)
         end
     elseif joshnt_UniqueRegions.allRgnArray[allRgnIndex]["RRMLink"] == 1 then -- Master track
         reaper.SetRegionRenderMatrix(0, rgnIndex,reaper.GetMasterTrack(0),1)
-    elseif joshnt_UniqueRegions.allRgnArray[allRgnIndex]["RRMLink"] == 5 then -- indiv. tracks
+    elseif joshnt_UniqueRegions.allRgnArray[allRgnIndex]["RRMLink"] == 6 then -- indiv. tracks
         local groupTracks = joshnt.getTracksOfSelectedItems()
         for _, track in ipairs (groupTracks) do
             reaper.SetRegionRenderMatrix(0, rgnIndex,track,1)
@@ -756,6 +794,8 @@ end
 -- Call from outside
 -- Main function
 function joshnt_UniqueRegions.main()
+    joshnt_UniqueRegions.InitBackend()
+
     joshnt_UniqueRegions.numItems = reaper.CountSelectedMediaItems(0)
     if joshnt_UniqueRegions.numItems == 0 then 
         reaper.ShowMessageBox("No items selected!", "Error", 0)
@@ -772,8 +812,6 @@ function joshnt_UniqueRegions.main()
         reaper.ShowMessageBox("No active Region-Creation Rule!", "Error", 0)
         return 
     end
-
-    joshnt_UniqueRegions.InitBackend()
 
 
     joshnt_UniqueRegions.space_in_between = math.abs(joshnt_UniqueRegions.space_in_between)
@@ -797,6 +835,7 @@ function joshnt_UniqueRegions.main()
     if joshnt_UniqueRegions.boolNeedActivateEnvelopeOption then
         reaper.Main_OnCommand(40070, 0)
     end
+    reaper.ShowConsoleMsg("\n"..tonumber(reaper.CountSelectedMediaItems(0)))
     joshnt_UniqueRegions.sortItemsByTracks()
     
     --get locked Items and unlock them
@@ -816,12 +855,13 @@ function joshnt_UniqueRegions.main()
     end
 
     -- get all parent Tracks
-    local parentTracks = joshnt.getParentTracksWithoutDuplicates(joshnt_UniqueRegions.trackIDs)
+    joshnt_UniqueRegions.parentTracks = joshnt.getParentTracksWithoutDuplicates(joshnt_UniqueRegions.trackIDs)
 
     -- falls keine Parents, Master als RRM für alle rgns mit Parent link
-    if parentTracks[1] == nil then 
+    if joshnt_UniqueRegions.parentTracks[1] == nil then 
+        reaper.ShowConsoleMsg("\nNo Parents found")
         for i, rgn in ipairs(joshnt_UniqueRegions.allRgnArray) do
-            if rgn.RRMLink == 2 or rgn.RRMLink == 3 or rgn.RRMLink == 4 then
+            if rgn.RRMLink == 2 or rgn.RRMLink == 3 or rgn.RRMLink == 4 or rgn.RRMLink == 5 then
                 rgn.RRMLink = 1
             end
         end        
@@ -838,27 +878,8 @@ function joshnt_UniqueRegions.main()
         end
     end  
     if needsParent == true then
-        local commonParents = {}
-        for i = 1, #parentTracks do
-            if joshnt.isAnyParentOfAllSelectedItems(parentTracks[i]) then
-                commonParents[#commonParents + 1] = parentTracks[i]
-            end
-        end
-
-        -- set RRM ParentTrack
-        if commonParents[1] then
-            joshnt_UniqueRegions.highCom_Parent = commonParents[1]
-            joshnt_UniqueRegions.firstCom_Parent = commonParents[1]
-        end
-        for i = 1, #commonParents do
-            if reaper.GetMediaTrackInfo_Value(commonParents[i], "IP_TRACKNUMBER") < reaper.GetMediaTrackInfo_Value(joshnt_UniqueRegions.highCom_Parent, "IP_TRACKNUMBER") then
-                joshnt_UniqueRegions.highCom_Parent = commonParents[i]
-            end
-            if reaper.GetMediaTrackInfo_Value(commonParents[i], "IP_TRACKNUMBER") > reaper.GetMediaTrackInfo_Value(joshnt_UniqueRegions.firstCom_Parent, "IP_TRACKNUMBER") then
-                joshnt_UniqueRegions.firstCom_Parent = commonParents[i]
-            end
-        end
-
+        joshnt_UniqueRegions.highCom_Parent, joshnt_UniqueRegions.firstCom_Parent = joshnt.getSpecificParentOfSelectedItems(joshnt_UniqueRegions.parentTracks)
+        
         -- check if highest parent is any parent of all Tracks of selected items
         if joshnt_UniqueRegions.highCom_Parent == nil then
             for i, rgn in ipairs(joshnt_UniqueRegions.allRgnArray) do

@@ -1108,6 +1108,34 @@ function joshnt.isAnyParentOfAllSelectedItems(inputTrack)
   return true
 end
 
+-- get first and highest common parent of table with parent tracks; return highest common parent, first common parent
+-- highest = lowest track ID, first = highest track ID
+-- use joshnt.getParentTracksWithoutDuplicates) to get parent track table
+function joshnt.getSpecificParentOfSelectedItems(parentTrackTable)
+  local commonParents = {}
+  local highestCommonParent, firstCommonParent = nil, nil
+  for i = 1, #parentTrackTable do
+      if joshnt.isAnyParentOfAllSelectedItems(parentTrackTable[i]) then
+          commonParents[#commonParents + 1] = parentTrackTable[i]
+      end
+  end
+
+  -- set RRM ParentTrack
+  if commonParents[1] then
+    highestCommonParent = commonParents[1]
+    firstCommonParent = commonParents[1]
+  end
+  for i = 1, #commonParents do
+    if reaper.GetMediaTrackInfo_Value(commonParents[i], "IP_TRACKNUMBER") < reaper.GetMediaTrackInfo_Value(highestCommonParent, "IP_TRACKNUMBER") then
+      highestCommonParent = commonParents[i]
+    end
+    if reaper.GetMediaTrackInfo_Value(commonParents[i], "IP_TRACKNUMBER") > reaper.GetMediaTrackInfo_Value(firstCommonParent, "IP_TRACKNUMBER") then
+      firstCommonParent = commonParents[i]
+    end
+  end
+  return highestCommonParent, firstCommonParent
+end
+
 -- selects only the tracks of the selected items; copied from X-Raym
 function joshnt.selectOnlyTracksOfSelectedItems()
   joshnt.unselectAllTracks()
@@ -1581,6 +1609,7 @@ end
 -- write CSV file from input array - array can have subarrays as keyvalues but not further stacked subarrays
 -- FileHeader needs to be comma seperated, e.g. keys of subarrays
 function joshnt.toCSV(arrayToPrint, FileNameString, FileHeaderCommaSeperatedString)
+  if not joshnt.checkJS_API() then return end
   if type(arrayToPrint) ~= "table" or type(FileNameString) ~= "string" then reaper.ShowConsoleMsg("\nUnmatching filetype for CSV-File creation") return end
   -- Get the path of the currently opened project
   local retval, projectPath = reaper.EnumProjects(-1, "")
@@ -1649,6 +1678,35 @@ function joshnt.toCSV(arrayToPrint, FileNameString, FileHeaderCommaSeperatedStri
   file:close()
 
   reaper.ShowMessageBox(filePath.."\nfile created successfully.", "Success", 0)
+end
+
+-- writes input to a new txt file (overwrites existing with prompt)
+-- use \n for new line in the given inputString
+function joshnt.toNewTXT(inputString, initFileName)
+  if not joshnt.checkJS_API() then return end
+  inputString = tostring(inputString)
+  if type(inputString) ~= "string" then reaper.MB("Input can not be written to TXT File!", "Error", 0) return end
+
+  local retval, filename = reaper.JS_Dialog_BrowseForSaveFile("Save 'Unique Regions' Settings...", reaper.GetResourcePath(), tostring(initFileName)..".txt", 'txt files (.txt)\0*.txt\0All Files (*.*)\0*.*\0')
+  if retval == 1 and filename ~= "" then
+    local f = io.open(filename, "w")
+    if not f then reaper.MB("Failed to open TXT File for Writing", "Error", 0) return end
+    f:write(inputString)
+    f:close()
+  end
+end
+
+-- returns from selected TXT file; retvalues: retval (1 succes, 0 fail), string Content
+function joshnt.readFromTXT(initFileName)
+  if not joshnt.checkJS_API() then return 0 end
+  local retval, filename = reaper.JS_Dialog_BrowseForOpenFiles("Open Unique Regions Setting File...", reaper.GetResourcePath(), tostring(initFileName)..".txt", 'txt files (.txt)\0*.txt\0All Files (*.*)\0*.*\0', false)
+
+  if retval ~= 1 or filename == "" then return 0 end
+  local f = io.open(filename, "r")
+  if not f then reaper.MB("Failed to open TXT File for Reading", "Error", 0) return end
+  local content = f:read("*a") or ""
+  f:close()
+  return 1, content
 end
 
 -- add small pop-up which doesn't block user input (copied from X-Raym)
