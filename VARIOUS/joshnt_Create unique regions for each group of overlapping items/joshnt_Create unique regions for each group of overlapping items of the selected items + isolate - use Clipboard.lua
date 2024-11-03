@@ -4,7 +4,7 @@
 local joshnt_LuaUtils = reaper.GetResourcePath()..'/Scripts/Joshnt_ReaScripts/DEVELOPMENT/joshnt_LuaUtilities.lua'
 if reaper.file_exists( joshnt_LuaUtils ) then 
   dofile( joshnt_LuaUtils ) 
-  if not joshnt or joshnt.version() < 2.22 then 
+  if not joshnt or joshnt.version() < 3.0 then 
     reaper.MB("This script requires a newer version of joshnt Lua Utilities. Please run:\n\nExtensions > ReaPack > Synchronize Packages, 'joshnt_LuaUtilities.lua'","Error",0); 
     return 
   end
@@ -24,20 +24,6 @@ end
 
 -- load defaults (from script and reaper extended states)
 if not joshnt_UniqueRegions.settingsFromClipboard() then return end
-
-local function quit(missingValue)
-  reaper.MB("No default value set for:\n"..missingValue.."\nPlease run the GUI Version of this script once to set default values.", "joshnt Error",0)
-end
-
--- check for all values
-if not joshnt_UniqueRegions.isolateItems then quit("isolateItems") return
-elseif not joshnt_UniqueRegions.space_in_between then quit("space_in_between") return
-elseif not joshnt_UniqueRegions.lockBoolUser then quit("lockBoolUser") return
-elseif not joshnt_UniqueRegions.groupToleranceTime then quit("groupToleranceTime") return
-elseif not joshnt_UniqueRegions.repositionToggle then quit("repositionToggle") return
-elseif not joshnt_UniqueRegions.allRgnArray[1] then quit("any Region") return
-end
-
 
 joshnt_UniqueRegions.main()
 joshnt_UniqueRegions.Quit()

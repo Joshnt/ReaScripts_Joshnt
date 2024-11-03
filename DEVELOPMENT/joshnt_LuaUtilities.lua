@@ -1451,7 +1451,7 @@ function joshnt.copyTable(originalTable)
   local newTable = {}
   for key, value in pairs(originalTable) do
     if type(value) == "table" then
-      newTable[key] = joshnt.copyTable(originalTable)(value)  -- Recursively copy sub-tables
+      newTable[key] = joshnt.copyTable(value)  -- Recursively copy sub-tables
     else
       newTable[key] = value
     end
@@ -1526,30 +1526,57 @@ end
 
 -- Convert from CSV string to table (converts a single line of a CSV file) - for reading user input
 function joshnt.fromCSV(s)
-  s = s .. ','        -- add ending comma
-  local q = {}        -- table to collect fields
+  s = s .. ','         -- Add an ending comma
+  local q = {}         -- Table to collect fields
   local fieldstart = 1
+  local depth = 0      -- Keep track of the depth of nested arrays
+  local currentField = ""
+
   repeat
-    -- next field is quoted? (start with `"'?)
-    if string.find(s, '^"', fieldstart) then
+    -- Check for the start of a nested array
+    if string.sub(s, fieldstart, fieldstart) == "{" then
+      depth = depth + 1
+      local endIndex = fieldstart + 1
+      while depth > 0 and endIndex <= string.len(s) do
+        if string.sub(s, endIndex, endIndex) == "{" then
+          depth = depth + 1
+        elseif string.sub(s, endIndex, endIndex) == "}" then
+          depth = depth - 1
+        end
+        endIndex = endIndex + 1
+      end
+      
+      -- Add the nested array to the field
+      currentField = string.sub(s, fieldstart, endIndex - 1)
+      table.insert(q, joshnt.fromCSV(string.sub(currentField, 2, -2))) -- Recursively parse nested array
+      fieldstart = endIndex + 1
+
+    elseif string.find(s, '^"', fieldstart) then
+      -- Handle quoted fields
       local a, i, c
       i  = fieldstart
       repeat
-          -- find closing quote
-          a, i, c = string.find(s, '"("?)', i+1)
-      until c ~= '"'    -- quote not followed by quote?
+          -- Find the closing quote
+          a, i, c = string.find(s, '"("?)', i + 1)
+      until c ~= '"'    -- Quote not followed by quote?
       if not i then error('unmatched "') end
-      local f = string.sub(s, fieldstart+1, i-1)
+      local f = string.sub(s, fieldstart + 1, i - 1)
       table.insert(q, (string.gsub(f, '""', '"')))
       fieldstart = string.find(s, ',', i) + 1
-    else                -- unquoted; find next comma
+      
+    else                -- Unquoted; find the next comma
       local nexti = string.find(s, ',', fieldstart)
-      table.insert(q, string.sub(s, fieldstart, nexti-1))
+      if not nexti then nexti = string.len(s) + 1 end -- Handle last field
+      local value = string.sub(s, fieldstart, nexti - 1)
+      if value and value ~= "" then
+          table.insert(q, value)
+      end
       fieldstart = nexti + 1
     end
   until fieldstart > string.len(s)
   return q
 end
+
 
 -- write CSV file from input array - array can have subarrays as keyvalues but not further stacked subarrays
 -- FileHeader needs to be comma seperated, e.g. keys of subarrays
@@ -1731,13 +1758,23 @@ function joshnt.tableToCSVString(tableInput)
       end
   end
 
-  -- Build the string with values separated by commas
-  for i = 1, maxIndex do
-      if tableInput[i] ~= nil then
-          table.insert(result, valueToString(tableInput[i]))
+  -- Build the string with values separated by commas 
+  if maxIndex ~= 0 then -- if array is numerical
+    for i = 1, maxIndex do
+        if tableInput[i] ~= nil then
+            table.insert(result, valueToString(tableInput[i]))
+        else
+            table.insert(result, "")
+        end
+    end
+  else
+    for _, value in pairs(tableInput) do
+      if value ~= nil then
+          table.insert(result, valueToString(value))
       else
           table.insert(result, "")
       end
+    end
   end
 
   return table.concat(result, ",")
@@ -1785,7 +1822,9 @@ end
 -- input: provide positive number & length of target-output
 -- e.g. with input 3, 003 gets output
 function joshnt.addLeadingZero(input, digits)
-  if type(input) ~= "number" and input < 0 then return input end
+  if type(input) == "string" then input = tonumber(input) end
+  if type(digits) == "string" then digits = tonumber(digits) end
+  if type(input) ~= "number" or input < 0 or type(digits) ~= "number" or digits < 2 then return input end
   
   if digits == 4 then
     if input < 1000 and input >= 100 then
