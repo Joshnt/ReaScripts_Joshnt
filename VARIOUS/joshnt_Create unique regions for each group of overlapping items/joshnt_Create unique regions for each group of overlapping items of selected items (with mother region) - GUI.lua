@@ -32,6 +32,32 @@ end
 loadfile(lib_path .. "Core.lua")()
 
 
+--[[
+-----------------------------------
+----- z layer logic for GUI: ------
+-----------------------------------
+- 5 = hidden
+
+General:
+- 2 = non-clickable Lables etc.
+- 3 = General UI 
+
+
+Tab specifics:
+- 11 = tab 1
+- 12 = tab 2
+- 13 = tab 3 
+...
+
+
+Wildcard windows with textboxes
+- 50 = Buttons to confirm/ cancel (close only open window, if not crash! safe in variable which is open), "each line represents a new entry to cycle through. Watch out for unwanted empty lines."
+- 51 = Texteditor 1, Window
+- 52 = Texteditor 2, Window
+- 53 = Texteditor 3, Window
+- 54 = Texteditor 4, Window
+- 55 = Texteditor 5, Window
+]]--
 
 
 GUI.req("Classes/Class - Frame.lua")()
@@ -51,126 +77,113 @@ GUI.x, GUI.y, GUI.w, GUI.h = 0, 0, 400, 675
 GUI.anchor, GUI.corner = "screen", "C"
 
 -- additional GUI variables
-local previewWithTimeSelection, saveGUI, closeGUI = false, false, false -- saved as settings to external states
-local focusArray, focusIndex = {"TimeBefore_Text","TimeAfter_Text","TimeBetween_Text","TimeInclude_Text","RegionNameChild","RegionNameMother"}, 0
+local focusArray, focusIndex = {"TimeBefore_Text","TimeAfter_Text","RegionName","TimeBetween_Text","TimeInclude_Text"}, 0
 local tabPressed, enterPressed = false, false
-local timeSliderVals = {
+
+-- SLIDER
+local timeSlidersVals = {
+    general = {
+        TimeBetween = {min = 0, max = 10, defaults = 0, val = 0},
+        TimeInclude = {min = 0, max = 10, defaults = 0, val = 0}
+    },
+
+    rgn_TEMPLATE = {
     TimeBefore = {min = -10, max = 0, defaults = 100, val = 0},
     TimeAfter = {min = 0, max = 10, defaults = 0, val = 0},
-    TimeBetween = {min = 0, max = 10, defaults = 0, val = 0},
-    TimeInclude = {min = 0, max = 10, defaults = 0, val = 0}
+    },
+    -- TODO Init slider on tab creation
+    -- use timeSliderValRgn[#timeSliderValRgn+1] = joshnt.copyTable(timeSliderValRgn_TEMPLATE) for each new Rgn Set
+    rgn = {}
 }
 
+-- TABS
+local numTabs = 1
+
+
+-- MENU
+-- TODO setup menu structure with variables
+
+local function updateUserValues()
+    joshnt_UniqueRegions.repositionToggle = true
+    joshnt_UniqueRegions.space_in_between = 0 -- Time in seconds
+    joshnt_UniqueRegions.groupToleranceTime = 0  -- Time in seconds
+
+    -- for loop with number of tabs
+    for i = 1, numTabs do
+        if not joshnt_UniqueRegions.allRgnArray[i] then
+            joshnt_UniqueRegions.allRgnArray[i] = joshnt.copyTable(joshnt_UniqueRegions.rgnProperties)
+        end
+        -- TODO assign GUI Vals to joshnt_UniqueRegions stuff
+    end
+    -- mehr gespeicherte regionen als momentan tabs -> delete speicher
+    if numTabs < #joshnt_UniqueRegions.allRgnArray then
+        for i = numTabs, #joshnt_UniqueRegions.allRgnArray do
+            joshnt_UniqueRegions.allRgnArray[i] = nil
+        end
+    end
+    joshnt_UniqueRegions.isolateItems = 1 -- 1 = move selected, 2 = move others, 3 = dont move
+end
 
 local function run_Button()
-    -- set values from GUI to func; color is first stored and then set to visualize, so no need to do it here
-    local optionsTable = GUI.Val("options") -- Lock, Save as default, Close GUI
-
-    joshnt_UniqueRegions.isolateItems = GUI.Val("isolateItems")
-    joshnt_UniqueRegions.start_silence = GUI.Val("TimeBefore")
-    joshnt_UniqueRegions.end_silence = GUI.Val("TimeAfter")
-    joshnt_UniqueRegions.space_in_between = GUI.Val("TimeBetween")
-    joshnt_UniqueRegions.lockBoolUser = optionsTable[1]
-    joshnt_UniqueRegions.regionName = GUI.Val("RegionNameChild")
-    joshnt_UniqueRegions.motherRegionName = GUI.Val("RegionNameMother")
-    joshnt_UniqueRegions.RRMLink_Child = GUI.Val("RRMChild")
-    joshnt_UniqueRegions.RRMLink_Mother = GUI.Val("RRMMother") 
-    joshnt_UniqueRegions.createMotherRgn = GUI.Val("MotherRgnBool")
-    joshnt_UniqueRegions.createChildRgn = GUI.Val("ChildRgnBool")
-    joshnt_UniqueRegions.groupToleranceTime = GUI.Val("TimeInclude")
-    joshnt_UniqueRegions.repositionToggle = GUI.Val("RepositionToggle")
-
+    updateUserValues()
     joshnt_UniqueRegions.main()
-    if optionsTable then
-        if optionsTable[2] then
-            joshnt_UniqueRegions.saveDefaults()
-            local optionsArray = GUI.Val("options")
-            reaper.SetExtState("joshnt_UniqueRegions", "OptionsGUI", tostring(previewWithTimeSelection)..","..tostring(optionsArray[3]), true)
-        end
-        if optionsTable[3] then
-            joshnt_UniqueRegions.Quit()
-            GUI.quit = true
-        end
+    if joshnt_UniqueRegions.closeGUI then
+        joshnt_UniqueRegions.Quit()
+        GUI.quit = true
     end
 end
 
 local function adjustTimeselection()
-    if previewWithTimeSelection == true then
-        local _, itemStarts, itemEnds = joshnt.getOverlappingItemGroupsOfSelectedItems(GUI.Val("TimeInclude"))
+    if joshnt_UniqueRegions.previewTimeSelection == true then
+        local _, itemStarts, itemEnds = joshnt.getOverlappingItemGroupsOfSelectedItems(GUI.Val("TimeInclude")) 
         if itemStarts and itemEnds then
             local startTime, endTime = itemStarts[1], itemEnds[1]
-            reaper.GetSet_LoopTimeRange(true, false, startTime + GUI.Val("TimeBefore"), endTime + GUI.Val("TimeAfter"), false)
+            reaper.GetSet_LoopTimeRange(true, false, startTime + GUI.Val("TimeBefore"), endTime + GUI.Val("TimeAfter"), false) -- TODO get Value for slider 1
         end
     end
 end
 
-local function setSliderSize(SliderName_String, newSliderValue_Input)
+local function setSliderSize(SliderName_String, newSliderValue_Input, tabNum)
     local newSliderValue = newSliderValue_Input 
     if not newSliderValue_Input then 
-        if SliderName_String == "TimeBefore" then newSliderValue = joshnt_UniqueRegions.start_silence
-        elseif SliderName_String == "TimeAfter" then newSliderValue = joshnt_UniqueRegions.end_silence
-        elseif SliderName_String == "TimeBetween" then newSliderValue = joshnt_UniqueRegions.space_in_between
-        else newSliderValue = joshnt_UniqueRegions.groupToleranceTime end
+        if SliderName_String.find("TimeBefore") then newSliderValue = joshnt_UniqueRegions.allRgnArray[tabNum]["start_silence"]
+        elseif SliderName_String.find("TimeAfter") then newSliderValue = joshnt_UniqueRegions.allRgnArray[tabNum]["end_silence"]
+        elseif SliderName_String.find("TimeBetween") then newSliderValue = joshnt_UniqueRegions.space_in_between
+        elseif SliderName_String.find("TimeInclude") then newSliderValue = joshnt_UniqueRegions.groupToleranceTime end
     end
 
     local tb_to_num = tonumber(newSliderValue)
     if tb_to_num then
         local redraw = false
-        if SliderName_String ~= "TimeBefore" then
+        if not SliderName_String.find("TimeBefore") then
             tb_to_num = math.max(0, tb_to_num)
             if tb_to_num > GUI.elms[SliderName_String]["max"] or GUI.elms[SliderName_String]["max"] > 10 then
-                timeSliderVals[SliderName_String]["max"] = math.max(tb_to_num,10)
-                GUI.elms[SliderName_String]["max"] = timeSliderVals[SliderName_String]["max"]
+                local tempVal = math.max(tb_to_num,10)
+                if tabNum then
+                    timeSlidersVals["rgn"][tabNum][SliderName_String]["max"] = tempVal
+                else
+                    timeSlidersVals["general"][SliderName_String]["max"] = tempVal
+                end
+                GUI.elms[SliderName_String]["max"] = tempVal
                 redraw = true
             end
         else
             tb_to_num = math.abs(tb_to_num) * -1
-            if tb_to_num < GUI.elms.TimeBefore.min or GUI.elms.TimeBefore.min < -10 then
-                timeSliderVals[SliderName_String]["min"] = math.min(tb_to_num,-10)
-                GUI.elms.TimeBefore.min = timeSliderVals[SliderName_String]["min"]
+            if tb_to_num < GUI.elms[SliderName_String]["min"] or GUI.elms[SliderName_String]["min"] < -10 then
+                timeSlidersVals["rgn"][tabNum][SliderName_String]["min"] = math.min(tb_to_num,-10)
+                GUI.elms[SliderName_String]["min"] = timeSlidersVals["rgn"][tabNum][SliderName_String]
                 redraw = true
             end
         end
         local newVal = (tb_to_num-GUI.elms[SliderName_String]["min"])/GUI.elms[SliderName_String]["inc"]
         if redraw == true then GUI.elms[SliderName_String]:init_handles() end
-        timeSliderVals[SliderName_String]["val"] = newVal
+        timeSlidersVals["rgn"][tabNum][SliderName_String]["val"] = newVal
         GUI.Val(SliderName_String,newVal)
         adjustTimeselection()
     end
 end
 
-local function setVisibilityChildRgn()
-    if GUI.Val("ChildRgnBool") == true then
-        GUI.elms.RRMChild.z = 21
-        GUI.elms.RegionNameChild.z = 21
-        GUI.elms.Child_Label.z = 21
-        GUI.elms.ColSelFrame_Child.z = 21
-    else
-        GUI.elms.RRMChild.z = 5
-        GUI.elms.RegionNameChild.z = 5
-        GUI.elms.Child_Label.z = 5
-        GUI.elms.ColSelFrame_Child.z = 5
-    end
-    GUI.redraw_z[5] = true
-    GUI.redraw_z[21] = true
-end
-
-local function setVisibilityMotherRgn()
-    if GUI.Val("MotherRgnBool") == true then
-        GUI.elms.RRMMother.z = 21
-        GUI.elms.RegionNameMother.z = 21
-        GUI.elms.Mother_Label.z = 21
-        GUI.elms.ColSelFrame_Mother.z = 21
-    else
-        GUI.elms.RRMMother.z = 5
-        GUI.elms.RegionNameMother.z = 5
-        GUI.elms.Mother_Label.z = 5
-        GUI.elms.ColSelFrame_Mother.z = 5
-    end
-    GUI.redraw_z[5] = true
-    GUI.redraw_z[21] = true
-end
-
+-- TODO - split up in general & per tab (per tab function uses index as input)
 local function redrawSliders()
 
     GUI.New("TimeBefore", "Slider", {
@@ -306,13 +319,9 @@ local function redrawSliders()
    
 end
 
-local function redrawColFrames()
-    local zChild, zMother;
-    if GUI.Val("ChildRgnBool") == true then zChild = 21 else zChild = 5 end
-    if GUI.Val("MotherRgnBool") == true then zMother = 21 else zMother = 5 end
-
-    GUI.New("ColSelFrame_Child", "Frame", {
-        z = zChild,
+local function redrawColFrames(tabInd)
+    GUI.New("ColSelFrame_"..tabInd, "Frame", {
+        z = 10+tabInd,
         x = 86,
         y = 476,
         w = 80,
@@ -330,66 +339,37 @@ local function redrawColFrames()
         col_txt = "txt"
     })
 
-    
-    GUI.New("ColSelFrame_Mother", "Frame", {
-        z = zMother,
-        x = 230,
-        y = 476,
-        w = 80,
-        h = 25,
-        shadow = false,
-        fill = false,
-        color = "elm_frame",
-        bg = "MotherCol",
-        round = 0,
-        text = "      Color ",
-        txt_indent = 0,
-        txt_pad = 0,
-        pad = 4,
-        font = 4,
-        col_txt = "txt"
-    })
-
-    function GUI.elms.ColSelFrame_Child:onmouseup()
+    local currColFrame = GUI["elms"]["ColSelFrame_"..tabInd]
+    function currColFrame:onmouseup()
         local retval, newColor = reaper.GR_SelectColor(nil)
         if retval ~= 0 then 
-            joshnt_UniqueRegions.regionColor = newColor 
+            joshnt_UniqueRegions.allRgnArray[tabInd]["color"] = newColor 
         else
-            joshnt_UniqueRegions.regionColor = nil
+            joshnt_UniqueRegions.allRgnArray[tabInd]["color"] = -1
         end
-        setFrameColors("Child",newColor)
+
+        setFrameColors(tabInd, newColor)
     end
 
-    function GUI.elms.ColSelFrame_Mother:onmouseup()
-        local retval, newColor = reaper.GR_SelectColor(nil)
-        if retval ~= 0 then 
-            joshnt_UniqueRegions.regionColorMother = newColor 
-        else
-            joshnt_UniqueRegions.regionColorMother = nil
-        end
-        setFrameColors("Mother",newColor)
-    end
-
-    GUI.elms.ColSelFrame_Child.tooltip = "Click here to choose a color for each individual region.\nCancelling the color-picker dialog will use the default region color."
-    GUI.elms.ColSelFrame_Mother.tooltip = "Click here to choose a color for the mother region.\nCancelling the color-picker dialog will use the default region color."
+    currColFrame.tooltip = "Click here to choose a color for each individual region/ marker.\nCancelling the color-picker dialog will use the default color."
 end
 
 -- global because redraw needs to access it
-function setFrameColors(frameTargetString, targetColor)
+function setFrameColors(tabInd, targetColor)
     if targetColor and targetColor ~= 0 then 
         local r,g,b = reaper.ColorFromNative(targetColor)
         r = r/255
         g = g/255
         b = b/255
-        GUI.colors[frameTargetString.."Col"] = {r,g,b,1}
+        GUI.colors["Col"..tostring(tabInd)] = {r,g,b,1}
     else 
-        GUI.colors[frameTargetString.."Col"] = GUI.colors["wnd_bg"] 
+        GUI.colors["Col"..tostring(tabInd)] = GUI.colors["wnd_bg"] 
     end
 
-    redrawColFrames()
+    redrawColFrames(tabInd)
 end
 
-
+-- TODO ja die main arbeit halt nich
 local function redrawAll ()
     GUI.elms_hide[5] = true
 
@@ -582,76 +562,8 @@ local function redrawAll ()
         w = 100,
         h = 20,
         caption = "Link to RRM",
-        optarray = {"Master", "Highest common Parent", "First common Parent", "First parent per item", "Each Track", "None"},
+        optarray = {"Master", "Highest common Parent (all)", "First common Parent (all)", "First common parent (per item group)", "Parent (per item)", "Each Track", "None"},
         retval = 2.0,
-        font_a = 3,
-        font_b = 4,
-        col_txt = "txt",
-        col_cap = "txt",
-        bg = "wnd_bg",
-        pad = 4,
-        noarrow = false,
-        align = 0
-    })
-
-    GUI.New("MotherRgnBool", "Checklist", {
-        z = 11,
-        x = 225,
-        y = 308,
-        w = 155,
-        h = 30,
-        caption = "",
-        optarray = {"Create Mother Region"},
-        dir = "v",
-        pad = 4,
-        font_a = 2,
-        font_b = 3,
-        col_txt = "txt",
-        col_fill = "elm_fill",
-        bg = "wnd_bg",
-        frame = false,
-        shadow = true,
-        swap = nil,
-        opt_size = 20
-    })
-
-    GUI.New("Mother_Label", "Label", {
-        z = 21,
-        x = 230,
-        y = 348,
-        caption = "Mother region",
-        font = 3,
-        color = "txt",
-        bg = "wnd_bg",
-        shadow = false
-    })
-
-    GUI.New("RegionNameMother", "Textbox", {
-        z = 21,
-        x = 230,
-        y = 380,
-        w = 100,
-        h = 20,
-        caption = "",
-        cap_pos = "left",
-        font_a = 3,
-        font_b = "monospace",
-        color = "txt",
-        bg = "wnd_bg",
-        shadow = true,
-        pad = 4,
-        undo_limit = 20
-    })
-
-    GUI.New("RRMMother", "Menubox", {
-        z = 21,
-        x = 230,
-        y = 428,
-        w = 100,
-        h = 20,
-        caption = "",
-        optarray = {"Master", "Highest common Parent", "First common Parent", "First parent per item", "Each Track", "None"},
-        retval = 1,
         font_a = 3,
         font_b = 4,
         col_txt = "txt",
@@ -706,27 +618,6 @@ local function redrawAll ()
         col_txt = "txt",
         col_fill = "elm_frame",
         func = run_Button
-    })
-
-    GUI.New("options", "Checklist", {
-        z = 11,
-        x = 174,
-        y = 575,
-        w = 120,
-        h = 85,
-        caption = "On run:",
-        optarray = {"Lock items", "Save as default", "Close GUI"},
-        dir = "v",
-        pad = 4,
-        font_a = 2,
-        font_b = 3,
-        col_txt = "txt",
-        col_fill = "elm_fill",
-        bg = "wnd_bg",
-        frame = false,
-        shadow = true,
-        swap = nil,
-        opt_size = 20
     })
 
     -- seperation frames - visualisation only
@@ -845,6 +736,7 @@ end
 
 local function Loop()
 
+    -- TODO add numbers of keyboard for tab switch
     -- keyinput
     if GUI.char == 9.0 and tabPressed == false then
         if type(focusIndex) == "number" and focusIndex ~= 0 then
@@ -879,7 +771,8 @@ local function Loop()
 end
 
 -- load default values to GUI interface
-local function loadDefaultValues()
+local function refreshGUIValues()
+    -- TODO gescheites laden von values, abhängig von namen der GUI sachen
     if joshnt_UniqueRegions.isolateItems then GUI.Val("isolateItems",joshnt_UniqueRegions.isolateItems) else GUI.Val("isolateItems",1) end
     if joshnt_UniqueRegions.space_in_between then GUI.Val("TimeBetween",joshnt_UniqueRegions.space_in_between) GUI.Val("TimeBetween_Text",joshnt_UniqueRegions.space_in_between) end
     if joshnt_UniqueRegions.groupToleranceTime then GUI.Val("TimeInclude",joshnt_UniqueRegions.groupToleranceTime) GUI.Val("TimeInclude_Text",joshnt_UniqueRegions.groupToleranceTime) end
@@ -894,40 +787,31 @@ local function loadDefaultValues()
     if joshnt_UniqueRegions.createChildRgn == true then GUI.Val("ChildRgnBool", true) end
     if joshnt_UniqueRegions.repositionToggle == true or not joshnt_UniqueRegions.repositionToggle then GUI.Val("RepositionToggle", true) end
     GUI.Val("Preview",previewWithTimeSelection)
+
+    -- TODO set frame über Anzahl von Regions
     setFrameColors("Child",joshnt_UniqueRegions.regionColor)
     setFrameColors("Mother",joshnt_UniqueRegions.regionColorMother)
-    setVisibilityMotherRgn()
-    setVisibilityChildRgn()
 end
 
 local function init()
     joshnt_UniqueRegions.getDefaults()
-    GUI.colors["ChildCol"] = GUI.colors["wnd_bg"] 
-    GUI.colors["MotherCol"] = GUI.colors["wnd_bg"] 
-    local tempOption_Array = joshnt.splitStringToTable(reaper.GetExtState("joshnt_UniqueRegions", "OptionsGUI"))
-    previewWithTimeSelection = tempOption_Array[1]
+    -- TODO on new rgn tab, create new rgn color; delete on tab delete (?)
+    GUI.colors["Col_1"] = GUI.colors["wnd_bg"] 
     redrawAll()
-    loadDefaultValues()
+    refreshGUIValues()
+    -- TODO refresh general slider & pro region time before time after; evtl auslagern als function
     for sliderName, _ in pairs(timeSliderVals) do
         setSliderSize(sliderName)
     end
 end
 
 local function resize()
-    joshnt_UniqueRegions.isolateItems = GUI.Val("isolateItems")
-    joshnt_UniqueRegions.start_silence = GUI.Val("TimeBefore")
-    joshnt_UniqueRegions.end_silence = GUI.Val("TimeAfter")
-    joshnt_UniqueRegions.space_in_between = GUI.Val("TimeBetween")
-    joshnt_UniqueRegions.regionName = GUI.Val("RegionNameChild")
-    joshnt_UniqueRegions.motherRegionName = GUI.Val("RegionNameMother")
-    joshnt_UniqueRegions.RRMLink_Child = GUI.Val("RRMChild")
-    joshnt_UniqueRegions.RRMLink_Mother = GUI.Val("RRMMother") 
-    joshnt_UniqueRegions.createMotherRgn = GUI.Val("MotherRgnBool")
-    joshnt_UniqueRegions.createChildRgn = GUI.Val("ChildRgnBool")
-    joshnt_UniqueRegions.groupToleranceTime = GUI.Val("TimeInclude")
 
+    -- TODO uff okay alles anpassen
+    updateUserValues()
     redrawAll()
-    loadDefaultValues()
+    refreshGUIValues()
+    -- TODO refresh general slider & pro region time before time after; evtl auslagern als function (s. oben)
     for sliderName, _ in pairs(timeSliderVals) do
         setSliderSize(sliderName)
     end

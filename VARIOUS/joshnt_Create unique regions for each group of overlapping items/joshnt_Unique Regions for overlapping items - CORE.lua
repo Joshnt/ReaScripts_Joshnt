@@ -24,18 +24,24 @@ function joshnt_UniqueRegions.Init()
         everyX = 1 -- RMX only: after x item groups
     }
 
+    -- use joshnt_UniqueRegions.allRgnArray[#joshnt_UniqueRegions.allRgnArray] = joshnt.copyTable(joshnt_UniqueRegions.rgnProperties) for each new rgn rule set
     joshnt_UniqueRegions.allRgnArray = {} -- master array with sub arrays per "region Rule" with each having rgnProperties
 
     joshnt_UniqueRegions.customWildCard = {
         [1] = {},
         [2] = {},
         [3] = {},
-        [4] = {}
-    } -- for /C; so far fixed length of 4 in GUI; code should be flexible for increase
+        [4] = {},
+        [5] = {}
+    } -- for /C; so far fixed length of 5 in GUI; code should be flexible for increase
 
     joshnt_UniqueRegions.isolateItems = 1 -- 1 = move selected, 2 = move others, 3 = dont move
     joshnt_UniqueRegions.lockBoolUser = false -- bool to lock items after movement
     joshnt_UniqueRegions.leadingZero = 2 -- use leading zero up to digit number x -> 2 = 10, 3 = 100
+
+    -- GUI values only - only saved in external states, not txt or clipboard
+    joshnt_UniqueRegions.previewTimeSelection = false
+    joshnt_UniqueRegions.closeGUI = false
 
     -- only inside this script
     joshnt_UniqueRegions.boolNeedActivateEnvelopeOption = nil
@@ -44,13 +50,13 @@ function joshnt_UniqueRegions.Init()
     joshnt_UniqueRegions.parentTracks = {}
     joshnt_UniqueRegions.numItems = 0
     joshnt_UniqueRegions.lockedItems = {}
+    joshnt_UniqueRegions.highCom_Parent = nil
+    joshnt_UniqueRegions.firstCom_Parent = nil
     -- global variables for grouping of items; used in getItemGroups()
     joshnt_UniqueRegions.itemGroups = {}
     joshnt_UniqueRegions.itemGroupsStartsArray = nil
     joshnt_UniqueRegions.itemGroupsEndArray = nil
     joshnt_UniqueRegions.nudgeValues = {}
-    joshnt_UniqueRegions.highCom_Parent = nil
-    joshnt_UniqueRegions.firstCom_Parent = nil
     joshnt_UniqueRegions.maxStartSilence = 0
     joshnt_UniqueRegions.maxEndSilence = 0
 end
@@ -111,6 +117,12 @@ function joshnt_UniqueRegions.getDefaults()
         joshnt.copyTableValues(tempArray, joshnt_UniqueRegions.customWildCard[counter])
         counter = counter + 1
     end
+
+    if reaper.HasExtState("joshnt_UniqueRegions", "OptionsGUI") then
+        local tempArray = joshnt.splitStringToTable(reaper.GetExtState("joshnt_UniqueRegions", "OptionsGUI"..counter))
+        joshnt_UniqueRegions.previewTimeSelection = tempArray[1]
+        joshnt_UniqueRegions.closeGUI = tempArray[1]
+    end
 end
 
 function joshnt_UniqueRegions.saveDefaults()
@@ -126,6 +138,8 @@ function joshnt_UniqueRegions.saveDefaults()
     for i = 1, #joshnt_UniqueRegions.customWildCard do
         reaper.SetExtState("joshnt_UniqueRegions", "customWildCard"..i, joshnt.tableToCSVString(joshnt_UniqueRegions.customWildCard[i]))
     end
+
+    reaper.SetExtState("joshnt_UniqueRegions", "OptionsGUI", tostring(joshnt_UniqueRegions.previewTimeSelection)..","..tostring(joshnt_UniqueRegions.closeGUI), true)
 end
 
 function joshnt_UniqueRegions.getRgnSettingsAsString(i, rgnString)
