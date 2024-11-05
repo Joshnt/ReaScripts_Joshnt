@@ -41,6 +41,8 @@ loadfile(lib_path .. "Core.lua")()
 General:
 - 2 = non-clickable Lables etc.
 - 3 = General UI 
+- 6 = Help-Window Wildcards
+- 7 = Help-Window Shortcuts
 
 
 Tab specifics:
@@ -79,6 +81,7 @@ GUI.anchor, GUI.corner = "screen", "C"
 -- additional GUI variables
 local focusArray, focusIndex = {"TimeBefore_Text","TimeAfter_Text","RegionName","TimeBetween_Text","TimeInclude_Text"}, 0
 local tabPressed, enterPressed = false, false
+local pressedHelp = 0
 
 -- SLIDER
 local timeSlidersVals = {
@@ -96,14 +99,14 @@ local timeSlidersVals = {
     rgn = {}
 }
 
--- TABS
+-- TABS & MENU
 local numTabs = 1
+local menuTableGUI= {}
 
 
--- MENU
--- TODO setup menu structure with variables
-
+-- sets values in CORE to GUI Values
 local function updateUserValues()
+    -- TODO assign GUI Vals to joshnt_UniqueRegions stuff
     joshnt_UniqueRegions.repositionToggle = true
     joshnt_UniqueRegions.space_in_between = 0 -- Time in seconds
     joshnt_UniqueRegions.groupToleranceTime = 0  -- Time in seconds
@@ -121,6 +124,7 @@ local function updateUserValues()
             joshnt_UniqueRegions.allRgnArray[i] = nil
         end
     end
+    -- TODO assign GUI Vals to joshnt_UniqueRegions stuff
     joshnt_UniqueRegions.isolateItems = 1 -- 1 = move selected, 2 = move others, 3 = dont move
 end
 
@@ -138,7 +142,7 @@ local function adjustTimeselection()
         local _, itemStarts, itemEnds = joshnt.getOverlappingItemGroupsOfSelectedItems(GUI.Val("TimeInclude")) 
         if itemStarts and itemEnds then
             local startTime, endTime = itemStarts[1], itemEnds[1]
-            reaper.GetSet_LoopTimeRange(true, false, startTime + GUI.Val("TimeBefore"), endTime + GUI.Val("TimeAfter"), false) -- TODO get Value for slider 1
+            reaper.GetSet_LoopTimeRange(true, false, startTime + GUI.Val("TimeBefore"), endTime + GUI.Val("TimeAfter"), false) -- TODO get Value for slider of current tab
         end
     end
 end
@@ -730,8 +734,7 @@ local function redrawAll ()
 
     redrawSliders()
     redrawColFrames()
-
-    GUI.Val("options",{joshnt_UniqueRegions.lockBoolUser, false, closeGUI})
+    refreshMenu()
 end
 
 local function Loop()
@@ -770,7 +773,7 @@ local function Loop()
     end
 end
 
--- load default values to GUI interface
+-- load values from CORE to GUI interface
 local function refreshGUIValues()
     -- TODO gescheites laden von values, abhängig von namen der GUI sachen
     if joshnt_UniqueRegions.isolateItems then GUI.Val("isolateItems",joshnt_UniqueRegions.isolateItems) else GUI.Val("isolateItems",1) end
@@ -791,6 +794,213 @@ local function refreshGUIValues()
     -- TODO set frame über Anzahl von Regions
     setFrameColors("Child",joshnt_UniqueRegions.regionColor)
     setFrameColors("Mother",joshnt_UniqueRegions.regionColorMother)
+end
+
+local menuFunctions = {
+    file = {
+        initSettings = function()
+            local retval = reaper.MB("Are you sure you want to initialize your current settings?\nThis action is irreversible and cannot be undone.", "Unique Regions Warning",4)
+            if retval == 6 then
+                joshnt_UniqueRegions.Init()
+                redrawAll()
+                refreshGUIValues()
+            end
+        end, 
+        exportSettingsClipboard = function()
+            updateUserValues()
+            joshnt_UniqueRegions.settingsToClipboard()
+        end,
+        importSettingsClipboard = function()
+            joshnt_UniqueRegions.settingsFromClipboard()
+            refreshGUIValues()
+        end,
+        exportSettingsFile = function()
+            updateUserValues()
+            joshnt_UniqueRegions.writeSettingsToFile()
+        end,
+        importSettingsFile = function()
+            joshnt_UniqueRegions.readSettingsFromFile()
+            refreshGUIValues()
+        end,
+        saveDefaults = function()
+            updateUserValues()
+            joshnt_UniqueRegions.saveDefaults()
+        end,
+        loadDefaults = function()
+            joshnt_UniqueRegions.getDefaults()
+            refreshGUIValues()
+        end,
+
+    },
+    wildcards = {
+        leadingZero1 = function()
+            joshnt_UniqueRegions.leadingZero = 1
+            refreshMenu()
+        end,
+        leadingZero2 = function()
+            joshnt_UniqueRegions.leadingZero = 2
+            refreshMenu()
+        end,
+        leadingZero3 = function()
+            joshnt_UniqueRegions.leadingZero = 3
+            refreshMenu()
+        end,
+        leadingZero4 = function()
+            joshnt_UniqueRegions.leadingZero = 4
+            refreshMenu()
+        end,
+        -- TODO Add window open function for custom wildcard windows (with texteditor etc.)
+        custom1 = function()
+        end,
+        custom2 = function()
+        end,
+        custom3 = function()
+        end,
+        custom4 = function()
+        end,
+        custom5 = function()
+        end,
+        -- TODO add window open function for wildcard info
+        info = function()
+        end
+    },
+    other = {
+        previewTimeSel = function()
+            joshnt_UniqueRegions.previewTimeSelection = not joshnt_UniqueRegions.previewTimeSelection
+            adjustTimeselection()
+            refreshMenu()
+        end,
+        lockItems = function()
+            joshnt_UniqueRegions.lockBoolUser = not joshnt_UniqueRegions.lockBoolUser
+            refreshMenu()
+        end,
+        closeGUI = function()
+            joshnt_UniqueRegions.closeGUI = not joshnt_UniqueRegions.closeGUI
+            refreshMenu()
+        end
+    },
+    help = {
+        -- TODO add shortcut list window
+        shortcutList = function()
+        end,
+        -- Troll only
+        quickStart = function()
+            pressedHelp = math.max(pressedHelp, 1)
+            refreshMenu()
+        end,
+        documentation = function()
+            pressedHelp = math.max(pressedHelp, 2)
+            refreshMenu()
+        end,
+        manual = function()
+            pressedHelp = math.max(pressedHelp, 3)
+            refreshMenu()
+        end, 
+        help = function()
+            reaper.CF_SetClipboard("https://youtu.be/N4KvafPbauw?si=ib6lRftGceo-TcMH")
+            reaper.MB("Here you can find a YouTube-Video with further help: \n\n https://youtu.be/N4KvafPbauw?si=ib6lRftGceo-TcMH \n\n(Copied to your clipboard)", "Help", 0)
+            pressedHelp = math.max(pressedHelp, 4)
+            refreshMenu()
+        end,
+        reportIssue = function()
+            reaper.ClearConsole()
+            reaper.ShowConsoleMsg("Wow you're really invested in trying to understand that weird thing here...")
+            refreshMenu()
+        end
+    }
+}
+
+-- public weil braucht vorheriges array aber wird auch von diesem gecalled
+function refreshMenu()
+    menuTableGUI = {
+        
+        -- Index 1
+        {title = "File", options = {
+        
+            -- Menu item                        Function to run when clicked
+            {"New/ Initialize",                 menuFunctions.file.initSettings},
+            {""},
+            {"Save as default",                 menuFunctions.file.saveDefaults},
+            {"Load default",                    menuFunctions.file.loadDefaults},
+            {""},
+            {"Export to Clipboard",             menuFunctions.file.exportSettingsClipboard},
+            {"Export to File",                  menuFunctions.file.exportSettingsFile},
+            {""},
+            {"Import from Clipboard",           menuFunctions.file.importSettingsClipboard},
+            {"Import from File",                menuFunctions.file.importSettingsFile}
+            
+        }},
+        
+        -- Index 2
+        {title = "Wildcards", options = {
+        
+            -- Menu item            Function to run when clicked
+            {">Open Custom Wildcard Setting for '/C'"},
+                {"Table 1",             menuFunctions.wildcards.custom1},
+                {"Table 2",             menuFunctions.wildcards.custom2},
+                {"Table 3",             menuFunctions.wildcards.custom3},
+                {"Table 4",             menuFunctions.wildcards.custom4},
+                {"<Table 5",            menuFunctions.wildcards.custom5},
+            {">Add leading zero for '/E'"},
+                {"None",                menuFunctions.wildcards.leadingZero1},
+                {"2 digits",            menuFunctions.wildcards.leadingZero2},
+                {"3 digits",            menuFunctions.wildcards.leadingZero3},
+                {"<4 digits",           menuFunctions.wildcards.leadingZero4},
+                {"Wildcard Info...",    menuFunctions.wildcards.info}            
+        }},
+
+        -- Index 3
+        {title = "Other", options = {
+        
+            -- Menu item            Function to run when clicked
+            {"Preview Time-Settings with Time-Selection",               menuFunctions.other.previewTimeSel},
+            {"Lock items after execution",                              menuFunctions.other.lockItems},
+            {"Close GUI after execution",                               menuFunctions.other.closeGUI}
+        }},
+        -- Index 4
+        {title = "Help", options = {
+        
+            -- Menu item            Function to run when clicked
+            {"Shortcut List",                   menuFunctions.help.shortcutList},
+            {"Quick Start Guide...",            menuFunctions.help.quickStart}
+        }},
+    }
+
+    -- if any custom wildcards set in table, check table
+    for i = 1, 5 do
+        if joshnt_UniqueRegions.customWildCard[i][1] then
+            menuTableGUI[2].options[i+1][1] = "!"..menuTableGUI[2].options[i+1][1]
+        end
+    end
+
+    -- check correct leading zero option
+    menuTableGUI[2].options[joshnt_UniqueRegions.leadingZero + 7][1] =  "!"..menuTableGUI[2].options[joshnt_UniqueRegions.leadingZero + 7][1]
+
+    -- check additional options if set
+    if joshnt_UniqueRegions.previewTimeSelection then menuTableGUI[3].options[1][1] =  "!"..menuTableGUI[3].options[1][1] end
+    if joshnt_UniqueRegions.lockBoolUser then menuTableGUI[3].options[2][1] =  "!"..menuTableGUI[3].options[2][1] end
+    if joshnt_UniqueRegions.closeGUI then menuTableGUI[3].options[3][1] =  "!"..menuTableGUI[3].options[3][1] end
+
+    if pressedHelp >= 1 then
+        menuTableGUI[4].options[2][1] =  "#"..menuTableGUI[4].options[2][1]
+        menuTableGUI[4].options[3] =  {"Documentation...", menuFunctions.help.documentation}
+    end
+    if pressedHelp >= 2 then
+        menuTableGUI[4].options[3][1] =  "#"..menuTableGUI[4].options[3][1]
+        menuTableGUI[4].options[4] =  {"Manual...", menuFunctions.help.manual}
+    end
+    if pressedHelp >= 3 then
+        menuTableGUI[4].options[4][1] =  "#"..menuTableGUI[4].options[4][1]
+        menuTableGUI[4].options[5] =  {"Help!", menuFunctions.help.help}
+    end
+    if pressedHelp >= 4 then
+        menuTableGUI[4].options[5][1] =  "#"..menuTableGUI[4].options[5][1]
+        menuTableGUI[4].options[6] =  {"Report Issue", menuFunctions.help.reportIssue}
+        pressedHelp = 0
+    end
+
+    -- TODO Add actual menu name
+    GUI.Val("my_menubar", menuTableGUI)
 end
 
 local function init()
