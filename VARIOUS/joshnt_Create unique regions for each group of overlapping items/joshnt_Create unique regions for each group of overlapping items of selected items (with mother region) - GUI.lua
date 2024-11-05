@@ -52,13 +52,18 @@ Tab specifics:
 ...
 
 
-Wildcard windows with textboxes
+Wildcard windows with textboxes (Window has to be on single layer & the lowest)
 - 50 = Buttons to confirm/ cancel (close only open window, if not crash! safe in variable which is open), "each line represents a new entry to cycle through. Watch out for unwanted empty lines."
-- 51 = Texteditor 1, Window
-- 52 = Texteditor 2, Window
-- 53 = Texteditor 3, Window
-- 54 = Texteditor 4, Window
-- 55 = Texteditor 5, Window
+- 51 = Texteditor 1
+- 52 = Texteditor 2
+- 53 = Texteditor 3
+- 54 = Texteditor 4
+- 55 = Texteditor 5
+- 56 = Window 1
+- 57 = Window 2
+- 58 = Window 3
+- 59 = Window 4
+- 60 = Window 5
 ]]--
 
 
@@ -99,9 +104,10 @@ local timeSlidersVals = {
     rgn = {}
 }
 
--- TABS & MENU
+-- TABS, MENU, WINDOWS
 local numTabs = 1
 local menuTableGUI= {}
+local currOpenWindow = 0
 
 
 -- sets values in CORE to GUI Values
@@ -137,12 +143,33 @@ local function run_Button()
     end
 end
 
+-- TODO Call from "Options" Element is rgn onClick
+-- at the moment only for RRM & after Time
+local function setVisibilityRgnProperties(tabIndex)
+    -- TODO correct GUI.Val name (of is rgn)
+    if GUI.Val("ChildRgnBool") == true then
+        -- TODO correct elms RRM Name & slider name
+        GUI.elms.RRMChild.z = 10+tabIndex
+        GUI.elms.Time_After.z = 10+tabIndex
+    else
+        GUI.elms.RRMChild.z = 5
+        GUI.elms.Time_After.z = 5
+    end
+    GUI.redraw_z[5] = true
+    GUI.redraw_z[10+tabIndex] = true
+end
+
 local function adjustTimeselection()
     if joshnt_UniqueRegions.previewTimeSelection == true then
         local _, itemStarts, itemEnds = joshnt.getOverlappingItemGroupsOfSelectedItems(GUI.Val("TimeInclude")) 
         if itemStarts and itemEnds then
             local startTime, endTime = itemStarts[1], itemEnds[1]
-            reaper.GetSet_LoopTimeRange(true, false, startTime + GUI.Val("TimeBefore"), endTime + GUI.Val("TimeAfter"), false) -- TODO get Value for slider of current tab
+            local startTimeOffset, endTimeOffset = GUI.Val("TimeBefore"), 0.1-- TODO get Value for slider of current tab
+            -- TODO insert actual tab element name & actual is rgn element name + correct index (is 1 actually being a region?)
+            if GUI.Val("isRgn"..GUI.Val("Tab")) == 1 then
+                endTimeOffset = GUI.Val("TimeAfter") -- TODO get Value for slider of current tab
+            end
+            reaper.GetSet_LoopTimeRange(true, false, startTime + startTimeOffset, endTime + endTimeOffset, false) 
         end
     end
 end
@@ -1009,7 +1036,7 @@ local function init()
     GUI.colors["Col_1"] = GUI.colors["wnd_bg"] 
     redrawAll()
     refreshGUIValues()
-    -- TODO refresh general slider & pro region time before time after; evtl auslagern als function
+    -- TODO refresh general slider & pro region time before time after; evtl auslagern als gebüpndelte function
     for sliderName, _ in pairs(timeSliderVals) do
         setSliderSize(sliderName)
     end
