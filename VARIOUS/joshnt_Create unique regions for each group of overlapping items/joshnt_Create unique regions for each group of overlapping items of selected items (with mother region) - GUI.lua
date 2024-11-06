@@ -190,7 +190,8 @@ end
 
 local function adjustTimeselection()
     if joshnt_UniqueRegions.previewTimeSelection == true then
-        local _, itemStarts, itemEnds = joshnt.getOverlappingItemGroupsOfSelectedItems(GUI.Val("TimeInclude")) -- TODO get Value for slider of current tab
+        local currSelTab = GUI.Val("Tab")
+        local _, itemStarts, itemEnds = joshnt.getOverlappingItemGroupsOfSelectedItems(GUI.Val("TimeInclude"))
         if itemStarts and itemEnds then
             local startTime, endTime = itemStarts[1], itemEnds[1]
             local startTimeOffset, endTimeOffset = GUI.Val("TimeBefore"), 0.1-- TODO get Value for slider of current tab
@@ -311,6 +312,7 @@ local function redrawTabs()
     GUI.elms.Tabs:update_sets(tabLayers)
 end
 
+-- +/- tab only appear if not more/ less buttons than max/ min tabs exist
 local function setTabNumButtonVisibility()
     if numTabs > numTabsMin then
         GUI.elms.Button_RemoveTab.z = 3
@@ -326,6 +328,7 @@ local function setTabNumButtonVisibility()
     GUI.redraw_z[3] = true
 end
 
+-- add tab (after last)
 local function addTab()
     if numTabs < numTabsMax then
         numTabs = numTabs+1
@@ -377,11 +380,11 @@ function setFrameColors(tabInd, targetColor)
 end
 
 
--- TODO adjust position, z layer, name
+-- TODO adjust position
 local function redrawTabContent(tabIndex)
     
     GUI.New("TimeBefore"..tabIndex, "Slider", {
-        z = 15,
+        z = 10+tabIndex,
         x = 144,
         y = 48,
         w = 150,
@@ -403,7 +406,7 @@ local function redrawTabContent(tabIndex)
     })
 
     GUI.New("TimeBefore_Text"..tabIndex, "Textbox", {
-        z = 11,
+        z = 10+tabIndex,
         x = 315,
         y = 43,
         w = 40,
@@ -420,7 +423,7 @@ local function redrawTabContent(tabIndex)
     })
 
     GUI.New("TimeAfter"..tabIndex, "Slider", {
-        z = 15,
+        z = 10+tabIndex,
         x = 144,
         y = 96,
         w = 150,
@@ -442,7 +445,7 @@ local function redrawTabContent(tabIndex)
     })
 
     GUI.New("TimeAfter_Text"..tabIndex, "Textbox", {
-        z = 11,
+        z = 10+tabIndex,
         x = 315,
         y = 91,
         w = 40,
@@ -459,7 +462,7 @@ local function redrawTabContent(tabIndex)
     })
 
     GUI.New("Create"..tabIndex, "Checklist", {
-        z = 11,
+        z = 10+tabIndex,
         x = 60,
         y = 308,
         w = 155,
@@ -480,7 +483,7 @@ local function redrawTabContent(tabIndex)
     })
 
     GUI.New("isRgn"..tabIndex, "Radio", {
-        z = 11,
+        z = 10+tabIndex,
         x = 60,
         y = 308,
         w = 155,
@@ -500,8 +503,25 @@ local function redrawTabContent(tabIndex)
         opt_size = 20
     })
 
+    GUI.New("everyX"..tabIndex, "Textbox", {
+        z = 10+tabIndex,
+        x = 86,
+        y = 380,
+        w = 100,
+        h = 20,
+        caption = "every X item Groups",
+        cap_pos = "left",
+        font_a = 3,
+        font_b = "monospace",
+        color = "txt",
+        bg = "wnd_bg",
+        shadow = true,
+        pad = 4,
+        undo_limit = 20
+    })
+
     GUI.New("RegionName"..tabIndex, "Textbox", {
-        z = 11,
+        z = 10+tabIndex,
         x = 86,
         y = 380,
         w = 100,
@@ -518,7 +538,7 @@ local function redrawTabContent(tabIndex)
     })
 
     GUI.New("RRM"..tabIndex, "Menubox", {
-        z = 11,
+        z = 10+tabIndex,
         x = 86,
         y = 428,
         w = 100,
@@ -536,41 +556,32 @@ local function redrawTabContent(tabIndex)
         align = 0
     })
 
-    local currTimeBefore = GUI.elms["TimeBefore"..tabIndex]
-    local currTimeBeforeText = GUI.elms["TimeBefore_Text"..tabIndex]
+    -- slider and slider textboxes
+    for i = 1, 2 do
+        local currSliderName = ""
+        if i == 1 then currSliderName = "TimeBefore" 
+        else currSliderName = "TimeAfter" end
+        local currSlider = GUI.elms[currSliderName..tabIndex]
+        local currSliderText = GUI.elms[currSliderName.."_Text"..tabIndex]
 
-    function currTimeBefore:onmouseup()
-        GUI.Slider.onmouseup(self)
-        adjustTimeselection()
-        GUI.Val("TimeBefore_Text"..tabIndex, GUI.Val("TimeBefore"..tabIndex))
-    end
-    function currTimeBefore:ondrag()
-        GUI.Slider.ondrag(self)
-        adjustTimeselection()
-    end
-    function currTimeBefore:ondoubleclick()
-        GUI.Slider.ondrag(self)
-        adjustTimeselection()
-    end
-
-
-    local currTimeAfter = GUI.elms["TimeAfter"..tabIndex]
-    local currTimeAfterText = GUI.elms["TimeAfter_Text"..tabIndex]
-
-    function currTimeAfter:onmouseup()
-        GUI.Slider.onmouseup(self)
-        adjustTimeselection()
-        GUI.Val("TimeAfter_Text"..tabIndex, GUI.Val("TimeAfter"..tabIndex))
-    end
-    function currTimeAfter:ondrag()
-        GUI.Slider.ondrag(self)
-        adjustTimeselection()
-    end
-    function currTimeAfter:ondoubleclick()
-        GUI.Slider.ondrag(self)
-        adjustTimeselection()
-    end
-
+        function currSlider:onmouseup()
+            GUI.Slider.onmouseup(self)
+            adjustTimeselection()
+            GUI.Val(currSliderText, GUI.Val(currSlider))
+        end
+        function currSlider:ondrag()
+            GUI.Slider.ondrag(self)
+            adjustTimeselection()
+        end
+        function currSlider:ondoubleclick()
+            GUI.Slider.ondrag(self)
+            adjustTimeselection()
+        end
+        function currSliderText:lostfocus()
+            GUI.Textbox.lostfocus(self)
+            setSliderSize(currSlider, GUI.Val(currSliderText))
+        end
+    end    
 
     local currCreate = GUI.elms["Create"..tabIndex]
 
@@ -584,6 +595,14 @@ local function redrawTabContent(tabIndex)
         setVisibilityRgn()
     end
 
+    local currEveryX = GUI.elms["everyX"..tabIndex]
+    function currEveryX:lostfocus()
+        GUI.Textbox.lostfocus(self)
+        local valToNum = tonumber(GUI.Val("everyX"..tabIndex))
+        if not valToNum or valToNum < 0 then
+            GUI.Val("everyX"..tabIndex, 0) -- set to 0
+        end
+    end
 
     local currIsRgn = GUI.elms["isRgn"..tabIndex]
 
@@ -599,14 +618,15 @@ local function redrawTabContent(tabIndex)
 
 
 
-    currTimeBefore.tooltip = "Adjust how many seconds before each overlapping item group should be part of the corresponding region."
-    currTimeAfter.tooltip = "Adjust how many seconds after each overlapping item group should be part of the corresponding region."
-    currTimeBeforeText.tooltip = "Corresponding textinput to slider to the left.\nIf input is out of slider bounds, slider gets rescaled automatically.\nUse 'TAB' to cycle between all text-input boxes."
-    currTimeAfterText.tooltip = "Corresponding textinput to slider to the left.\nIf input is out of slider bounds, slider gets rescaled automatically.\nUse 'TAB' to cycle between all text-input boxes."
+    GUI.elms["TimeBefore"..tabIndex].tooltip = "Adjust how many seconds before each overlapping item group should be part of the corresponding region."
+    GUI.elms["TimeAfter"..tabIndex].tooltip = "Adjust how many seconds after each overlapping item group should be part of the corresponding region."
+    GUI.elms["TimeBefore_Text"..tabIndex].tooltip = "Corresponding textinput to slider to the left.\nIf input is out of slider bounds, slider gets rescaled automatically.\nUse 'TAB' to cycle between all text-input boxes."
+    GUI.elms["TimeAfter_Text"..tabIndex].tooltip = "Corresponding textinput to slider to the left.\nIf input is out of slider bounds, slider gets rescaled automatically.\nUse 'TAB' to cycle between all text-input boxes."
     GUI.elms["RegionName"..tabIndex].tooltip = "Set the name of the individual regions.\nUse '/E(Number) to enumerate from that number, e.g. '/E(3)' to enumerate from 3 onwards. Accepts as well modulo in the syntax of /E(0%4).\nYou can offset that modulo by using /E('start'%'moduloValue''offset'), e.g. /E(1%3-2).\n\nUse '/M(Note_Start: Step)' to enumerate Midinotes starting from 'Note_Start' increasing with 'Step' each time, e.g. /M(C#1,4). No given step size defaults to 1. \n\nUse '/O() to reference the name of an existing region at the corresponding spot. /O(ALTERNATIVE) will either use the original name (if existing) or the given 'ALTERNATIVE'.\nWarning: /O() might lead to unwanted results in situations with a lot of unclear region overlaps by failing to get the original region."
     GUI.elms["RRM"..tabIndex].tooltip = "Choose over which track to route the newly created regions in the region render matrix.\n\n'Master' routes over the Master-Track.\n'First common Parent' routes over the first found parent of all selected items (without any selected items on it) or the Master if no parent can be found.\n'Highest common Parent' uses the highest common parent of all selected items or the Master if no parent can be found.\n'First parent per item' routes over all parent tracks of any items.\n'Each Track' only routes over a track if the track has items from the selection on it.\n'None' doesn't set a link in the RRM."
     GUI.elms["Create"..tabIndex].tooltip = "Toogle if the region tab should even be created."
-   
+    GUI.elms["everyX"..tabIndex].tooltip = "Create the region/ marker over/ before every X item groups.\nInsert 0 to only insert one region/ marker over/ before all item groups."
+    GUI.elms["isRgn"..tabIndex].tooltip = "Select, if to create regions or markers."
 
     redrawColFrames(tabIndex)
 end
@@ -891,7 +911,7 @@ function redrawAll ()
         col_txt = "txt"
     })
 
-    -- TODO Copy to all tab-sliders(?)
+    -- TODO adjust for group time sliders text (already done for individual tabs)
     for i = 1, #focusArray do
         local currTextboxName = focusArray[i]
         local tempTextbox = GUI.elms[currTextboxName]
