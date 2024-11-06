@@ -26,6 +26,7 @@ function joshnt_UniqueRegions.Init()
 
     -- use joshnt_UniqueRegions.allRgnArray[#joshnt_UniqueRegions.allRgnArray] = joshnt.copyTable(joshnt_UniqueRegions.rgnProperties) for each new rgn rule set
     joshnt_UniqueRegions.allRgnArray = {} -- master array with sub arrays per "region Rule" with each having rgnProperties
+    joshnt_UniqueRegions.allRgnArray[1] = joshnt.copyTable(joshnt_UniqueRegions.rgnProperties)
 
     joshnt_UniqueRegions.customWildCard = {
         [1] = {},

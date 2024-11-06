@@ -31,7 +31,7 @@ if not lib_path or lib_path == "" then
 end
 loadfile(lib_path .. "Core.lua")()
 
-
+-- TODO Set all z layers
 --[[
 -----------------------------------
 ----- z layer logic for GUI: ------
@@ -74,6 +74,9 @@ GUI.req("Classes/Class - Slider.lua")()
 GUI.req("Classes/Class - Label.lua")()
 GUI.req("Classes/Class - Options.lua")()
 GUI.req("Classes/Class - Menubox.lua")()
+GUI.req("Classes/Class - Window.lua")()
+GUI.req("Classes/Class - Menubar.lua")()
+GUI.req("Classes/Class - Tabs.lua")()
 -- If any of the requested libraries weren't found, abort the script.
 if missing_lib then return 0 end
 
@@ -86,7 +89,8 @@ GUI.anchor, GUI.corner = "screen", "C"
 -- additional GUI variables
 local focusArray, focusIndex = {"TimeBefore_Text","TimeAfter_Text","RegionName","TimeBetween_Text","TimeInclude_Text"}, 0
 local tabPressed, enterPressed = false, false
-local pressedHelp = 0
+local showRemoveWarning = true
+local pressedHelp = 0 -- just troll
 
 -- SLIDER
 local timeSlidersVals = {
@@ -100,11 +104,13 @@ local timeSlidersVals = {
     TimeAfter = {min = 0, max = 10, defaults = 0, val = 0},
     },
     -- TODO Init slider on tab creation
-    -- use timeSliderValRgn[#timeSliderValRgn+1] = joshnt.copyTable(timeSliderValRgn_TEMPLATE) for each new Rgn Set
+    -- use timeSlidersVals.Rgn[#timeSlidersVals.Rgn+1] = joshnt.copyTable(timeSlidersVals.Rgn_TEMPLATE) for each new Rgn Set
     rgn = {}
 }
+timeSlidersVals.rgn[1] = joshnt.copyTable(timeSlidersVals.rgn_TEMPLATE)
 
 -- TABS, MENU, WINDOWS
+local numTabsMax, numTabsMin = 20, 1 -- can be changed potentially
 local numTabs = 1
 local menuTableGUI= {}
 local currOpenWindow = 0
@@ -143,25 +149,48 @@ local function run_Button()
     end
 end
 
--- TODO Call from "Options" Element is rgn onClick
 -- at the moment only for RRM & after Time
 local function setVisibilityRgnProperties(tabIndex)
-    -- TODO correct GUI.Val name (of is rgn)
-    if GUI.Val("ChildRgnBool") == true then
-        -- TODO correct elms RRM Name & slider name
-        GUI.elms.RRMChild.z = 10+tabIndex
-        GUI.elms.Time_After.z = 10+tabIndex
+    if GUI.Val("isRgn"..tabIndex) == 1 then
+        GUI.elms["TimeAfter_Text"..tabIndex].z = 10+tabIndex
+        GUI.elms["TimeAfter"..tabIndex].z = 10+tabIndex
+        GUI.elms["RRM"..tabIndex].z = 10+tabIndex
     else
-        GUI.elms.RRMChild.z = 5
-        GUI.elms.Time_After.z = 5
+        GUI.elms["TimeAfter_Text"..tabIndex].z = 5
+        GUI.elms["TimeAfter"..tabIndex].z = 5
+        GUI.elms["RRM"..tabIndex].z = 5
     end
     GUI.redraw_z[5] = true
     GUI.redraw_z[10+tabIndex] = true
 end
 
+-- TODO call from create
+local function setVisibilityRgn(tabIndex)
+    if GUI.Val("Create"..tabIndex) == true then
+        GUI.elms["RegionName"..tabIndex].z = 10+tabIndex
+        GUI.elms["isRgn"..tabIndex].z = 10+tabIndex
+        GUI.elms["TimeBefore_Text"..tabIndex].z = 10+tabIndex
+        GUI.elms["TimeBefore"..tabIndex].z = 10+tabIndex
+        GUI.elms["ColSelFrame"..tabIndex].z = 10+tabIndex
+        setVisibilityRgnProperties(tabIndex)
+    else
+        GUI.elms["TimeAfter_Text"..tabIndex].z = 5
+        GUI.elms["TimeAfter"..tabIndex].z = 5
+        GUI.elms["RRM"..tabIndex].z = 5
+        GUI.elms["RegionName"..tabIndex].z = 5
+        GUI.elms["isRgn"..tabIndex].z = 5
+        GUI.elms["TimeBefore_Text"..tabIndex].z = 5
+        GUI.elms["TimeBefore"..tabIndex].z = 5
+        GUI.elms["ColSelFrame"..tabIndex].z = 5
+    end
+    GUI.redraw_z[5] = true
+    GUI.redraw_z[10+tabIndex] = true
+end
+
+
 local function adjustTimeselection()
     if joshnt_UniqueRegions.previewTimeSelection == true then
-        local _, itemStarts, itemEnds = joshnt.getOverlappingItemGroupsOfSelectedItems(GUI.Val("TimeInclude")) 
+        local _, itemStarts, itemEnds = joshnt.getOverlappingItemGroupsOfSelectedItems(GUI.Val("TimeInclude")) -- TODO get Value for slider of current tab
         if itemStarts and itemEnds then
             local startTime, endTime = itemStarts[1], itemEnds[1]
             local startTimeOffset, endTimeOffset = GUI.Val("TimeBefore"), 0.1-- TODO get Value for slider of current tab
@@ -214,144 +243,9 @@ local function setSliderSize(SliderName_String, newSliderValue_Input, tabNum)
     end
 end
 
--- TODO - split up in general & per tab (per tab function uses index as input)
-local function redrawSliders()
-
-    GUI.New("TimeBefore", "Slider", {
-        z = 15,
-        x = 144,
-        y = 48,
-        w = 150,
-        caption = "Time Before (s)",
-        min = timeSliderVals.TimeBefore.min,
-        max = timeSliderVals.TimeBefore.max,
-        defaults = {timeSliderVals.TimeBefore.defaults},
-        inc = 0.1,
-        dir = "h",
-        font_a = 3,
-        font_b = 4,
-        col_txt = "txt",
-        col_fill = "elm_fill",
-        bg = "wnd_bg",
-        show_handles = true,
-        show_values = true,
-        cap_x = -125,
-        cap_y = 20
-    })
-
-    GUI.New("TimeAfter", "Slider", {
-        z = 15,
-        x = 144,
-        y = 96,
-        w = 150,
-        caption = "Time After (s)",
-        min = timeSliderVals.TimeAfter.min,
-        max = timeSliderVals.TimeAfter.max,
-        defaults = {timeSliderVals.TimeAfter.defaults},
-        inc = 0.1,
-        dir = "h",
-        font_a = 3,
-        font_b = 4,
-        col_txt = "txt",
-        col_fill = "elm_fill",
-        bg = "wnd_bg",
-        show_handles = true,
-        show_values = true,
-        cap_x = -122,
-        cap_y = 20
-    })
-
-    GUI.New("TimeBetween", "Slider", {
-        z = 15,
-        x = 144,
-        y = 144,
-        w = 150,
-        caption = "Distance between (s)",
-        min = timeSliderVals.TimeBetween.min,
-        max = timeSliderVals.TimeBetween.max,
-        defaults = {timeSliderVals.TimeBetween.defaults},
-        inc = 0.1,
-        dir = "h",
-        font_a = 3,
-        font_b = 4,
-        col_txt = "txt",
-        col_fill = "elm_fill",
-        bg = "wnd_bg",
-        show_handles = true,
-        show_values = true,
-        cap_x = -140,
-        cap_y = 20
-    })
-
-    GUI.New("TimeInclude", "Slider", {
-        z = 15,
-        x = 144,
-        y = 192,
-        w = 150,
-        caption = "Group tolerance (s)",
-        min = timeSliderVals.TimeInclude.min,
-        max = timeSliderVals.TimeInclude.max,
-        defaults = timeSliderVals.TimeInclude.defaults,
-        inc = 0.01,
-        dir = "h",
-        font_a = 3,
-        font_b = 4,
-        col_txt = "txt",
-        col_fill = "elm_fill",
-        bg = "wnd_bg",
-        show_handles = true,
-        show_values = true,
-        cap_x = -140,
-        cap_y = 20
-    })
-
-    function GUI.elms.TimeBefore:onmouseup()
-        GUI.Slider.onmouseup(self)
-        adjustTimeselection()
-        GUI.Val("TimeBefore_Text", GUI.Val("TimeBefore"))
-    end
-    function GUI.elms.TimeBefore:ondrag()
-        GUI.Slider.ondrag(self)
-        adjustTimeselection()
-    end
-    function GUI.elms.TimeBefore:ondoubleclick()
-        GUI.Slider.ondrag(self)
-        adjustTimeselection()
-    end
-
-    function GUI.elms.TimeAfter:onmouseup()
-        GUI.Slider.onmouseup(self)
-        adjustTimeselection()
-        GUI.Val("TimeAfter_Text", GUI.Val("TimeAfter"))
-    end
-    function GUI.elms.TimeAfter:ondrag()
-        GUI.Slider.ondrag(self)
-        adjustTimeselection()
-    end
-    function GUI.elms.TimeAfter:ondoubleclick()
-        GUI.Slider.ondrag(self)
-        adjustTimeselection()
-    end
-
-    function GUI.elms.TimeBetween:onmouseup()
-        GUI.Slider.onmouseup(self)
-        GUI.Val("TimeBetween_Text", GUI.Val("TimeBetween"))
-    end
-
-    function GUI.elms.TimeInclude:onmouseup()
-        GUI.Slider.onmouseup(self)
-        GUI.Val("TimeInclude_Text", GUI.Val("TimeInclude"))
-    end
-
-    GUI.elms.TimeBefore.tooltip = "Adjust how many seconds before each overlapping item group should be part of the corresponding region."
-    GUI.elms.TimeAfter.tooltip = "Adjust how many seconds after each overlapping item group should be part of the corresponding region."
-    GUI.elms.TimeBetween.tooltip = "Adjust how many seconds between each item group's region should be empty."
-    GUI.elms.TimeInclude.tooltip = "Adjust how far away from each other items can be to still be considered as one 'group'.\n\nE.g. 0 means only actually overlapping items count as one group.\n1 means items within 1 second of each others start/ end still count as one group."
-   
-end
-
+-- TODO adjust position
 local function redrawColFrames(tabInd)
-    GUI.New("ColSelFrame_"..tabInd, "Frame", {
+    GUI.New("ColSelFrame"..tabInd, "Frame", {
         z = 10+tabInd,
         x = 86,
         y = 476,
@@ -370,7 +264,7 @@ local function redrawColFrames(tabInd)
         col_txt = "txt"
     })
 
-    local currColFrame = GUI["elms"]["ColSelFrame_"..tabInd]
+    local currColFrame = GUI["elms"]["ColSelFrame"..tabInd]
     function currColFrame:onmouseup()
         local retval, newColor = reaper.GR_SelectColor(nil)
         if retval ~= 0 then 
@@ -383,6 +277,88 @@ local function redrawColFrames(tabInd)
     end
 
     currColFrame.tooltip = "Click here to choose a color for each individual region/ marker.\nCancelling the color-picker dialog will use the default color."
+end
+
+local function redrawTabs()
+    local tabLayers = { }
+    local displayTabs = {}
+    for i = 1, numTabs do
+        tabLayers[i] = {i}
+        displayTabs[i] = tostring(i)
+    end
+
+    local tabW = joshnt.clamp((GUI.w - 80)/numTabs, 48, 18)
+
+    GUI.New("Tabs", "Tabs", {
+        z = 3,
+        x = 80,
+        y = 32,
+        w = 832.0,
+        caption = "Tabs",
+        optarray = displayTabs,
+        tab_w = 48,
+        tab_h = 20,
+        pad = 8,
+        font_a = 3,
+        font_b = 4,
+        col_txt = "txt",
+        col_tab_a = "wnd_bg",
+        col_tab_b = "tab_bg",
+        bg = "elm_bg",
+        fullwidth = true
+    })
+
+    GUI.elms.Tabs:update_sets(tabLayers)
+end
+
+local function setTabNumButtonVisibility()
+    if numTabs > numTabsMin then
+        GUI.elms.Button_RemoveTab.z = 3
+    else GUI.elms.Button_RemoveTab.z = 5
+    end
+    
+    if numTabs < numTabsMax then
+        GUI.elms.Button_AddTab.z = 3
+    else GUI.elms.Button_AddTab.z = 5
+    end
+
+    GUI.redraw_z[5] = true
+    GUI.redraw_z[3] = true
+end
+
+local function addTab()
+    if numTabs < numTabsMax then
+        numTabs = numTabs+1
+        timeSlidersVals.Rgn[numTabs] = joshnt.copyTable(timeSlidersVals.Rgn_TEMPLATE)
+        redrawTabs()
+        -- add new region
+        joshnt_UniqueRegions.allRgnArray[numTabs] = joshnt.copyTable(joshnt_UniqueRegions.rgnProperties)
+        setTabNumButtonVisibility()
+    end
+end
+
+-- remove current selected Tab & move backend indexes
+local function removeTab()
+    if numTabs > numTabsMin then
+        if showRemoveWarning then
+            local retval = reaper.MB("Are you sure, that you want to delete the selected tab and all of its settings? If you are unsure, if you will need it later, you can just uncheck 'Create'.\n\nPress 'Yes', if you want to hide this warning for this instance of the script.\nPress 'No' for still removing the tab, but showing the tab again on the next remove.", "Unique Regions Warning", 3)
+            if retval == 2 then return 
+            elseif retval == 6 then showRemoveWarning = false
+            end
+        end
+        local prevSel = GUI.Val("Tabs")
+        updateUserValues()
+        -- move other regions one index down
+        joshnt_UniqueRegions.allRgnArray[prevSel] = nil
+        for i = prevSel +1, numTabs do
+            joshnt_UniqueRegions.allRgnArray[i-1] = joshnt.copyTable(joshnt_UniqueRegions.allRgnArray[i])
+        end
+        joshnt_UniqueRegions.allRgnArray[numTabs] = nil
+        timeSlidersVals.Rgn[numTabs] = nil
+        numTabs = numTabs - 1
+        redrawAll()
+        refreshGUIValues()
+    end
 end
 
 -- global because redraw needs to access it
@@ -400,22 +376,33 @@ function setFrameColors(tabInd, targetColor)
     redrawColFrames(tabInd)
 end
 
--- TODO ja die main arbeit halt nich
-local function redrawAll ()
-    GUI.elms_hide[5] = true
 
-    GUI.New("Cat1", "Label", {
-        z = 11,
-        x = 5,
-        y = 5,
-        caption = "Adjust Region Length and Distance",
-        font = 2,
-        color = "elm_fill",
-        bg = "elm_frame",
-        shadow = true
+-- TODO adjust position, z layer, name
+local function redrawTabContent(tabIndex)
+    
+    GUI.New("TimeBefore"..tabIndex, "Slider", {
+        z = 15,
+        x = 144,
+        y = 48,
+        w = 150,
+        caption = "Time Before (s)",
+        min = timeSlidersVals.rgn[tabIndex].TimeBefore.min,
+        max = timeSlidersVals.rgn[tabIndex].TimeBefore.max,
+        defaults = {timeSlidersVals.rgn[tabIndex].TimeBefore.defaults},
+        inc = 0.1,
+        dir = "h",
+        font_a = 3,
+        font_b = 4,
+        col_txt = "txt",
+        col_fill = "elm_fill",
+        bg = "wnd_bg",
+        show_handles = true,
+        show_values = true,
+        cap_x = -125,
+        cap_y = 20
     })
 
-    GUI.New("TimeBefore_Text", "Textbox", {
+    GUI.New("TimeBefore_Text"..tabIndex, "Textbox", {
         z = 11,
         x = 315,
         y = 43,
@@ -432,7 +419,29 @@ local function redrawAll ()
         undo_limit = 20
     })
 
-    GUI.New("TimeAfter_Text", "Textbox", {
+    GUI.New("TimeAfter"..tabIndex, "Slider", {
+        z = 15,
+        x = 144,
+        y = 96,
+        w = 150,
+        caption = "Time After (s)",
+        min = timeSlidersVals.rgn[tabIndex].TimeAfter.min,
+        max = timeSlidersVals.rgn[tabIndex].TimeAfter.max,
+        defaults = {timeSlidersVals.rgn[tabIndex].TimeAfter.defaults},
+        inc = 0.1,
+        dir = "h",
+        font_a = 3,
+        font_b = 4,
+        col_txt = "txt",
+        col_fill = "elm_fill",
+        bg = "wnd_bg",
+        show_handles = true,
+        show_values = true,
+        cap_x = -122,
+        cap_y = 20
+    })
+
+    GUI.New("TimeAfter_Text"..tabIndex, "Textbox", {
         z = 11,
         x = 315,
         y = 91,
@@ -449,31 +458,14 @@ local function redrawAll ()
         undo_limit = 20
     })
 
-    GUI.New("TimeBetween_Text", "Textbox", {
+    GUI.New("Create"..tabIndex, "Checklist", {
         z = 11,
-        x = 315,
-        y = 139,
-        w = 40,
-        h = 20,
-        caption = "",
-        cap_pos = "left",
-        font_a = 3,
-        font_b = "monospace",
-        color = "txt",
-        bg = "wnd_bg",
-        shadow = true,
-        pad = 4,
-        undo_limit = 20
-    })
-
-    GUI.New("RepositionToggle", "Checklist", {
-        z = 10,
-        x = 368,
-        y = 133,
-        w = 300,
+        x = 60,
+        y = 308,
+        w = 155,
         h = 30,
         caption = "",
-        optarray = {""},
+        optarray = {"Create"},
         dir = "v",
         pad = 4,
         font_a = 2,
@@ -487,13 +479,34 @@ local function redrawAll ()
         opt_size = 20
     })
 
-    GUI.New("TimeInclude_Text", "Textbox", {
+    GUI.New("isRgn"..tabIndex, "Radio", {
         z = 11,
-        x = 315,
-        y = 187,
-        w = 40,
-        h = 20,
+        x = 60,
+        y = 308,
+        w = 155,
+        h = 30,
         caption = "",
+        optarray = {"Region", "Marker"},
+        dir = "v",
+        pad = 4,
+        font_a = 2,
+        font_b = 3,
+        col_txt = "txt",
+        col_fill = "elm_fill",
+        bg = "wnd_bg",
+        frame = false,
+        shadow = true,
+        swap = nil,
+        opt_size = 20
+    })
+
+    GUI.New("RegionName"..tabIndex, "Textbox", {
+        z = 11,
+        x = 86,
+        y = 380,
+        w = 100,
+        h = 20,
+        caption = "Region Name",
         cap_pos = "left",
         font_a = 3,
         font_b = "monospace",
@@ -504,6 +517,160 @@ local function redrawAll ()
         undo_limit = 20
     })
 
+    GUI.New("RRM"..tabIndex, "Menubox", {
+        z = 11,
+        x = 86,
+        y = 428,
+        w = 100,
+        h = 20,
+        caption = "Link to RRM",
+        optarray = {"Master", "Highest common Parent (all)", "First common Parent (all)", "First common parent (per item group)", "Parent (per item)", "Each Track", "None"},
+        retval = 2.0,
+        font_a = 3,
+        font_b = 4,
+        col_txt = "txt",
+        col_cap = "txt",
+        bg = "wnd_bg",
+        pad = 4,
+        noarrow = false,
+        align = 0
+    })
+
+    local currTimeBefore = GUI.elms["TimeBefore"..tabIndex]
+    local currTimeBeforeText = GUI.elms["TimeBefore_Text"..tabIndex]
+
+    function currTimeBefore:onmouseup()
+        GUI.Slider.onmouseup(self)
+        adjustTimeselection()
+        GUI.Val("TimeBefore_Text"..tabIndex, GUI.Val("TimeBefore"..tabIndex))
+    end
+    function currTimeBefore:ondrag()
+        GUI.Slider.ondrag(self)
+        adjustTimeselection()
+    end
+    function currTimeBefore:ondoubleclick()
+        GUI.Slider.ondrag(self)
+        adjustTimeselection()
+    end
+
+
+    local currTimeAfter = GUI.elms["TimeAfter"..tabIndex]
+    local currTimeAfterText = GUI.elms["TimeAfter_Text"..tabIndex]
+
+    function currTimeAfter:onmouseup()
+        GUI.Slider.onmouseup(self)
+        adjustTimeselection()
+        GUI.Val("TimeAfter_Text"..tabIndex, GUI.Val("TimeAfter"..tabIndex))
+    end
+    function currTimeAfter:ondrag()
+        GUI.Slider.ondrag(self)
+        adjustTimeselection()
+    end
+    function currTimeAfter:ondoubleclick()
+        GUI.Slider.ondrag(self)
+        adjustTimeselection()
+    end
+
+
+    local currCreate = GUI.elms["Create"..tabIndex]
+
+    function currCreate:onmousedown()
+        GUI.Checklist.onmousedown(self)
+        setVisibilityRgn()
+    end
+
+    function currCreate:onmouseup()
+        GUI.Checklist.onmouseup(self)
+        setVisibilityRgn()
+    end
+
+
+    local currIsRgn = GUI.elms["isRgn"..tabIndex]
+
+    function currIsRgn:onmousedown()
+        GUI.Radio.onmousedown(self)
+        setVisibilityRgnProperties()
+    end
+
+    function currIsRgn:onmouseup()
+        GUI.Radio.onmouseup(self)
+        setVisibilityRgnProperties()
+    end
+
+
+
+    currTimeBefore.tooltip = "Adjust how many seconds before each overlapping item group should be part of the corresponding region."
+    currTimeAfter.tooltip = "Adjust how many seconds after each overlapping item group should be part of the corresponding region."
+    currTimeBeforeText.tooltip = "Corresponding textinput to slider to the left.\nIf input is out of slider bounds, slider gets rescaled automatically.\nUse 'TAB' to cycle between all text-input boxes."
+    currTimeAfterText.tooltip = "Corresponding textinput to slider to the left.\nIf input is out of slider bounds, slider gets rescaled automatically.\nUse 'TAB' to cycle between all text-input boxes."
+    GUI.elms["RegionName"..tabIndex].tooltip = "Set the name of the individual regions.\nUse '/E(Number) to enumerate from that number, e.g. '/E(3)' to enumerate from 3 onwards. Accepts as well modulo in the syntax of /E(0%4).\nYou can offset that modulo by using /E('start'%'moduloValue''offset'), e.g. /E(1%3-2).\n\nUse '/M(Note_Start: Step)' to enumerate Midinotes starting from 'Note_Start' increasing with 'Step' each time, e.g. /M(C#1,4). No given step size defaults to 1. \n\nUse '/O() to reference the name of an existing region at the corresponding spot. /O(ALTERNATIVE) will either use the original name (if existing) or the given 'ALTERNATIVE'.\nWarning: /O() might lead to unwanted results in situations with a lot of unclear region overlaps by failing to get the original region."
+    GUI.elms["RRM"..tabIndex].tooltip = "Choose over which track to route the newly created regions in the region render matrix.\n\n'Master' routes over the Master-Track.\n'First common Parent' routes over the first found parent of all selected items (without any selected items on it) or the Master if no parent can be found.\n'Highest common Parent' uses the highest common parent of all selected items or the Master if no parent can be found.\n'First parent per item' routes over all parent tracks of any items.\n'Each Track' only routes over a track if the track has items from the selection on it.\n'None' doesn't set a link in the RRM."
+    GUI.elms["Create"..tabIndex].tooltip = "Toogle if the region tab should even be created."
+   
+
+    redrawColFrames(tabIndex)
+end
+
+-- TODO ja die main arbeit halt nich
+-- global because called from various functions
+function redrawAll ()
+    GUI.elms_hide[5] = true
+
+    GUI.New("Cat1", "Label", {
+        z = 2,
+        x = 5,
+        y = 5,
+        caption = "Adjust Region Length and Distance",
+        font = 2,
+        color = "elm_fill",
+        bg = "elm_frame",
+        shadow = true
+    })
+
+    -- GENERAL GUI
+    GUI.New("Menu", "Menubar", {
+        z = 3,
+        x = 0,
+        y = 0,
+        w = 912.0,
+        h = 20.0,
+        menus = menuTableGUI,
+        font = 2,
+        col_txt = "txt",
+        col_bg = "elm_frame",
+        col_over = "elm_fill",
+        fullwidth = true
+    })
+
+    GUI.New("Button_AddTab", "Button", {
+        z = 3,
+        x = 48,
+        y = 31,
+        w = 20,
+        h = 20,
+        caption = "+",
+        font = 3,
+        col_txt = "txt",
+        col_fill = "elm_frame",
+        func = addTab
+    })
+
+    GUI.New("Button_RemoveTab", "Button", {
+        z = 3,
+        x = 16,
+        y = 31,
+        w = 20,
+        h = 20,
+        caption = "-",
+        font = 3,
+        col_txt = "txt",
+        col_fill = "elm_frame",
+        func = removeTab
+    })
+
+    setTabNumButtonVisibility()
+
+    -- TODO adjust position
     GUI.New("Preview", "Checklist", {
         z = 11,
         x = 56,
@@ -537,76 +704,9 @@ local function redrawAll ()
         shadow = true
     })
 
-    GUI.New("ChildRgnBool", "Checklist", {
-        z = 11,
-        x = 60,
-        y = 308,
-        w = 155,
-        h = 30,
-        caption = "",
-        optarray = {"Create indiv. Regions"},
-        dir = "v",
-        pad = 4,
-        font_a = 2,
-        font_b = 3,
-        col_txt = "txt",
-        col_fill = "elm_fill",
-        bg = "wnd_bg",
-        frame = false,
-        shadow = true,
-        swap = nil,
-        opt_size = 20
-    })
-
-    GUI.New("Child_Label", "Label", {
-        z = 11,
-        x = 70,
-        y = 348,
-        caption = "Region per Item group",
-        font = 3,
-        color = "txt",
-        bg = "wnd_bg",
-        shadow = false
-    })
-
-    GUI.New("RegionNameChild", "Textbox", {
-        z = 11,
-        x = 86,
-        y = 380,
-        w = 100,
-        h = 20,
-        caption = "Region Name",
-        cap_pos = "left",
-        font_a = 3,
-        font_b = "monospace",
-        color = "txt",
-        bg = "wnd_bg",
-        shadow = true,
-        pad = 4,
-        undo_limit = 20
-    })
-
-    GUI.New("RRMChild", "Menubox", {
-        z = 11,
-        x = 86,
-        y = 428,
-        w = 100,
-        h = 20,
-        caption = "Link to RRM",
-        optarray = {"Master", "Highest common Parent (all)", "First common Parent (all)", "First common parent (per item group)", "Parent (per item)", "Each Track", "None"},
-        retval = 2.0,
-        font_a = 3,
-        font_b = 4,
-        col_txt = "txt",
-        col_cap = "txt",
-        bg = "wnd_bg",
-        pad = 4,
-        noarrow = false,
-        align = 0
-    })
-
-
-    -- run and settings
+    --------------------
+    -- RUN & SETTINGS --
+    --------------------
     GUI.New("Cat3", "Label", {
         z = 11,
         x = 5,
@@ -651,8 +751,108 @@ local function redrawAll ()
         func = run_Button
     })
 
-    -- seperation frames - visualisation only
+    -- TODO adjust position & z layer
+    GUI.New("TimeBetween", "Slider", {
+        z = 15,
+        x = 144,
+        y = 144,
+        w = 150,
+        caption = "Distance between (s)",
+        min = timeSlidersVals.general.TimeBetween.min,
+        max = timeSlidersVals.general.TimeBetween.max,
+        defaults = {timeSlidersVals.general.TimeBetween.defaults},
+        inc = 0.1,
+        dir = "h",
+        font_a = 3,
+        font_b = 4,
+        col_txt = "txt",
+        col_fill = "elm_fill",
+        bg = "wnd_bg",
+        show_handles = true,
+        show_values = true,
+        cap_x = -140,
+        cap_y = 20
+    })
 
+    GUI.New("TimeBetween_Text", "Textbox", {
+        z = 11,
+        x = 315,
+        y = 139,
+        w = 40,
+        h = 20,
+        caption = "",
+        cap_pos = "left",
+        font_a = 3,
+        font_b = "monospace",
+        color = "txt",
+        bg = "wnd_bg",
+        shadow = true,
+        pad = 4,
+        undo_limit = 20
+    })
+
+    GUI.New("RepositionToggle", "Checklist", {
+        z = 10,
+        x = 368,
+        y = 133,
+        w = 300,
+        h = 30,
+        caption = "",
+        optarray = {""},
+        dir = "v",
+        pad = 4,
+        font_a = 2,
+        font_b = 3,
+        col_txt = "txt",
+        col_fill = "elm_fill",
+        bg = "wnd_bg",
+        frame = false,
+        shadow = true,
+        swap = nil,
+        opt_size = 20
+    })
+
+    GUI.New("TimeInclude", "Slider", {
+        z = 15,
+        x = 144,
+        y = 192,
+        w = 150,
+        caption = "Group tolerance (s)",
+        min = timeSlidersVals.general.TimeInclude.min,
+        max = timeSlidersVals.general.TimeInclude.max,
+        defaults = timeSlidersVals.general.TimeInclude.defaults,
+        inc = 0.01,
+        dir = "h",
+        font_a = 3,
+        font_b = 4,
+        col_txt = "txt",
+        col_fill = "elm_fill",
+        bg = "wnd_bg",
+        show_handles = true,
+        show_values = true,
+        cap_x = -140,
+        cap_y = 20
+    })
+
+    GUI.New("TimeInclude_Text", "Textbox", {
+        z = 11,
+        x = 315,
+        y = 187,
+        w = 40,
+        h = 20,
+        caption = "",
+        cap_pos = "left",
+        font_a = 3,
+        font_b = "monospace",
+        color = "txt",
+        bg = "wnd_bg",
+        shadow = true,
+        pad = 4,
+        undo_limit = 20
+    })
+
+    -- seperation frames - visualisation only
+    -- TODO adjust position and z layer
     GUI.New("Frame_hor1", "Frame", {
         z = 30,
         x = 12,
@@ -691,6 +891,7 @@ local function redrawAll ()
         col_txt = "txt"
     })
 
+    -- TODO Copy to all tab-sliders(?)
     for i = 1, #focusArray do
         local currTextboxName = focusArray[i]
         local tempTextbox = GUI.elms[currTextboxName]
@@ -700,32 +901,13 @@ local function redrawAll ()
         end
     end
 
-    function GUI.elms.ChildRgnBool:onmousedown()
-        GUI.Checklist.onmousedown(self)
-        setVisibilityChildRgn()
-    end
-
-    function GUI.elms.ChildRgnBool:onmouseup()
-        GUI.Checklist.onmouseup(self)
-        setVisibilityChildRgn()
-    end
-
-    function GUI.elms.MotherRgnBool:onmousedown()
-        GUI.Checklist.onmousedown(self)
-        setVisibilityMotherRgn()
-    end
-
-    function GUI.elms.MotherRgnBool:onmouseup()
-        GUI.Checklist.onmouseup(self)
-        setVisibilityMotherRgn()
-    end
-
     function GUI.elms.Preview:onmouseup()
         GUI.Checklist.onmouseup(self)
-        previewWithTimeSelection = GUI.Val("Preview")
-        if previewWithTimeSelection then adjustTimeselection() end
+        joshnt_UniqueRegions.previewTimeSelection = GUI.Val("Preview")
+        if joshnt_UniqueRegions.previewTimeSelection then adjustTimeselection() end
     end
 
+    -- TODO Adjust z
     function GUI.elms.RepositionToggle:onmouseup()
         GUI.Checklist.onmouseup(self)
         if GUI.Val("RepositionToggle") then 
@@ -743,25 +925,36 @@ local function redrawAll ()
         end
     end
 
+    function GUI.elms.TimeBetween:onmouseup()
+        GUI.Slider.onmouseup(self)
+        GUI.Val("TimeBetween_Text", GUI.Val("TimeBetween"))
+    end
+
+    function GUI.elms.TimeInclude:onmouseup()
+        GUI.Slider.onmouseup(self)
+        GUI.Val("TimeInclude_Text", GUI.Val("TimeInclude"))
+    end
+
+    -- TODO Tooltips content check and name
     -- Tooltips
-    GUI.elms.TimeBefore_Text.tooltip = "Corresponding textinput to slider to the left.\nIf input is out of slider bounds, slider gets rescaled automatically.\nUse 'TAB' to cycle between all text-input boxes."
-    GUI.elms.TimeAfter_Text.tooltip = "Corresponding textinput to slider to the left.\nIf input is out of slider bounds, slider gets rescaled automatically.\nUse 'TAB' to cycle between all text-input boxes."
     GUI.elms.TimeBetween_Text.tooltip = "Corresponding textinput to slider to the left.\nIf input is out of slider bounds, slider gets rescaled automatically.\nUse 'TAB' to cycle between all text-input boxes."
     GUI.elms.TimeInclude_Text.tooltip = "Corresponding textinput to slider to the left.\nIf input is out of slider bounds, slider gets rescaled automatically.\nUse 'TAB' to cycle between all text-input boxes."
     GUI.elms.Preview.tooltip = "Use REAPER's 'Time-Selection' to visualize the first group's region bounds.\nRefreshes on time-value changes; to refresh after a item-selection change, press 'R'."
     GUI.elms.RepositionToggle.tooltip = "Toggle whether the selected items should get moved to ensure the region distance set with the slider to the left."
-    GUI.elms.RegionNameChild.tooltip = "Set the name of the individual regions.\nUse '/E(Number) to enumerate from that number, e.g. '/E(3)' to enumerate from 3 onwards. Accepts as well modulo in the syntax of /E(0%4).\nYou can offset that modulo by using /E('start'%'moduloValue''offset'), e.g. /E(1%3-2).\n\nUse '/M(Note_Start: Step)' to enumerate Midinotes starting from 'Note_Start' increasing with 'Step' each time, e.g. /M(C#1,4). No given step size defaults to 1. \n\nUse '/O() to reference the name of an existing region at the corresponding spot. /O(ALTERNATIVE) will either use the original name (if existing) or the given 'ALTERNATIVE'.\nWarning: /O() might lead to unwanted results in situations with a lot of unclear region overlaps by failing to get the original region."
-    GUI.elms.RegionNameMother.tooltip = "Set the name of the mother regions. \nWildcards like '/E' don't work here, as there is only one 'Mother-Region' created."
-    GUI.elms.RRMChild.tooltip = "Choose over which track to route the newly created regions in the region render matrix.\n\n'Master' routes over the Master-Track.\n'First common Parent' routes over the first found parent of all selected items (without any selected items on it) or the Master if no parent can be found.\n'Highest common Parent' uses the highest common parent of all selected items or the Master if no parent can be found.\n'First parent per item' routes over all parent tracks of any items.\n'Each Track' only routes over a track if the track has items from the selection on it.\n'None' doesn't set a link in the RRM."
-    GUI.elms.RRMMother.tooltip = "Choose over which track to route the newly created mother region in the region render matrix.\n\n'Master' routes over the Master-Track.\n'First common Parent' routes over the first found parent of all selected items (without any selected items on it) or the Master if no parent can be found.\n'Highest common Parent' uses the highest common parent of all selected items or the Master if no parent can be found.\n'First parent per item' routes over all parent tracks of any items.\n'Each Track' only routes over a track if the track has items from the selection on it.\n'None' doesn't set a link in the RRM."
-    GUI.elms.MotherRgnBool.tooltip = "Toogle if a 'Mother-Region' (a region over all other newly created regions) should be created."
     GUI.elms.isolateItems.tooltip = "Sets if any and which items should be moved to avoid overlaps of the selected items with non-selected items.\nWARNING: Not moving items if there are other items on the track with the selected items may result in deleting those items between."
     GUI.elms.Run.tooltip = "Execute the script with the current Settings.\nShortcut - 'Shift + RETURN'"
-    GUI.elms.options.tooltip = "Additional options for when this script gets executed via the 'Run' button.\n\nLock items - locks the selected items after creating the regions and eventually moving them.\nSave as default - save current setttings as defaults (for the next start of this GUI and the GUI-less versions of this script).\nClose GUI - Close GUI after executing this script."
+    GUI.elms.Button_AddTab.tooltip = "Add a new region rule tab.\nDisappears if maximum of possible regions is reached."
+    GUI.elms.Button_RemoveTab.tooltip = "Removes current selected tab.\nDisappears if only one region tab exists."
+    GUI.elms.TimeBetween.tooltip = "Adjust how many seconds between each item group's region should be empty."
+    GUI.elms.TimeInclude.tooltip = "Adjust how far away from each other items can be to still be considered as one 'group'.\n\nE.g. 0 means only actually overlapping items count as one group.\n1 means items within 1 second of each others start/ end still count as one group."
 
-    redrawSliders()
+
     redrawColFrames()
     refreshMenu()
+    redrawTabs()
+    for i = 1, numTabs do
+        redrawTabContent(i)
+    end
 end
 
 local function Loop()
@@ -801,7 +994,7 @@ local function Loop()
 end
 
 -- load values from CORE to GUI interface
-local function refreshGUIValues()
+function refreshGUIValues()
     -- TODO gescheites laden von values, abhängig von namen der GUI sachen
     if joshnt_UniqueRegions.isolateItems then GUI.Val("isolateItems",joshnt_UniqueRegions.isolateItems) else GUI.Val("isolateItems",1) end
     if joshnt_UniqueRegions.space_in_between then GUI.Val("TimeBetween",joshnt_UniqueRegions.space_in_between) GUI.Val("TimeBetween_Text",joshnt_UniqueRegions.space_in_between) end
@@ -1034,6 +1227,7 @@ local function init()
     joshnt_UniqueRegions.getDefaults()
     -- TODO on new rgn tab, create new rgn color; delete on tab delete (?)
     GUI.colors["Col_1"] = GUI.colors["wnd_bg"] 
+    numTabs = joshnt.clamp(#joshnt_UniqueRegions.allRgnArray, numTabsMax, numTabsMin)
     redrawAll()
     refreshGUIValues()
     -- TODO refresh general slider & pro region time before time after; evtl auslagern als gebüpndelte function

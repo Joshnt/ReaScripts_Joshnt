@@ -1761,6 +1761,15 @@ end
 joshnt.midiNotes = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"}
 
 
+----------------
+----- MATH -----
+----------------
+
+-- returns input to be clamped = limited to the upper and lower bounds
+function joshnt.clamp(input, max, min)
+  return math.max(math.min(input,max),min)
+end
+
 -------------------
 ----- STRINGS -----
 -------------------
