@@ -1044,6 +1044,8 @@ function redrawAll ()
         col_txt = "txt"
     })
 
+    -- TODO add BG frame for buttons (to match with tabs)
+
     for i = 1, 2 do
         local tempTextboxName;
         if i == 1 then 
