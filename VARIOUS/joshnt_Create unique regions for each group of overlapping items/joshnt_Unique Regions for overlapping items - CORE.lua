@@ -9,9 +9,9 @@ function joshnt_UniqueRegions.Init()
     joshnt_UniqueRegions.space_in_between = 0 -- Time in seconds
     joshnt_UniqueRegions.groupToleranceTime = 0  -- Time in seconds
 
-    -- copy to all rgns if existing
+    -- copy to all rgns if existing; dont rearrange! order specific in copy & paste settings
     joshnt_UniqueRegions.rgnProperties = {
-        create = false,
+        create = true,
         name = "",
         color = -1,
         RRMLink = 0, -- 1 = Master, 2 = Highest common Parent (all),  3 = First common Parent (all), 4 = First common parent (per item group), 5 = Parent (per item), 6 = Each Track, 0 = None
