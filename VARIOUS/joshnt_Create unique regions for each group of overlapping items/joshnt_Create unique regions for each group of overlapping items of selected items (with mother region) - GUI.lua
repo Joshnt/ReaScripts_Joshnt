@@ -38,8 +38,8 @@ end
 - 5 = hidden
 
 General:
-- 2 = non-clickable Lables etc.
-- 3 = General UI 
+- 2 = General UI
+- 3 = non-clickable Lables etc.
 - 7 = info frame for sub windows
 - 8 = Help-Window Wildcards
 - 9 = Help-Window Shortcuts
@@ -135,7 +135,7 @@ local function updateUserValues()
         joshnt_UniqueRegions.allRgnArray[i].RRMLink = GUI.Val("RRM"..i)
         joshnt_UniqueRegions.allRgnArray[i].start_silence = GUI.Val("TimeBefore"..i)
         joshnt_UniqueRegions.allRgnArray[i].end_silence = GUI.Val("TimeAfter"..i)
-        joshnt_UniqueRegions.allRgnArray[i].isRgn = GUI.Val("isRgn"..i)
+        joshnt_UniqueRegions.allRgnArray[i].isRgn = GUI.Val("isRgn"..i) == 1
         joshnt_UniqueRegions.allRgnArray[i].everyX = GUI.Val("everyX"..i)
     end
     -- mehr gespeicherte regionen als momentan tabs -> delete speicher
@@ -267,8 +267,8 @@ local function redrawColFrames(tabInd)
     reaper.ShowConsoleMsg("\nCol"..tabInd.." is "..GUI.colors["Col"..tabInd][1]..", "..GUI.colors["Col"..tabInd][2]..", "..GUI.colors["Col"..tabInd][3]..", "..GUI.colors["Col"..tabInd][4])
     GUI.New("ColSelFrame"..tabInd, "Frame", {
         z = 10+tabInd,
-        x = 86,
-        y = 476,
+        x = 146,
+        y = 370,
         w = 80,
         h = 25,
         shadow = false,
@@ -310,9 +310,9 @@ local function redrawTabs()
     local tabW = joshnt.clamp((GUI.w - 80)/numTabs, 48, 18)
 
     GUI.New("Tabs", "Tabs", {
-        z = 3,
+        z = 2,
         x = 80,
-        y = 32,
+        y = 27,
         w = 832.0,
         caption = "Tabs",
         optarray = displayTabs,
@@ -334,17 +334,17 @@ end
 -- +/- tab only appear if not more/ less buttons than max/ min tabs exist
 local function setTabNumButtonVisibility()
     if numTabs > numTabsMin then
-        GUI.elms.Button_RemoveTab.z = 3
+        GUI.elms.Button_RemoveTab.z = 2
     else GUI.elms.Button_RemoveTab.z = 5
     end
     
     if numTabs < numTabsMax then
-        GUI.elms.Button_AddTab.z = 3
+        GUI.elms.Button_AddTab.z = 2
     else GUI.elms.Button_AddTab.z = 5
     end
 
     GUI.redraw_z[5] = true
-    GUI.redraw_z[3] = true
+    GUI.redraw_z[2] = true
 end
 
 -- add tab (after last)
@@ -489,10 +489,10 @@ function redrawTabContent(tabIndex)
 
     GUI.New("Create"..tabIndex, "Checklist", {
         z = 10+tabIndex,
-        x = 60,
+        x = 20,
         y = 308,
         w = 155,
-        h = 30,
+        h = 20,
         caption = "",
         optarray = {"Create"},
         dir = "v",
@@ -510,8 +510,8 @@ function redrawTabContent(tabIndex)
 
     GUI.New("isRgn"..tabIndex, "Radio", {
         z = 10+tabIndex,
-        x = 60,
-        y = 308,
+        x = 20,
+        y = 355,
         w = 155,
         h = 30,
         caption = "",
@@ -531,12 +531,12 @@ function redrawTabContent(tabIndex)
 
     GUI.New("everyX"..tabIndex, "Textbox", {
         z = 10+tabIndex,
-        x = 86,
-        y = 380,
-        w = 100,
+        x = 306,
+        y = 313,
+        w = 50,
         h = 20,
-        caption = "every X item Groups",
-        cap_pos = "left",
+        caption = "every X items",
+        cap_pos = "top",
         font_a = 3,
         font_b = "monospace",
         color = "txt",
@@ -548,8 +548,8 @@ function redrawTabContent(tabIndex)
 
     GUI.New("RegionName"..tabIndex, "Textbox", {
         z = 10+tabIndex,
-        x = 86,
-        y = 380,
+        x = 136,
+        y = 313,
         w = 100,
         h = 20,
         caption = "Region/ Marker Name",
@@ -673,11 +673,25 @@ end
 local function redrawSubWindows()
     -- 5 Custom wildcard sub windows
     GUI.New("btn_Wildcard_Confirm", "Button", 50, 140, GUI.h -140, 48, 24, "Save", saveCurrentCustomWildcards)
-    -- TODO add label
+
+    GUI.New("wildcard_Label", "Label", {
+        z = 50,
+        x = 16,
+        y = 16,
+        caption = "Create your custom wildcard-set by writing in the\ntext field below. Each new line represents one entry. ",
+        font = 4,
+        color = "txt",
+        bg = "wnd_bg",
+        shadow = false
+    })
+
+
     for i = 1, 5 do
+        reaper.ShowConsoleMsg("\nIn for loop")
         GUI.New("wildcardWnd"..i, "Window", i+55, 0, 0, GUI.w -80, GUI.h -80, "Custom Wildcard-Setting "..i, {50, 50 + i, 55 + i})
-        GUI.New("wildcardTxt"..i, "TextEditor",  i+50,  20, 50,  GUI.w -120, GUI.h -200, "")
+        GUI.New("wildcardTxt"..i, "TextEditor",  i+50,  20, 60,  GUI.w -120, GUI.h -210, "")
        
+        reaper.ShowConsoleMsg("\nIn For loop post creation")
 
         local currWnd = GUI.elms["wildcardWnd"..i]
         local currTxt = GUI.elms["wildcardTxt"..i]
@@ -686,6 +700,7 @@ local function redrawSubWindows()
             -- visual adjustments of button & texteditor
             self:adjustelm(currTxt)
             self:adjustelm(GUI.elms.btn_Wildcard_Confirm) 
+            self:adjustelm(GUI.elms.wildcard_Label) 
             currTxt:wnd_recalc()
 
             currOpenWindow = i
@@ -702,7 +717,7 @@ local function redrawSubWindows()
             currOpenWindow = 0
         end
     end
-
+    reaper.ShowConsoleMsg("\npost For-Loop")
 
     GUI.New("infoFrame",   "Frame",     7, 10, 10, GUI.w - 100, GUI.h - 150, false, false, "elm_frame", 5)
     GUI.elms["infoFrame"].txt_pad = 2;
@@ -769,20 +784,9 @@ end
 function redrawAll ()
     GUI.elms_hide[5] = true
 
-    GUI.New("Cat1", "Label", {
-        z = 2,
-        x = 5,
-        y = 5,
-        caption = "Adjust Region Length and Distance",
-        font = 2,
-        color = "elm_fill",
-        bg = "elm_frame",
-        shadow = true
-    })
-
     -- GENERAL GUI
     GUI.New("Menu", "Menubar", {
-        z = 3,
+        z = 2,
         x = 0,
         y = 0,
         w = 912.0,
@@ -796,11 +800,11 @@ function redrawAll ()
     })
 
     GUI.New("Button_AddTab", "Button", {
-        z = 3,
+        z = 2,
         x = 48,
-        y = 31,
-        w = 20,
-        h = 20,
+        y = 24,
+        w = 18,
+        h = 18,
         caption = "+",
         font = 3,
         col_txt = "txt",
@@ -808,12 +812,13 @@ function redrawAll ()
         func = addTab
     })
 
+    -- TODO removing tab fucks with sliders :((
     GUI.New("Button_RemoveTab", "Button", {
-        z = 3,
+        z = 2,
         x = 16,
-        y = 31,
-        w = 20,
-        h = 20,
+        y = 24,
+        w = 18,
+        h = 18,
         caption = "-",
         font = 3,
         col_txt = "txt",
@@ -825,7 +830,7 @@ function redrawAll ()
 
     -- TODO adjust position
     GUI.New("Preview", "Checklist", {
-        z = 3,
+        z = 2,
         x = 56,
         y = 228,
         w = 300,
@@ -847,10 +852,10 @@ function redrawAll ()
 
     -- Region creation
     GUI.New("Cat2", "Label", {
-        z = 2,
+        z = 3,
         x = 5,
         y = 280,
-        caption = "Create Region(s)",
+        caption = "Tab Settings",
         font = 2,
         color = "elm_fill",
         bg = "elm_frame",
@@ -861,9 +866,9 @@ function redrawAll ()
     -- RUN & SETTINGS --
     --------------------
     GUI.New("Cat3", "Label", {
-        z = 2,
+        z = 3,
         x = 5,
-        y = 530,
+        y = 450,
         caption = "Other settings",
         font = 2,
         color = "elm_fill",
@@ -872,7 +877,7 @@ function redrawAll ()
     })
 
     GUI.New("isolateItems", "Radio", {
-        z = 3,
+        z = 2,
         x = 24,
         y = 575,
         w = 120,
@@ -892,7 +897,7 @@ function redrawAll ()
     })
 
     GUI.New("Run", "Button", {
-        z = 3,
+        z = 2,
         x = 308,
         y = 565,
         w = 72,
@@ -906,7 +911,7 @@ function redrawAll ()
 
     -- TODO adjust position
     GUI.New("TimeBetween", "Slider", {
-        z = 3,
+        z = 2,
         x = 144,
         y = 144,
         w = 150,
@@ -928,7 +933,7 @@ function redrawAll ()
     })
 
     GUI.New("TimeBetween_Text", "Textbox", {
-        z = 3,
+        z = 2,
         x = 315,
         y = 139,
         w = 40,
@@ -945,7 +950,7 @@ function redrawAll ()
     })
 
     GUI.New("RepositionToggle", "Checklist", {
-        z = 3,
+        z = 2,
         x = 368,
         y = 133,
         w = 300,
@@ -966,7 +971,7 @@ function redrawAll ()
     })
 
     GUI.New("TimeInclude", "Slider", {
-        z = 3,
+        z = 2,
         x = 144,
         y = 192,
         w = 150,
@@ -988,7 +993,7 @@ function redrawAll ()
     })
 
     GUI.New("TimeInclude_Text", "Textbox", {
-        z = 3,
+        z = 2,
         x = 315,
         y = 187,
         w = 40,
@@ -1007,7 +1012,7 @@ function redrawAll ()
     -- seperation frames - visualisation only
     -- TODO adjust position
     GUI.New("Frame_hor1", "Frame", {
-        z = 2,
+        z = 3,
         x = 12,
         y = 270,
         w = 376,
@@ -1026,9 +1031,9 @@ function redrawAll ()
     })
 
     GUI.New("Frame_hor2", "Frame", {
-        z = 2,
+        z = 3,
         x = 12,
-        y = 520,
+        y = 440,
         w = 376,
         h = 2,
         shadow = false,
@@ -1044,7 +1049,24 @@ function redrawAll ()
         col_txt = "txt"
     })
 
-    -- TODO add BG frame for buttons (to match with tabs)
+    GUI.New("tabButtonBG", "Frame", {
+        z = 3,
+        x = 0,
+        y = 20,
+        w = 832,
+        h = 27,
+        shadow = false,
+        fill = false,
+        color = "elm_bg",
+        bg = "elm_bg",
+        round = 0,
+        text = "",
+        txt_indent = 0,
+        txt_pad = 0,
+        pad = 4,
+        font = 4,
+        col_txt = "txt"
+    })
 
     for i = 1, 2 do
         local tempTextboxName;
@@ -1069,15 +1091,15 @@ function redrawAll ()
     function GUI.elms.RepositionToggle:onmouseup()
         GUI.Checklist.onmouseup(self)
         if GUI.Val("RepositionToggle") then 
-            GUI.elms.TimeBetween.z = 3
-            GUI.elms.TimeBetween_Text.z = 3
+            GUI.elms.TimeBetween.z = 2
+            GUI.elms.TimeBetween_Text.z = 2
             GUI.redraw_z[5] = true
-            GUI.redraw_z[3] = true
+            GUI.redraw_z[2] = true
         else
             GUI.elms.TimeBetween.z = 5
             GUI.elms.TimeBetween_Text.z = 5
             GUI.redraw_z[5] = true
-            GUI.redraw_z[3] = true
+            GUI.redraw_z[2] = true
         end
     end
 
@@ -1176,9 +1198,12 @@ function refreshGUIValues()
         GUI.Val("TimeBefore_Text"..i, joshnt_UniqueRegions.allRgnArray[i].start_silence)
         GUI.Val("TimeAfter"..i, joshnt_UniqueRegions.allRgnArray[i].end_silence)
         GUI.Val("TimeAfter_Text"..i, joshnt_UniqueRegions.allRgnArray[i].end_silence)
-        GUI.Val("isRgn"..i, joshnt_UniqueRegions.allRgnArray[i].isRgn)
+        if joshnt_UniqueRegions.allRgnArray[i].isRgn then GUI.Val("isRgn"..i, 1)
+        else GUI.Val("isRgn"..i, 2) end
         GUI.Val("everyX"..i, joshnt_UniqueRegions.allRgnArray[i].everyX)
         setFrameColors(i, joshnt_UniqueRegions.allRgnArray[i].color)
+        setVisibilityRgnProperties(i)
+        setVisibilityRgn(i)
     end
 end
 

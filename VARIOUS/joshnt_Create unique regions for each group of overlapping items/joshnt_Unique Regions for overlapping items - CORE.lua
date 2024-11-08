@@ -20,7 +20,7 @@ function joshnt_UniqueRegions.Init()
         -- subarray per modifier with {stringToSearchFor, curr Index of that count/ default replace[, modifier, modifierArgument1, modifierArgument2]}
         replaceString = { },
         rename = "",
-        isRgn = false, -- RMX only: rgn or marker
+        isRgn = true, -- RMX only: rgn or marker
         everyX = 1 -- RMX only: after x item groups
     }
 
