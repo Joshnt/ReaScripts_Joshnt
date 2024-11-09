@@ -84,12 +84,12 @@ if missing_lib then return 0 end
 
 
 GUI.name = "joshnt_Unique Regions - Settings-GUI"
-GUI.x, GUI.y, GUI.w, GUI.h = 0, 0, 400, 675
+GUI.x, GUI.y, GUI.w, GUI.h = 0, 0, 405, 675
 GUI.anchor, GUI.corner = "screen", "C"
 
 -- additional GUI variables
 -- TODO adjust focus array content
-local focusArray, focusIndex = {"TimeBefore_Text-TABNUM","TimeAfter_Text-TABNUM","RegionName-TABNUM","TimeBetween_Text","TimeInclude_Text"}, 0
+local focusArray, focusIndex = {"RegionName-TABNUM", "TimeBefore_Text-TABNUM","TimeAfter_Text-TABNUM", "TimeBetween_Text","TimeInclude_Text"}, 0
 local tabPressed, enterPressed = false, false
 local showRemoveWarning = true
 local pressedHelp = 0 -- just troll
@@ -102,7 +102,7 @@ local timeSlidersVals = {
     },
 
     rgn_TEMPLATE = {
-    TimeBefore = {min = -10, max = 0, defaults = 100, val = 0},
+    TimeBefore = {min = -10, max = 0, defaults = 100, val = 100},
     TimeAfter = {min = 0, max = 10, defaults = 0, val = 0},
     },
     -- use timeSlidersVals.rgn[#timeSlidersVals.rgn+1] = joshnt.copyTable(timeSlidersVals.rgn_TEMPLATE) for each new Rgn Set
@@ -114,8 +114,19 @@ timeSlidersVals.rgn[1] = joshnt.copyTable(timeSlidersVals.rgn_TEMPLATE)
 local numTabsMax, numTabsMin = 20, 1 -- can be changed potentially
 local numTabs = 1
 local menuTableGUI= {}
-local currOpenWindow = 0 -- custom Wildcards from 1 - 5, Wildcards on 6, ShortCuts on 7 
+local currOpenWindow = 0 -- 0 = main window/ no additional, custom Wildcards from 1 - 5, Wildcards on 6, ShortCuts on 7 
 
+local function shortcutIsActive()
+    if currOpenWindow ~= 0 then return false end-- if in subwindow, shortcuts dont work
+    local currTabNum = GUI.Val("Tabs")
+    for i = 1, #focusArray do
+        local currFocusArray = string.gsub(focusArray[i], "-TABNUM", currTabNum)
+        if GUI.elms[currFocusArray].focus == true then
+            return false
+        end
+    end
+    return true 
+end
 
 -- sets values in CORE to GUI Values (overwriting backend)
 local function updateUserValues()
@@ -161,12 +172,15 @@ local function setVisibilityRgnProperties(tabIndex)
         GUI.elms["TimeAfter_Text"..tabIndex].z = 10+tabIndex
         GUI.elms["TimeAfter"..tabIndex].z = 10+tabIndex
         GUI.elms["RRM"..tabIndex].z = 10+tabIndex
+        GUI.elms["RRM_Label"].z = 3
     else
         GUI.elms["TimeAfter_Text"..tabIndex].z = 5
         GUI.elms["TimeAfter"..tabIndex].z = 5
         GUI.elms["RRM"..tabIndex].z = 5
+        GUI.elms["RRM_Label"].z = 5
     end
     GUI.redraw_z[5] = true
+    GUI.redraw_z[3] = true
     GUI.redraw_z[10+tabIndex] = true
 end
 
@@ -197,19 +211,25 @@ end
 
 local function adjustTimeselection()
     if joshnt_UniqueRegions.previewTimeSelection == true then
-        local currSelTab = GUI.Val("Tab")
-        local currEveryX = tonumber(GUI.Val("everyX"..currSelTab))
-        local _, itemStarts, itemEnds = joshnt.getOverlappingItemGroupsOfSelectedItems(GUI.Val("TimeInclude"))
-        if itemStarts and itemEnds then
-            local startTime = itemStarts[1]
-            local endTime;
-            if currEveryX > 0 then endTime = itemEnds[currEveryX] 
-            else endTime = itemEnds[#itemEnds] end
-            local startTimeOffset, endTimeOffset = GUI.Val("TimeBefore"..currSelTab), 0.1
-            if GUI.Val("isRgn"..currSelTab) == 1 then
-                endTimeOffset = GUI.Val("TimeAfter"..currSelTab)
+        if reaper.CountSelectedMediaItems(0) == 0 then 
+            joshnt_UniqueRegions.previewTimeSelection = false
+            GUI.Val("Preview", false)
+            joshnt.TooltipAtMouse("No selected media items to preview region/ marker length!")
+        else
+            local currSelTab = GUI.Val("Tabs")
+            local currEveryX = tonumber(GUI.Val("everyX"..currSelTab))
+            local _, itemStarts, itemEnds = joshnt.getOverlappingItemGroupsOfSelectedItems(GUI.Val("TimeInclude"))
+            if itemStarts and itemEnds then
+                local startTime = itemStarts[1]
+                local endTime;
+                if currEveryX > 0 then endTime = itemEnds[currEveryX] 
+                else endTime = itemEnds[#itemEnds] end
+                local startTimeOffset, endTimeOffset = GUI.Val("TimeBefore"..currSelTab), 0.1
+                if GUI.Val("isRgn"..currSelTab) == 1 then
+                    endTimeOffset = GUI.Val("TimeAfter"..currSelTab)
+                end
+                reaper.GetSet_LoopTimeRange(true, false, startTime + startTimeOffset, endTime + endTimeOffset, false) 
             end
-            reaper.GetSet_LoopTimeRange(true, false, startTime + startTimeOffset, endTime + endTimeOffset, false) 
         end
     end
 end
@@ -267,8 +287,8 @@ local function redrawColFrames(tabInd)
     reaper.ShowConsoleMsg("\nCol"..tabInd.." is "..GUI.colors["Col"..tabInd][1]..", "..GUI.colors["Col"..tabInd][2]..", "..GUI.colors["Col"..tabInd][3]..", "..GUI.colors["Col"..tabInd][4])
     GUI.New("ColSelFrame"..tabInd, "Frame", {
         z = 10+tabInd,
-        x = 146,
-        y = 370,
+        x = 126,
+        y = 170,
         w = 80,
         h = 25,
         shadow = false,
@@ -306,8 +326,11 @@ local function redrawTabs()
         tabLayers[i] = {i+10}
         displayTabs[i] = tostring(i)
     end
+    for i = numTabs+1, numTabsMax do
+        GUI.elms_hide[i+10] = true
+    end
 
-    local tabW = joshnt.clamp((GUI.w - 80)/numTabs, 48, 18)
+    local tabW = joshnt.clamp((GUI.w - 180)/numTabs, 48, 12)
 
     GUI.New("Tabs", "Tabs", {
         z = 2,
@@ -350,13 +373,16 @@ end
 -- add tab (after last)
 local function addTab()
     if numTabs < numTabsMax then
+        updateUserValues()
         numTabs = numTabs+1
         timeSlidersVals.rgn[numTabs] = joshnt.copyTable(timeSlidersVals.rgn_TEMPLATE)
+        -- add new region
+        joshnt_UniqueRegions.allRgnArray[numTabs] = joshnt.copyTable(joshnt_UniqueRegions.rgnProperties)
         GUI.colors["Col"..numTabs] = GUI.colors["wnd_bg"] 
         redrawTabContent(numTabs)
         redrawTabs()
-        -- add new region
-        joshnt_UniqueRegions.allRgnArray[numTabs] = joshnt.copyTable(joshnt_UniqueRegions.rgnProperties)
+        GUI.Val("Tabs",numTabs)
+        refreshGUIValues()
         setTabNumButtonVisibility()
     end
 end
@@ -387,6 +413,7 @@ local function removeTab()
         reaper.ShowConsoleMsg("\nPre redraw")
         redrawAll()
         refreshGUIValues()
+        GUI.Val("Tabs",prevSel)
     end
 end
 
@@ -412,7 +439,7 @@ function redrawTabContent(tabIndex)
     GUI.New("TimeBefore"..tabIndex, "Slider", {
         z = 10+tabIndex,
         x = 144,
-        y = 48,
+        y = 290,
         w = 150,
         caption = "Time Before (s)",
         min = timeSlidersVals.rgn[tabIndex].TimeBefore.min,
@@ -434,7 +461,7 @@ function redrawTabContent(tabIndex)
     GUI.New("TimeBefore_Text"..tabIndex, "Textbox", {
         z = 10+tabIndex,
         x = 315,
-        y = 43,
+        y = 285,
         w = 40,
         h = 20,
         caption = "",
@@ -451,7 +478,7 @@ function redrawTabContent(tabIndex)
     GUI.New("TimeAfter"..tabIndex, "Slider", {
         z = 10+tabIndex,
         x = 144,
-        y = 96,
+        y = 340,
         w = 150,
         caption = "Time After (s)",
         min = timeSlidersVals.rgn[tabIndex].TimeAfter.min,
@@ -473,7 +500,7 @@ function redrawTabContent(tabIndex)
     GUI.New("TimeAfter_Text"..tabIndex, "Textbox", {
         z = 10+tabIndex,
         x = 315,
-        y = 91,
+        y = 335,
         w = 40,
         h = 20,
         caption = "",
@@ -490,8 +517,8 @@ function redrawTabContent(tabIndex)
     GUI.New("Create"..tabIndex, "Checklist", {
         z = 10+tabIndex,
         x = 20,
-        y = 308,
-        w = 155,
+        y = 94,
+        w = 50,
         h = 20,
         caption = "",
         optarray = {"Create"},
@@ -511,9 +538,9 @@ function redrawTabContent(tabIndex)
     GUI.New("isRgn"..tabIndex, "Radio", {
         z = 10+tabIndex,
         x = 20,
-        y = 355,
+        y = 153,
         w = 155,
-        h = 30,
+        h = 50,
         caption = "",
         optarray = {"Region", "Marker"},
         dir = "v",
@@ -531,9 +558,9 @@ function redrawTabContent(tabIndex)
 
     GUI.New("everyX"..tabIndex, "Textbox", {
         z = 10+tabIndex,
-        x = 306,
-        y = 313,
-        w = 50,
+        x = 145,
+        y = 102,
+        w = 30,
         h = 20,
         caption = "every X items",
         cap_pos = "top",
@@ -548,9 +575,9 @@ function redrawTabContent(tabIndex)
 
     GUI.New("RegionName"..tabIndex, "Textbox", {
         z = 10+tabIndex,
-        x = 136,
-        y = 313,
-        w = 100,
+        x = 226,
+        y = 102,
+        w = 160,
         h = 20,
         caption = "Region/ Marker Name",
         cap_pos = "top",
@@ -565,11 +592,11 @@ function redrawTabContent(tabIndex)
 
     GUI.New("RRM"..tabIndex, "Menubox", {
         z = 10+tabIndex,
-        x = 86,
-        y = 428,
-        w = 100,
+        x = 246,
+        y = 173,
+        w = 120,
         h = 20,
-        caption = "Link to RRM",
+        caption = "",
         optarray = {"Master", "Highest common Parent (all)", "First common Parent (all)", "First common parent (per item group)", "Parent (per item)", "Each Track", "None"},
         retval = 2.0,
         font_a = 3,
@@ -593,7 +620,7 @@ function redrawTabContent(tabIndex)
         function currSlider:onmouseup()
             GUI.Slider.onmouseup(self)
             adjustTimeselection()
-            GUI.Val(currSliderText, GUI.Val(currSlider))
+            GUI.Val(currSliderName.."_Text"..tabIndex, GUI.Val(currSliderName..tabIndex))
         end
         function currSlider:ondrag()
             GUI.Slider.ondrag(self)
@@ -605,7 +632,7 @@ function redrawTabContent(tabIndex)
         end
         function currSliderText:lostfocus()
             GUI.Textbox.lostfocus(self)
-            setSliderSize(currSlider, GUI.Val(currSliderText), tabIndex)
+            setSliderSize(currSliderName..tabIndex, GUI.Val(currSliderName.."_Text"..tabIndex), tabIndex)
         end
     end    
 
@@ -734,7 +761,7 @@ local function redrawSubWindows()
         local newStr = "'/E(Number): Use to enumerate from that number, e.g. '/E(3)' to enumerate from 3 onwards. Accepts as well modulo in the syntax of /E(0%4)."
                         .."\nYou can offset that modulo by using /E('start'%'moduloValue''offset'), e.g. /E(1%3-2)."
                         .."\n \n'/M(Note_Start)': Increase Midi-Note for each Region, e.g. /M(C1) would result in C1, C#1, D1, ..."
-                        .."\n'/M(Note_Start: Step)': to enumerate Midinotes starting from 'Note_Start' increasing with 'Step' each time, e.g. /M(C1,4) would result in C1, E1, G#1, C2, ..."
+                        .."\n'/M(Note_Start: Step)': to enumerate Midinotes starting from 'Note_Start' increasing with 'Step' each time, e.g. /M(C1:4) would result in C1, E1, G#1, C2, ..."
                         .."\nTip: '/M' is especially useful for Sample Instrument Sample-Editing & Swobi."
                         .."\n \nUse '/O() to reference the name of an existing region at the corresponding spot. /O(ALTERNATIVE) will either use the original name (if existing) or the given 'ALTERNATIVE'."
                         .."\nWarning: /O() might lead to unwanted results in situations with a lot of unclear region overlaps by failing to get the original region."
@@ -828,15 +855,27 @@ function redrawAll ()
 
     setTabNumButtonVisibility()
 
+    -- Region creation
+    GUI.New("RRM_Label", "Label", {
+        z = 5,
+        x = 270,
+        y = 153,
+        caption = "Link to RRM",
+        font = 4,
+        color = "txt",
+        bg = "wnd_bg",
+        shadow = false
+    })
+
     -- TODO adjust position
     GUI.New("Preview", "Checklist", {
         z = 2,
         x = 56,
-        y = 228,
+        y = 375,
         w = 300,
         h = 30,
         caption = "",
-        optarray = {"Preview Before and after Time as time-selection"},
+        optarray = {"Preview Before and After time as time-selection"},
         dir = "v",
         pad = 4,
         font_a = 2,
@@ -854,8 +893,20 @@ function redrawAll ()
     GUI.New("Cat2", "Label", {
         z = 3,
         x = 5,
-        y = 280,
+        y = 55,
         caption = "Tab Settings",
+        font = 2,
+        color = "elm_fill",
+        bg = "elm_frame",
+        shadow = true
+    })
+
+    -- Region creation additional
+    GUI.New("Cat1", "Label", {
+        z = 3,
+        x = 5,
+        y = 245,
+        caption = "Region/ Marker Length Offset",
         font = 2,
         color = "elm_fill",
         bg = "elm_frame",
@@ -868,7 +919,7 @@ function redrawAll ()
     GUI.New("Cat3", "Label", {
         z = 3,
         x = 5,
-        y = 450,
+        y = 435,
         caption = "Other settings",
         font = 2,
         color = "elm_fill",
@@ -879,7 +930,7 @@ function redrawAll ()
     GUI.New("isolateItems", "Radio", {
         z = 2,
         x = 24,
-        y = 575,
+        y = 580,
         w = 120,
         h = 80,
         caption = "Isolate options",
@@ -898,8 +949,8 @@ function redrawAll ()
 
     GUI.New("Run", "Button", {
         z = 2,
-        x = 308,
-        y = 565,
+        x = 170,
+        y = 635,
         w = 72,
         h = 30,
         caption = "Run",
@@ -913,7 +964,7 @@ function redrawAll ()
     GUI.New("TimeBetween", "Slider", {
         z = 2,
         x = 144,
-        y = 144,
+        y = 480,
         w = 150,
         caption = "Distance between (s)",
         min = timeSlidersVals.general.TimeBetween.min,
@@ -935,7 +986,7 @@ function redrawAll ()
     GUI.New("TimeBetween_Text", "Textbox", {
         z = 2,
         x = 315,
-        y = 139,
+        y = 475,
         w = 40,
         h = 20,
         caption = "",
@@ -952,7 +1003,7 @@ function redrawAll ()
     GUI.New("RepositionToggle", "Checklist", {
         z = 2,
         x = 368,
-        y = 133,
+        y = 469,
         w = 300,
         h = 30,
         caption = "",
@@ -973,7 +1024,7 @@ function redrawAll ()
     GUI.New("TimeInclude", "Slider", {
         z = 2,
         x = 144,
-        y = 192,
+        y = 528,
         w = 150,
         caption = "Group tolerance (s)",
         min = timeSlidersVals.general.TimeInclude.min,
@@ -995,7 +1046,7 @@ function redrawAll ()
     GUI.New("TimeInclude_Text", "Textbox", {
         z = 2,
         x = 315,
-        y = 187,
+        y = 523,
         w = 40,
         h = 20,
         caption = "",
@@ -1014,7 +1065,7 @@ function redrawAll ()
     GUI.New("Frame_hor1", "Frame", {
         z = 3,
         x = 12,
-        y = 270,
+        y = 235,
         w = 376,
         h = 2,
         shadow = false,
@@ -1033,7 +1084,7 @@ function redrawAll ()
     GUI.New("Frame_hor2", "Frame", {
         z = 3,
         x = 12,
-        y = 440,
+        y = 425,
         w = 376,
         h = 2,
         shadow = false,
@@ -1136,56 +1187,64 @@ end
 
 local function Loop()
     -- keyinput
-    if GUI.char == 9.0 and tabPressed == false then -- cycle focus
-        if type(focusIndex) == "number" and focusIndex ~= 0 then
-            GUI.elms[focusArray[focusIndex]].focus = false
+    if shortcutIsActive() then
+        if GUI.char == 9.0 and tabPressed == false then -- cycle focus with TAB Key
+            local currTabNum = GUI.Val("Tabs")
+            if type(focusIndex) == "number" and focusIndex ~= 0 then
+                local prevFocus = string.gsub(focusArray[focusIndex],"-TABNUM", currTabNum)
+                GUI.elms[prevFocus].focus = false
 
-            local function getNextFocusIndex()
-                if GUI.mouse.cap == 8 then
-                    focusIndex = ((focusIndex-2) % #focusArray) +1
-                else
-                    focusIndex = (focusIndex % #focusArray) +1
+                local function getNextFocusIndex()
+                    if GUI.mouse.cap == 8 then
+                        focusIndex = ((focusIndex-2) % #focusArray) +1
+                    else
+                        focusIndex = (focusIndex % #focusArray) +1
+                    end
+                    local tempFocus = string.gsub(focusArray[focusIndex],"-TABNUM", currTabNum)
+                    if GUI.elms[focusArray[focusIndex]].z == 5 then getNextFocusIndex() end
                 end
-                if GUI.elms[focusArray[focusIndex]].z == 5 then getNextFocusIndex() end
-            end
 
-            getNextFocusIndex()
-        else 
-            focusIndex = 1
-        end
-        GUI.elms[focusArray[focusIndex]].focus = true
-        tabPressed = true
-    elseif GUI.char == 13.0 and GUI.mouse.cap == 8 and enterPressed == false then -- Shift Return pressed -> exectue
-        enterPressed = true
-        run_Button()
-    -- Number keys pressed -> select Tab
-    elseif GUI.char >= 48.0 and GUI.char <= 57.0 then
-        for i = 48, 57 do
-            if GUI.char == i then
-                if (GUI.char == 48 and numTabs >= 10) then
-                    GUI.Val("Tabs", 10)
-                elseif numTabs >= i - 48 then
-                    GUI.Val("Tabs", i - 48)
-                end
-                break
+                getNextFocusIndex()
+            else 
+                focusIndex = 1
             end
+            local newFocus = string.gsub(focusArray[focusIndex],"-TABNUM", currTabNum)
+            GUI.elms[newFocus].focus = true
+            tabPressed = true
+        elseif GUI.char == 13.0 and GUI.mouse.cap == 8 and enterPressed == false then -- Shift Return pressed -> exectue
+            enterPressed = true
+            run_Button()
+        -- Number keys pressed -> select Tab
+        elseif GUI.char >= 48.0 and GUI.char <= 57.0 then
+            for i = 48, 57 do
+                if GUI.char == i then
+                    if (GUI.char == 48 and numTabs >= 10) then
+                        GUI.Val("Tabs", 10)
+                    elseif numTabs >= i - 48 then
+                        GUI.Val("Tabs", i - 48)
+                    end
+                    break
+                end
+            end
+        elseif GUI.char == 114 then -- R für refresh timeselection
+            for i = 1, #focusArray do
+                if GUI.elms[focusArray[i]].focus == true then return end
+            end
+            adjustTimeselection()
+        elseif GUI.char == 0.0 then
+            if tabPressed == true then tabPressed = false
+            elseif enterPressed == true then enterPressed = false end
         end
-    elseif GUI.char == 114 then -- R für refresh timeselection
-        for i = 1, #focusArray do
-            if GUI.elms[focusArray[i]].focus == true then return end
-        end
-        adjustTimeselection()
-    elseif GUI.char == 0.0 then
-        if tabPressed == true then tabPressed = false
-        elseif enterPressed == true then enterPressed = false end
     end
 end
 
 -- load values from CORE to GUI interface (overwriting GUI values)
 function refreshGUIValues()
     GUI.Val("isolateItems",joshnt_UniqueRegions.isolateItems)
-    GUI.Val("TimeBetween",joshnt_UniqueRegions.space_in_between) GUI.Val("TimeBetween_Text",joshnt_UniqueRegions.space_in_between)
-    GUI.Val("TimeInclude",joshnt_UniqueRegions.groupToleranceTime) GUI.Val("TimeInclude_Text",joshnt_UniqueRegions.groupToleranceTime)
+    local sliderBetweenVal = math.abs(joshnt_UniqueRegions.space_in_between-timeSlidersVals.general.TimeBetween.min)/ 0.1
+    GUI.Val("TimeBetween", sliderBetweenVal) GUI.Val("TimeBetween_Text",joshnt_UniqueRegions.space_in_between)
+    local sliderIncludeVal = math.abs(joshnt_UniqueRegions.groupToleranceTime-timeSlidersVals.general.TimeInclude.min)/ 0.1
+    GUI.Val("TimeInclude", sliderIncludeVal) GUI.Val("TimeInclude_Text",joshnt_UniqueRegions.groupToleranceTime)
     GUI.Val("RepositionToggle", joshnt_UniqueRegions.repositionToggle)
     GUI.Val("Preview",joshnt_UniqueRegions.previewTimeSelection)
 
@@ -1194,9 +1253,12 @@ function refreshGUIValues()
         GUI.Val("Create"..i, joshnt_UniqueRegions.allRgnArray[i].create)
         GUI.Val("RegionName"..i, joshnt_UniqueRegions.allRgnArray[i].name)
         GUI.Val("RRM"..i, joshnt_UniqueRegions.allRgnArray[i].RRMLink)
-        GUI.Val("TimeBefore"..i, joshnt_UniqueRegions.allRgnArray[i].start_silence)
+
+        local sliderValBefore = math.abs(joshnt_UniqueRegions.allRgnArray[i].start_silence-timeSlidersVals.rgn[i].TimeBefore.min)/ 0.1
+        GUI.Val("TimeBefore"..i, sliderValBefore)
         GUI.Val("TimeBefore_Text"..i, joshnt_UniqueRegions.allRgnArray[i].start_silence)
-        GUI.Val("TimeAfter"..i, joshnt_UniqueRegions.allRgnArray[i].end_silence)
+        local sliderValAfter = math.abs(joshnt_UniqueRegions.allRgnArray[i].end_silence-timeSlidersVals.rgn[i].TimeAfter.min)/ 0.1
+        GUI.Val("TimeAfter"..i, sliderValAfter)
         GUI.Val("TimeAfter_Text"..i, joshnt_UniqueRegions.allRgnArray[i].end_silence)
         if joshnt_UniqueRegions.allRgnArray[i].isRgn then GUI.Val("isRgn"..i, 1)
         else GUI.Val("isRgn"..i, 2) end
@@ -1213,6 +1275,28 @@ local menuFunctions = {
             local retval = reaper.MB("Are you sure you want to initialize your current settings?\nThis action is irreversible and cannot be undone.", "Unique Regions Warning",4)
             if retval == 6 then
                 joshnt_UniqueRegions.Init()
+                tabPressed, enterPressed = false, false
+                showRemoveWarning = true
+                pressedHelp = 0 -- just troll
+                timeSlidersVals = {
+                    general = {
+                        TimeBetween = {min = 0, max = 10, defaults = 0, val = 0},
+                        TimeInclude = {min = 0, max = 10, defaults = 0, val = 0}
+                    },
+
+                    rgn_TEMPLATE = {
+                    TimeBefore = {min = -10, max = 0, defaults = 100, val = 100},
+                    TimeAfter = {min = 0, max = 10, defaults = 0, val = 0},
+                    },
+                    -- use timeSlidersVals.rgn[#timeSlidersVals.rgn+1] = joshnt.copyTable(timeSlidersVals.rgn_TEMPLATE) for each new Rgn Set
+                    rgn = {}
+                }
+                timeSlidersVals.rgn[1] = joshnt.copyTable(timeSlidersVals.rgn_TEMPLATE)
+
+                -- TABS, MENU, WINDOWS
+                numTabs = 1
+                menuTableGUI= {}
+                currOpenWindow = 0 -- 0 = main window/ no additional, custom Wildcards from 1 - 5, Wildcards on 6, ShortCuts on 7 
                 redrawAll()
                 refreshGUIValues()
             end
@@ -1223,7 +1307,7 @@ local menuFunctions = {
         end,
         importSettingsClipboard = function()
             joshnt_UniqueRegions.settingsFromClipboard()
-            refreshGUIValues()
+            redrawAll()
         end,
         exportSettingsFile = function()
             updateUserValues()
@@ -1231,7 +1315,7 @@ local menuFunctions = {
         end,
         importSettingsFile = function()
             joshnt_UniqueRegions.readSettingsFromFile()
-            refreshGUIValues()
+            redrawAll()
         end,
         saveDefaults = function()
             updateUserValues()
@@ -1239,7 +1323,7 @@ local menuFunctions = {
         end,
         loadDefaults = function()
             joshnt_UniqueRegions.getDefaults()
-            refreshGUIValues()
+            redrawAll()
         end,
 
     },
@@ -1270,6 +1354,7 @@ local menuFunctions = {
     other = {
         previewTimeSel = function()
             joshnt_UniqueRegions.previewTimeSelection = not joshnt_UniqueRegions.previewTimeSelection
+            GUI.Val("Preview", joshnt_UniqueRegions.previewTimeSelection)
             adjustTimeselection()
             refreshMenu()
         end,
