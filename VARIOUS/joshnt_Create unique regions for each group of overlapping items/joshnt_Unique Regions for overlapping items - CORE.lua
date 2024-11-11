@@ -105,7 +105,7 @@ function joshnt_UniqueRegions.getDefaults()
     while true do
         if not reaper.HasExtState("joshnt_UniqueRegions", "region"..counter) then break end
         local tempArray = joshnt.splitStringToTable(reaper.GetExtState("joshnt_UniqueRegions", "region"..counter))
-        joshnt_UniqueRegions.getRgnSettingsFromTable(counter, tempArray)
+        joshnt_UniqueRegions.setRgnSettingsFromTable(counter, tempArray)
         counter = counter + 1
     end
 
@@ -145,8 +145,10 @@ end
 
 function joshnt_UniqueRegions.getRgnSettingsAsString(i, rgnString)
     rgnString = rgnString or ""
+    local tempName = tostring(joshnt_UniqueRegions.allRgnArray[i]["name"])
+    if tempName == "" then tempName = "_joshnt.EMPTY_" end
     rgnString = rgnString .. tostring(joshnt_UniqueRegions.allRgnArray[i]["create"])..","
-    rgnString = rgnString .. tostring(joshnt_UniqueRegions.allRgnArray[i]["name"])..","
+    rgnString = rgnString .. tempName ..","
     rgnString = rgnString .. tostring(joshnt_UniqueRegions.allRgnArray[i]["color"])..","
     rgnString = rgnString .. tostring(joshnt_UniqueRegions.allRgnArray[i]["RRMLink"])..","
     rgnString = rgnString .. tostring(joshnt_UniqueRegions.allRgnArray[i]["start_silence"])..","
@@ -156,7 +158,7 @@ function joshnt_UniqueRegions.getRgnSettingsAsString(i, rgnString)
     return rgnString
 end
 
-function joshnt_UniqueRegions.getRgnSettingsFromTable(i, rgnSettingTable)
+function joshnt_UniqueRegions.setRgnSettingsFromTable(i, rgnSettingTable)
     -- DEBUG
     reaper.ShowConsoleMsg("\n\nPre-translated "..i)
     for key, value in pairs(rgnSettingTable) do
@@ -166,7 +168,9 @@ function joshnt_UniqueRegions.getRgnSettingsFromTable(i, rgnSettingTable)
     joshnt_UniqueRegions.allRgnArray[i] = {}
     for j, value in ipairs(rgnSettingTable) do -- proper reassign from array to table with keys, s. strict sorting in "getRgnSettingsAsString"
         if j == 1 then joshnt_UniqueRegions.allRgnArray[i]["create"] = value == "true"
-        elseif j == 2 then joshnt_UniqueRegions.allRgnArray[i]["name"] = value
+        elseif j == 2 then 
+            if value == "_joshnt.EMPTY_" then joshnt_UniqueRegions.allRgnArray[i]["name"] = ""
+            else joshnt_UniqueRegions.allRgnArray[i]["name"] = value end
         elseif j == 3 then joshnt_UniqueRegions.allRgnArray[i]["color"] = tonumber(value)
         elseif j == 4 then joshnt_UniqueRegions.allRgnArray[i]["RRMLink"] = tonumber(value)
         elseif j == 5 then joshnt_UniqueRegions.allRgnArray[i]["start_silence"] = tonumber(value)
@@ -231,7 +235,7 @@ function joshnt_UniqueRegions.setSettingsByString(str)
 
         -- regions
         for i = 1, #settingsArray[6] do
-            joshnt_UniqueRegions.getRgnSettingsFromTable(i, settingsArray[6][i])
+            joshnt_UniqueRegions.setRgnSettingsFromTable(i, settingsArray[6][i])
         end
 
         -- custom wildcards

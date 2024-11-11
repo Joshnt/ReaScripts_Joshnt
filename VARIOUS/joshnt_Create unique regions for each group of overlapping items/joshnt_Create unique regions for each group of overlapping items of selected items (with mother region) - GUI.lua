@@ -237,7 +237,9 @@ end
 local function setSliderSize(SliderName_String, newSliderValue_Input, tabNum)
     local newSliderValue = newSliderValue_Input 
     if not tabNum then
+        reaper.ShowConsoleMsg("\n"..SliderName_String)
         tabNum = tonumber(string.match(SliderName_String, "%d$"))
+        if tabNum then reaper.ShowConsoleMsg("\n"..tabNum) end
     end
     if not newSliderValue_Input then 
         if string.find(SliderName_String, "TimeBefore") then newSliderValue = joshnt_UniqueRegions.allRgnArray[tabNum]["start_silence"]
@@ -810,6 +812,10 @@ end
 -- global because called from various functions
 function redrawAll ()
     GUI.elms_hide[5] = true
+    numTabs = #joshnt_UniqueRegions.allRgnArray
+    for i = 1, #joshnt_UniqueRegions.allRgnArray do
+        timeSlidersVals.rgn[i] = joshnt.copyTable(timeSlidersVals.rgn_TEMPLATE)
+    end
 
     -- GENERAL GUI
     GUI.New("Menu", "Menubar", {
@@ -1252,14 +1258,16 @@ function refreshGUIValues()
     for i = 1, numTabs do
         GUI.Val("Create"..i, joshnt_UniqueRegions.allRgnArray[i].create)
         GUI.Val("RegionName"..i, joshnt_UniqueRegions.allRgnArray[i].name)
-        GUI.Val("RRM"..i, joshnt_UniqueRegions.allRgnArray[i].RRMLink)
+        GUI.Val("RRM"..i, joshnt_UniqueRegions.allRgnArray[i].RRMLink or 0)
 
         local sliderValBefore = math.abs(joshnt_UniqueRegions.allRgnArray[i].start_silence-timeSlidersVals.rgn[i].TimeBefore.min)/ 0.1
         GUI.Val("TimeBefore"..i, sliderValBefore)
         GUI.Val("TimeBefore_Text"..i, joshnt_UniqueRegions.allRgnArray[i].start_silence)
-        local sliderValAfter = math.abs(joshnt_UniqueRegions.allRgnArray[i].end_silence-timeSlidersVals.rgn[i].TimeAfter.min)/ 0.1
-        GUI.Val("TimeAfter"..i, sliderValAfter)
-        GUI.Val("TimeAfter_Text"..i, joshnt_UniqueRegions.allRgnArray[i].end_silence)
+        if joshnt_UniqueRegions.allRgnArray[i].end_silence then
+            local sliderValAfter = math.abs(joshnt_UniqueRegions.allRgnArray[i].end_silence-timeSlidersVals.rgn[i].TimeAfter.min)/ 0.1
+            GUI.Val("TimeAfter"..i, sliderValAfter)
+            GUI.Val("TimeAfter_Text"..i, joshnt_UniqueRegions.allRgnArray[i].end_silence)
+        end
         if joshnt_UniqueRegions.allRgnArray[i].isRgn then GUI.Val("isRgn"..i, 1)
         else GUI.Val("isRgn"..i, 2) end
         GUI.Val("everyX"..i, joshnt_UniqueRegions.allRgnArray[i].everyX)
@@ -1308,6 +1316,7 @@ local menuFunctions = {
         importSettingsClipboard = function()
             joshnt_UniqueRegions.settingsFromClipboard()
             redrawAll()
+            refreshGUIValues()
         end,
         exportSettingsFile = function()
             updateUserValues()
@@ -1316,6 +1325,7 @@ local menuFunctions = {
         importSettingsFile = function()
             joshnt_UniqueRegions.readSettingsFromFile()
             redrawAll()
+            refreshGUIValues()
         end,
         saveDefaults = function()
             updateUserValues()
@@ -1324,6 +1334,7 @@ local menuFunctions = {
         loadDefaults = function()
             joshnt_UniqueRegions.getDefaults()
             redrawAll()
+            refreshGUIValues()
         end,
 
     },
