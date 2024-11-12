@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Joshnt_ReaScripts" commit="7f86deda5e88b5b1b9e99c5ee527cb514e8b093b">
+<index version="1" name="Joshnt_ReaScripts" commit="f259b47f15761f415de6af14db387010be1af96e">
   <category name="DEVELOPMENT">
     <reapack name="joshnt_LuaUtilities.lua" type="script" desc="Adding own functions and functionalities as lua-functions">
       <metadata>
@@ -31,6 +31,15 @@
       </version>
       <version name="2.21" author="Joshnt" time="2024-09-16T00:45:53Z">
         <source>https://github.com/Joshnt/ReaScripts_Joshnt/raw/682638eca93c84b3900d113205a72ec31e41c715/DEVELOPMENT/joshnt_LuaUtilities.lua</source>
+      </version>
+      <version name="2.22" author="Joshnt" time="2024-10-30T12:38:33Z">
+        <source>https://github.com/Joshnt/ReaScripts_Joshnt/raw/8c8e9a462eaeabf07aadd2acf5e2f95343ec34d5/DEVELOPMENT/joshnt_LuaUtilities.lua</source>
+      </version>
+      <version name="3.0" author="Joshnt" time="2024-11-02T15:21:33Z">
+        <source>https://github.com/Joshnt/ReaScripts_Joshnt/raw/b0a30a222859142662f6408fc7e5f5340e7c90e1/DEVELOPMENT/joshnt_LuaUtilities.lua</source>
+      </version>
+      <version name="3.1" author="Joshnt" time="2024-11-12T15:20:04Z">
+        <source>https://github.com/Joshnt/ReaScripts_Joshnt/raw/f259b47f15761f415de6af14db387010be1af96e/DEVELOPMENT/joshnt_LuaUtilities.lua</source>
       </version>
     </reapack>
   </category>
@@ -392,6 +401,38 @@
         <source main="main" file="joshnt_Change Region Length/joshnt_Shorten selected region(s) end by 1 second.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/682638eca93c84b3900d113205a72ec31e41c715/REGIONS/joshnt_Change%20Region%20Length/joshnt_Shorten%20selected%20region(s)%20end%20by%201%20second.lua</source>
         <source main="main" file="joshnt_Change Region Length/joshnt_Shorten selected region(s) start by 1 second.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/682638eca93c84b3900d113205a72ec31e41c715/REGIONS/joshnt_Change%20Region%20Length/joshnt_Shorten%20selected%20region(s)%20start%20by%201%20second.lua</source>
       </version>
+      <version name="2.0" author="Joshnt" time="2024-11-02T15:21:33Z">
+        <changelog><![CDATA[- added Set nearest region edges to media item for only most overlapping region
+- added Set nearest region edges to media item for only most overlapping region - per overlapping item stack
+- both originally based on acendan script "Set nearest region edges to selected media items"]]></changelog>
+        <source main="main" file="joshnt_Change Region Length/joshnt_Change selected region(s) length....lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b0a30a222859142662f6408fc7e5f5340e7c90e1/REGIONS/joshnt_Change%20Region%20Length/joshnt_Change%20selected%20region(s)%20length....lua</source>
+        <source main="main" file="joshnt_Change Region Length/joshnt_Extend region(s) at edit cursor end by 1 second.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b0a30a222859142662f6408fc7e5f5340e7c90e1/REGIONS/joshnt_Change%20Region%20Length/joshnt_Extend%20region(s)%20at%20edit%20cursor%20end%20by%201%20second.lua</source>
+        <source main="main" file="joshnt_Change Region Length/joshnt_Extend region(s) at edit cursor start by 1 second.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b0a30a222859142662f6408fc7e5f5340e7c90e1/REGIONS/joshnt_Change%20Region%20Length/joshnt_Extend%20region(s)%20at%20edit%20cursor%20start%20by%201%20second.lua</source>
+        <source main="main" file="joshnt_Change Region Length/joshnt_Extend selected region(s) end by 1 second.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b0a30a222859142662f6408fc7e5f5340e7c90e1/REGIONS/joshnt_Change%20Region%20Length/joshnt_Extend%20selected%20region(s)%20end%20by%201%20second.lua</source>
+        <source main="main" file="joshnt_Change Region Length/joshnt_Extend selected region(s) start by 1 second.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b0a30a222859142662f6408fc7e5f5340e7c90e1/REGIONS/joshnt_Change%20Region%20Length/joshnt_Extend%20selected%20region(s)%20start%20by%201%20second.lua</source>
+        <source main="main" file="joshnt_Change Region Length/joshnt_Shorten region(s) at edit cursor end by 1 second.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b0a30a222859142662f6408fc7e5f5340e7c90e1/REGIONS/joshnt_Change%20Region%20Length/joshnt_Shorten%20region(s)%20at%20edit%20cursor%20end%20by%201%20second.lua</source>
+        <source main="main" file="joshnt_Change Region Length/joshnt_Shorten region(s) at edit cursor start by 1 second.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b0a30a222859142662f6408fc7e5f5340e7c90e1/REGIONS/joshnt_Change%20Region%20Length/joshnt_Shorten%20region(s)%20at%20edit%20cursor%20start%20by%201%20second.lua</source>
+        <source main="main" file="joshnt_Change Region Length/joshnt_Shorten selected region(s) end by 1 second.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b0a30a222859142662f6408fc7e5f5340e7c90e1/REGIONS/joshnt_Change%20Region%20Length/joshnt_Shorten%20selected%20region(s)%20end%20by%201%20second.lua</source>
+        <source main="main" file="joshnt_Change Region Length/joshnt_Shorten selected region(s) start by 1 second.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b0a30a222859142662f6408fc7e5f5340e7c90e1/REGIONS/joshnt_Change%20Region%20Length/joshnt_Shorten%20selected%20region(s)%20start%20by%201%20second.lua</source>
+        <source main="main" file="joshnt_Change Region Length/joshnt-acendan_Set nearest region edges of most overlapping region to selected media items.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b0a30a222859142662f6408fc7e5f5340e7c90e1/REGIONS/joshnt_Change%20Region%20Length/joshnt-acendan_Set%20nearest%20region%20edges%20of%20most%20overlapping%20region%20to%20selected%20media%20items.lua</source>
+        <source main="main" file="joshnt_Change Region Length/joshnt-acendan_Set nearest region edges of most overlapping region to selected media items - per overlapping item group.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/b0a30a222859142662f6408fc7e5f5340e7c90e1/REGIONS/joshnt_Change%20Region%20Length/joshnt-acendan_Set%20nearest%20region%20edges%20of%20most%20overlapping%20region%20to%20selected%20media%20items%20-%20per%20overlapping%20item%20group.lua</source>
+      </version>
+      <version name="2.1" author="Joshnt" time="2024-11-12T15:20:04Z">
+        <changelog><![CDATA[- added Set nearest region edges to media item for only most overlapping region
+- added Set nearest region edges to media item for only most overlapping region - per overlapping item stack
+- both originally based on acendan script "Set nearest region edges to selected media items"]]></changelog>
+        <source main="main" file="joshnt_Change Region Length/joshnt_Change selected region(s) length....lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/f259b47f15761f415de6af14db387010be1af96e/REGIONS/joshnt_Change%20Region%20Length/joshnt_Change%20selected%20region(s)%20length....lua</source>
+        <source main="main" file="joshnt_Change Region Length/joshnt_Extend region(s) at edit cursor end by 1 second.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/f259b47f15761f415de6af14db387010be1af96e/REGIONS/joshnt_Change%20Region%20Length/joshnt_Extend%20region(s)%20at%20edit%20cursor%20end%20by%201%20second.lua</source>
+        <source main="main" file="joshnt_Change Region Length/joshnt_Extend region(s) at edit cursor start by 1 second.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/f259b47f15761f415de6af14db387010be1af96e/REGIONS/joshnt_Change%20Region%20Length/joshnt_Extend%20region(s)%20at%20edit%20cursor%20start%20by%201%20second.lua</source>
+        <source main="main" file="joshnt_Change Region Length/joshnt_Extend selected region(s) end by 1 second.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/f259b47f15761f415de6af14db387010be1af96e/REGIONS/joshnt_Change%20Region%20Length/joshnt_Extend%20selected%20region(s)%20end%20by%201%20second.lua</source>
+        <source main="main" file="joshnt_Change Region Length/joshnt_Extend selected region(s) start by 1 second.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/f259b47f15761f415de6af14db387010be1af96e/REGIONS/joshnt_Change%20Region%20Length/joshnt_Extend%20selected%20region(s)%20start%20by%201%20second.lua</source>
+        <source main="main" file="joshnt_Change Region Length/joshnt_Shorten region(s) at edit cursor end by 1 second.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/f259b47f15761f415de6af14db387010be1af96e/REGIONS/joshnt_Change%20Region%20Length/joshnt_Shorten%20region(s)%20at%20edit%20cursor%20end%20by%201%20second.lua</source>
+        <source main="main" file="joshnt_Change Region Length/joshnt_Shorten region(s) at edit cursor start by 1 second.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/f259b47f15761f415de6af14db387010be1af96e/REGIONS/joshnt_Change%20Region%20Length/joshnt_Shorten%20region(s)%20at%20edit%20cursor%20start%20by%201%20second.lua</source>
+        <source main="main" file="joshnt_Change Region Length/joshnt_Shorten selected region(s) end by 1 second.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/f259b47f15761f415de6af14db387010be1af96e/REGIONS/joshnt_Change%20Region%20Length/joshnt_Shorten%20selected%20region(s)%20end%20by%201%20second.lua</source>
+        <source main="main" file="joshnt_Change Region Length/joshnt_Shorten selected region(s) start by 1 second.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/f259b47f15761f415de6af14db387010be1af96e/REGIONS/joshnt_Change%20Region%20Length/joshnt_Shorten%20selected%20region(s)%20start%20by%201%20second.lua</source>
+        <source main="main" file="joshnt_Change Region Length/joshnt-acendan_Set nearest region edges of most overlapping region to selected media items.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/f259b47f15761f415de6af14db387010be1af96e/REGIONS/joshnt_Change%20Region%20Length/joshnt-acendan_Set%20nearest%20region%20edges%20of%20most%20overlapping%20region%20to%20selected%20media%20items.lua</source>
+        <source main="main" file="joshnt_Change Region Length/joshnt-acendan_Set nearest region edges of most overlapping region to selected media items - per overlapping item group.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/f259b47f15761f415de6af14db387010be1af96e/REGIONS/joshnt_Change%20Region%20Length/joshnt-acendan_Set%20nearest%20region%20edges%20of%20most%20overlapping%20region%20to%20selected%20media%20items%20-%20per%20overlapping%20item%20group.lua</source>
+      </version>
     </reapack>
     <reapack name="joshnt_Select Regions - Package.lua" type="script" desc="Various Actions for selecting regions (in the region marker manager)">
       <version name="1.0" author="Joshnt" time="2024-08-09T05:52:53Z">
@@ -438,16 +479,8 @@
 \widowctrl\hyphauto
 
 {\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Unique Regions - Joshnt\par}
-{\pard \ql \f0 \sa180 \li0 \fi0 {\b User input explanation:}\par}
-{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Time before item group start: Time in seconds between region start and item group start (per region) (use numbers above 0)\par}
-{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Time after item group end: Time in seconds between item group end and region end (per region) (use numbers above 0)\par}
-{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Space between regions: space between each item group's region and the next (use numbers above 0)\par}
-{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Lock items: write "y" to lock the items after adjusting the position\par}
-{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Region names/ Mother Region name: Eachs overlapping item group region name; use the wildcard [$incrX] to start numbering the regions from X and increase it per region (e.g. "Footsteps_[$incr3]" would name the first region "Footsteps_03", the next "Footsteps_04", ...)\par}
-{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Region Color/ Mother Region Color: input anything to open the REAPER's Color-Picker to color the region; leave empty to use default color\par}
-{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Link to RRM: Input to create a link to the moved/ created region(s); Input can be "HP" for highest hierachy common parent track of selected Items, "P" for first common parent of selected items, "T" for each track if it has items in the region, "M" for Master-Track, "N" (or anything else) for no link to Region Render Matrix\sa180\par}
-{\pard \ql \f0 \sa180 \li0 \fi0 {\b Credits} to Aaron Cendan (for acendan_Set nearest regions edges to selected media items.lua; https://aaroncendan.me), David Arnoldy, Joshua Hank, Yannick Winter\par}
-{\pard \ql \f0 \sa180 \li0 \fi0 {\b Usecase:}\line creating incremental numbered regions for single layered sounds (for e.g. game audio) - mother region possibly useful for reapers region render dialog and naming via $region(=name) Script creates regions for overlapping selected items (including beginning and end silence), adjusting the space between them, moving other non selected items away.\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 {\b Usecase} naming and creating multiple regions after complex rules (e.g. for SFX- or Kontakt-Sample-Editing) - larger everyX Values possibly useful for reapers region render dialog and naming via $region(=name) Script creates regions for overlapping selected items (including beginning and end silence), adjusting the space between them, moving other non selected items away.\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 {\b Credits} to Aaron Cendan (for acendan_Set nearest regions edges to selected media items.lua; https://aaroncendan.me), Joshua Hank + Yannick Winter, Luka Swoboda, David Arnoldy (for additional brainpower)\par}
 }
 ]]></description>
       </metadata>
@@ -489,6 +522,36 @@
         <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for each group of overlapping items of the selected items + isolate (with mother region).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/7f86deda5e88b5b1b9e99c5ee527cb514e8b093b/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items%20of%20the%20selected%20items%20+%20isolate%20(with%20mother%20region).lua</source>
         <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for each group of overlapping items of the selected items + isolate.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/7f86deda5e88b5b1b9e99c5ee527cb514e8b093b/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items%20of%20the%20selected%20items%20+%20isolate.lua</source>
         <source file="joshnt_Create unique regions for each group of overlapping items/joshnt_Unique Regions for overlapping items - CORE.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/7f86deda5e88b5b1b9e99c5ee527cb514e8b093b/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Unique%20Regions%20for%20overlapping%20items%20-%20CORE.lua</source>
+      </version>
+      <version name="3.0" author="Joshnt" time="2024-10-30T12:38:33Z">
+        <changelog><![CDATA[- added naming wildcard /O(X) = Original name of region - if exisiting region exists, use its name; if no region name exists for overlapping item group, use name X
+- added naming wildcard /M(Midi-Note_Start, STEP-SIZE) = incremental MIDI-Note  - Starts from MIDI-Note set at 'Midi-Note_Start' and increments each following Midi-Note on a next region's name by 'STEP-SIZE'; e.g. using "Note_/M(C1,3)" would name the first region "Note_C1", the next region "Note_D#1", "Note_F#1", "Note_A1", "Note_C2", ...
+- adjusted naming wildcard /E to accept modulo operator in syntax like this "/E(0%4)"" -> resulting in 0, 1, 2, 3, 0, 1, ... (find out more about modulo here: https://en.wikipedia.org/wiki/Modulo)
+- removed naming wildcard calls without arguments = /E now doesn't work and /E(1) has to be used
+- added additional section for "Marker/ Region every X Item Groups"
+- 
+-> now allows bounces for Sample-Engines with Roundrobins and multiple playing techniques in one session
+- Thanks to Schlitzerluki for the idea and additional brainpower - and greetings to SONU]]></changelog>
+        <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for each group of overlapping items of selected items (with mother region) - GUI.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/8c8e9a462eaeabf07aadd2acf5e2f95343ec34d5/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items%20of%20selected%20items%20(with%20mother%20region)%20-%20GUI.lua</source>
+        <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for each group of overlapping items of the selected items + isolate (with mother region).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/8c8e9a462eaeabf07aadd2acf5e2f95343ec34d5/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items%20of%20the%20selected%20items%20+%20isolate%20(with%20mother%20region).lua</source>
+        <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for each group of overlapping items of the selected items + isolate.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/8c8e9a462eaeabf07aadd2acf5e2f95343ec34d5/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items%20of%20the%20selected%20items%20+%20isolate.lua</source>
+        <source file="joshnt_Create unique regions for each group of overlapping items/joshnt_Unique Regions for overlapping items - CORE.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/8c8e9a462eaeabf07aadd2acf5e2f95343ec34d5/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Unique%20Regions%20for%20overlapping%20items%20-%20CORE.lua</source>
+      </version>
+      <version name="3.1" author="Joshnt" time="2024-11-12T15:20:04Z">
+        <changelog><![CDATA[- fundamentally changed Script behaviour to have multiple "region-rules" as tabs instead of mother and child region
+- added naming wildcard /O(X) = Original name of region - if exisiting region exists, use its name; if no region name exists for overlapping item group, use name X
+- added naming wildcard /M(Midi-Note_Start: STEP-SIZE) = incremental MIDI-Note  - Starts from MIDI-Note set at 'Midi-Note_Start' and increments each following Midi-Note on a next region's name by 'STEP-SIZE'; e.g. using "Note_/M(C1,3)" would name the first region "Note_C1", the next region "Note_D#1", "Note_F#1", "Note_A1", "Note_C2", ...
+- adjusted naming wildcard /E to accept modulo operator in syntax like this "/E(0%4)"" -> resulting in 0, 1, 2, 3, 0, 1, ... (find out more about modulo here: https://en.wikipedia.org/wiki/Modulo)
+- removed naming wildcard calls without arguments = /E now doesn't work and /E(1) has to be used
+- added additional section for "Marker/ Region every X Item Groups"
+- 
+-> now allows bounces for Sample-Engines with Roundrobins and multiple playing techniques in one session
+- Thanks to Schlitzerluki for the idea and additional brainpower - and greetings to SONU]]></changelog>
+        <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for groups of overlapping items - use File....lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/f259b47f15761f415de6af14db387010be1af96e/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20groups%20of%20overlapping%20items%20-%20use%20File....lua</source>
+        <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for groups of overlapping items - use defaults.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/f259b47f15761f415de6af14db387010be1af96e/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20groups%20of%20overlapping%20items%20-%20use%20defaults.lua</source>
+        <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for groups of overlapping items - use Clipboard.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/f259b47f15761f415de6af14db387010be1af96e/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20groups%20of%20overlapping%20items%20-%20use%20Clipboard.lua</source>
+        <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for groups of overlapping items - GUI.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/f259b47f15761f415de6af14db387010be1af96e/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20groups%20of%20overlapping%20items%20-%20GUI.lua</source>
+        <source file="joshnt_Create unique regions for each group of overlapping items/joshnt_Unique Regions for overlapping items - CORE.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/f259b47f15761f415de6af14db387010be1af96e/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Unique%20Regions%20for%20overlapping%20items%20-%20CORE.lua</source>
       </version>
     </reapack>
     <reapack name="joshnt_Play only selected time (from time selection start or edit cursor).lua" type="script" desc="Play only selected Time">
