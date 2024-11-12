@@ -1,8 +1,9 @@
 -- @description Unique Region per overlapping item bundle in selection (with Mother Region over them) - Game Audio/ SD Use
--- @version 3.0
+-- @version 3.1
 -- @changelog
+--  - fundamentally changed Script behaviour to have multiple "region-rules" as tabs instead of mother and child region
 --  - added naming wildcard /O(X) = Original name of region - if exisiting region exists, use its name; if no region name exists for overlapping item group, use name X
---  - added naming wildcard /M(Midi-Note_Start, STEP-SIZE) = incremental MIDI-Note  - Starts from MIDI-Note set at 'Midi-Note_Start' and increments each following Midi-Note on a next region's name by 'STEP-SIZE'; e.g. using "Note_/M(C1,3)" would name the first region "Note_C1", the next region "Note_D#1", "Note_F#1", "Note_A1", "Note_C2", ...
+--  - added naming wildcard /M(Midi-Note_Start: STEP-SIZE) = incremental MIDI-Note  - Starts from MIDI-Note set at 'Midi-Note_Start' and increments each following Midi-Note on a next region's name by 'STEP-SIZE'; e.g. using "Note_/M(C1,3)" would name the first region "Note_C1", the next region "Note_D#1", "Note_F#1", "Note_A1", "Note_C2", ...
 --  - adjusted naming wildcard /E to accept modulo operator in syntax like this "/E(0%4)"" -> resulting in 0, 1, 2, 3, 0, 1, ... (find out more about modulo here: https://en.wikipedia.org/wiki/Modulo)
 --  - removed naming wildcard calls without arguments = /E now doesn't work and /E(1) has to be used
 --  - added additional section for "Marker/ Region every X Item Groups"
@@ -12,25 +13,15 @@
 -- @author Joshnt
 -- @about 
 --    ## Unique Regions - Joshnt
---    **User input explanation:**
---    - Time before item group start: Time in seconds between region start and item group start (per region) (use numbers above 0)
---    - Time after item group end: Time in seconds between item group end and region end (per region) (use numbers above 0)
---    - Space between regions: space between each item group's region and the next (use numbers above 0)
---    - Lock items: write "y" to lock the items after adjusting the position
---    - Region names/ Mother Region name: Eachs overlapping item group region name; use the wildcard /E(X) to start numbering the regions from X and increase it per region (e.g. "Footsteps_/E(3)" would name the first region "Footsteps_03", the next "Footsteps_04", ...)
---    - Region Color/ Mother Region Color: input anything to open the REAPER's Color-Picker to color the region; leave empty to use default color
---    - Link to RRM: Input to create a link to the moved/ created region(s); Input can be "HP" for highest hierachy common parent track of selected Items, "P" for first common parent of selected items, "T" for each track if it has items in the region, "M" for Master-Track, "N" (or anything else) for no link to Region Render Matrix
---    
---
---    **Credits** to Aaron Cendan (for acendan_Set nearest regions edges to selected media items.lua; https://aaroncendan.me), David Arnoldy, Joshua Hank, Yannick Winter
---
---    **Usecase:**  
---    creating incremental numbered regions for single layered sounds (for e.g. game audio) - mother region possibly useful for reapers region render dialog and naming via $region(=name) 
+--    **Usecase**
+--    naming and creating multiple regions after complex rules (e.g. for SFX- or Kontakt-Sample-Editing) - larger everyX Values possibly useful for reapers region render dialog and naming via $region(=name) 
 --    Script creates regions for overlapping selected items (including beginning and end silence), adjusting the space between them, moving other non selected items away.
+--
+--    **Credits** to Aaron Cendan (for acendan_Set nearest regions edges to selected media items.lua; https://aaroncendan.me), Joshua Hank + Yannick Winter, Luka Swoboda, David Arnoldy (for additional brainpower)
 -- @metapackage
 -- @provides
---   [main] joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for each group of overlapping items of selected items (with mother region) - GUI.lua
---   [main] joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for each group of overlapping items of the selected items + isolate - use defaults.lua
---   [main] joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for each group of overlapping items of the selected items + isolate - use Clipboard.lua
---   [main] joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for each group of overlapping items of the selected items + isolate - use File....lua
+--   [main] joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for groups of overlapping items - use File....lua
+--   [main] joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for groups of overlapping items - use defaults.lua
+--   [main] joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for groups of overlapping items - use Clipboard.lua
+--   [main] joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for groups of overlapping items - GUI.lua
 --   [nomain] joshnt_Create unique regions for each group of overlapping items/joshnt_Unique Regions for overlapping items - CORE.lua

@@ -159,11 +159,6 @@ function joshnt_UniqueRegions.getRgnSettingsAsString(i, rgnString)
 end
 
 function joshnt_UniqueRegions.setRgnSettingsFromTable(i, rgnSettingTable)
-    -- DEBUG
-    reaper.ShowConsoleMsg("\n\nPre-translated "..i)
-    for key, value in pairs(rgnSettingTable) do
-        reaper.ShowConsoleMsg("\n"..key.." - "..tostring(value))
-    end
     
     joshnt_UniqueRegions.allRgnArray[i] = {}
     for j, value in ipairs(rgnSettingTable) do -- proper reassign from array to table with keys, s. strict sorting in "getRgnSettingsAsString"
@@ -178,12 +173,6 @@ function joshnt_UniqueRegions.setRgnSettingsFromTable(i, rgnSettingTable)
         elseif j == 7 then joshnt_UniqueRegions.allRgnArray[i]["isRgn"] = value == "true"
         elseif j == 8 then joshnt_UniqueRegions.allRgnArray[i]["everyX"] = tonumber(value)
         end
-    end
-
-    -- DEBUG
-    reaper.ShowConsoleMsg("\n\nSettings for region rule "..i)
-    for key, value in pairs(joshnt_UniqueRegions.allRgnArray[i]) do
-        reaper.ShowConsoleMsg("\n"..key.." - "..tostring(value))
     end
 end
 
@@ -352,31 +341,18 @@ function joshnt_UniqueRegions.sortItemsByTracks()
       end
   end
   
-  reaper.ShowConsoleMsg("\nCount Num tracks")
   for key, _ in pairs(joshnt_UniqueRegions.t) do
-    reaper.ShowConsoleMsg("X")
     table.insert(joshnt_UniqueRegions.trackIDs, key)
   end
-  reaper.ShowConsoleMsg("\n")
 end
 
 function joshnt_UniqueRegions.selectOriginalSelection(boolSelect)
-    -- debug
-    local counter = 0
-    reaper.ShowConsoleMsg("\n\nNum Items in original selection is: ")
   for track, items in pairs(joshnt_UniqueRegions.t) do
     for index, _ in ipairs(items) do
       reaper.SetMediaItemSelected(items[index][1], boolSelect)
-      counter = counter +1
     end
   end
-  reaper.UpdateArrange()
-  reaper.ShowConsoleMsg(counter)
-    -- DEBUG
-    reaper.PreventUIRefresh(-1)
-    reaper.UpdateArrange()
-    joshnt.pauseForUserInput("eh", true)
-    reaper.PreventUIRefresh(1)
+
 
 end
 
@@ -592,7 +568,7 @@ function joshnt_UniqueRegions.setSubRegions(allRgnArrayIndex, newRgnTable)
         table.insert(newRgnTable,regionIndex_TEMP)
     end
 
-    reaper.ShowConsoleMsg("\n\n")
+
 
     if currEveryX == 0 then -- if region over all items
         for i = 1, #joshnt_UniqueRegions.itemGroups do
@@ -601,7 +577,6 @@ function joshnt_UniqueRegions.setSubRegions(allRgnArrayIndex, newRgnTable)
         callRegionCheck()
     else
         for i = 0, (#joshnt_UniqueRegions.itemGroups)/ currEveryX do
-            reaper.ShowConsoleMsg("\nCreating Region nr "..i.." for region set "..allRgnArrayIndex)
             if i >= #joshnt_UniqueRegions.itemGroups/ currEveryX then break end
             reaper.SelectAllMediaItems(0, false)
             for j = 1, currEveryX do
@@ -676,7 +651,6 @@ function joshnt_UniqueRegions.wildcardsCheck_E(currName, currReplaceStr)
     for number1, number2, offset in currName:gmatch("/E%((%d+)%%(%d+)([+-]%d+)%)") do
         local number1Num, number2Num, offsetNum = tonumber(number1), tonumber(number2), tonumber(offset)
         if number1Num and number2Num and offsetNum then
-            reaper.ShowConsoleMsg("\nFound /E(X%Y+Z)")
             currReplaceStr[#currReplaceStr + 1] = {}  
             currReplaceStr[#currReplaceStr][1] = "/E%("..number1.."%%"..number2.."%"..offset.."%)"
             currReplaceStr[#currReplaceStr][2] = number1Num % number2Num
@@ -695,7 +669,6 @@ function joshnt_UniqueRegions.wildcardsCheck_M(currName, currReplaceStr)
     for midiNote, octave in currName:gmatch("/M%((..?)([+-]?%d+)%)") do
         local octaveNum = tonumber(octave)
         local midiNoteIndex = joshnt.findIndex(joshnt.midiNotes, midiNote)
-        reaper.ShowConsoleMsg(tostring(#currReplaceStr).." and "..midiNote.." and "..octave.."\n")
         if octaveNum and midiNoteIndex then
             currReplaceStr[#currReplaceStr + 1] = {}  
             currReplaceStr[#currReplaceStr][1] = "/M%("..midiNote..octave.."%)"
@@ -737,7 +710,7 @@ function joshnt_UniqueRegions.wildcardsCheck_C(currName, currReplaceStr)
     -- Check for "/C('customWildCard')"
     for customTableNum in currName:gmatch("/C%(([+-]?%d+)%)") do
         local index = tonumber(customTableNum)
-        if index and joshnt_UniqueRegions.customWildCard[index] then
+        if index and joshnt_UniqueRegions.customWildCard[index][1] then
             currReplaceStr[#currReplaceStr + 1] = {}  
             currReplaceStr[#currReplaceStr][1] = "/C%("..customTableNum.."%)"
             currReplaceStr[#currReplaceStr][2] = 1 -- curr index to count from
@@ -756,7 +729,6 @@ function joshnt_UniqueRegions.wildcardsCheck(rgnIndex)
         currReplaceStr = joshnt_UniqueRegions.wildcardsCheck_M(currName, currReplaceStr)
         currReplaceStr = joshnt_UniqueRegions.wildcardsCheck_O(currName, currReplaceStr)
         currReplaceStr = joshnt_UniqueRegions.wildcardsCheck_C(currName, currReplaceStr)
-        reaper.ShowConsoleMsg("\nNum of wildcards in rgn rule "..rgnIndex.." is "..#currReplaceStr)
     end
 end
 
@@ -770,10 +742,7 @@ function joshnt_UniqueRegions.updateRgnRename(allRgnArrIndex, oldName)
     -- index of currReplaceStr see at start of script with variable define
     for i = 1, #currReplaceStr do
         if currReplaceStr[i][1]:find("/E") then
-            reaper.ShowConsoleMsg("\nreplacing /E - searching for: "..currReplaceStr[i][1])
-            reaper.ShowConsoleMsg("\nreplacing /E - replacing with "..tostring(joshnt.addLeadingZero(currReplaceStr[i][2],joshnt_UniqueRegions.leadingZero)))
             newName = string.gsub(newName, currReplaceStr[i][1], joshnt.addLeadingZero(currReplaceStr[i][2],joshnt_UniqueRegions.leadingZero)) 
-            reaper.ShowConsoleMsg("\nreplacing /E - new Name: "..newName)
             if currReplaceStr[i][3] == "%" then -- modulu addition/ increment
                 currReplaceStr[i][2] = (currReplaceStr[i][2] + 1) % currReplaceStr[i][4]
                 -- offset for modulu, if set
@@ -785,9 +754,9 @@ function joshnt_UniqueRegions.updateRgnRename(allRgnArrIndex, oldName)
             end
             
         elseif currReplaceStr[i][1]:find("/M") then
-            reaper.ShowConsoleMsg("\nreplacing /M")
             newName = string.gsub(newName, currReplaceStr[i][1], joshnt.midiNotes[currReplaceStr[i][2][1]]..currReplaceStr[i][2][2])
-            local step = (currReplaceStr[i][4] - 1) or 0 -- -1 wegen additional offset für modulo
+            local step = currReplaceStr[i][4] -- -1 wegen additional offset für modulo
+            if step then step = step -1 else step = 0 end
             if currReplaceStr[i][2][1] + step > 12 then
                 currReplaceStr[i][2][2] = currReplaceStr[i][2][2] + 1
             end
@@ -806,8 +775,6 @@ function joshnt_UniqueRegions.updateRgnRename(allRgnArrIndex, oldName)
         end
     end
     joshnt_UniqueRegions.allRgnArray[allRgnArrIndex]["rename"] = newName
-    reaper.ShowConsoleMsg("\nNew Name full: "..joshnt_UniqueRegions.allRgnArray[allRgnArrIndex]["rename"])
-
 end
 
 -- Call from outside
@@ -840,13 +807,10 @@ function joshnt_UniqueRegions.main()
     end  
     joshnt_UniqueRegions.boolNeedActivateEnvelopeOption = reaper.GetToggleCommandState(40070) == 0
 
-    reaper.ShowConsoleMsg("\n\nPerform init wildcard check")
-    reaper.ShowConsoleMsg("\nBEFORE WILDCARD CHECK: Name of rgn rule set 1 is "..joshnt_UniqueRegions.allRgnArray[1]["name"])
     for i = 1, #joshnt_UniqueRegions.allRgnArray do 
         joshnt_UniqueRegions.wildcardsCheck(i)
         joshnt_UniqueRegions.allRgnArray[i]["rename"] = joshnt_UniqueRegions.allRgnArray[i]["name"]
     end
-    reaper.ShowConsoleMsg("\nAFTER WILDCARD CHECK: Name of rgn rule set 1 is "..joshnt_UniqueRegions.allRgnArray[1]["name"])
 
     reaper.PreventUIRefresh(1) 
     reaper.Undo_BeginBlock()  
@@ -854,7 +818,6 @@ function joshnt_UniqueRegions.main()
     if joshnt_UniqueRegions.boolNeedActivateEnvelopeOption then
         reaper.Main_OnCommand(40070, 0)
     end
-    reaper.ShowConsoleMsg("\n"..tonumber(reaper.CountSelectedMediaItems(0)))
     joshnt_UniqueRegions.sortItemsByTracks()
     
     --get locked Items and unlock them
@@ -878,7 +841,6 @@ function joshnt_UniqueRegions.main()
 
     -- falls keine Parents, Master als RRM für alle rgns mit Parent link
     if joshnt_UniqueRegions.parentTracks[1] == nil then 
-        reaper.ShowConsoleMsg("\nNo Parents found")
         for i, rgn in ipairs(joshnt_UniqueRegions.allRgnArray) do
             if rgn.RRMLink == 2 or rgn.RRMLink == 3 or rgn.RRMLink == 4 or rgn.RRMLink == 5 then
                 rgn.RRMLink = 1
@@ -949,19 +911,8 @@ function joshnt_UniqueRegions.main()
     local newRgnTable = {}
     local newMrkTable = {}
 
-    reaper.ShowConsoleMsg("\nBEFORE MAIN LOOP: Name of rgn rule set 1 is "..joshnt_UniqueRegions.allRgnArray[1]["name"])
-
     for i = 1, #joshnt_UniqueRegions.allRgnArray do
         if joshnt_UniqueRegions.allRgnArray[i]["create"] then
-            reaper.ShowConsoleMsg("\n\n\nCreating after Region rule set "..i.."\n")
-            reaper.ShowConsoleMsg("\nName is "..joshnt_UniqueRegions.allRgnArray[i]["name"])
-            reaper.ShowConsoleMsg("\nNum of wildcards in this name: "..#joshnt_UniqueRegions.allRgnArray[i]["replaceString"])
-
-            -- DEBUG
-            reaper.PreventUIRefresh(-1)
-            reaper.UpdateArrange()
-            joshnt.pauseForUserInput("eh", true)
-            reaper.PreventUIRefresh(1)
 
             if joshnt_UniqueRegions.allRgnArray[i]["isRgn"] then
                 newRgnTable = joshnt_UniqueRegions.setSubRegions(i, newRgnTable)

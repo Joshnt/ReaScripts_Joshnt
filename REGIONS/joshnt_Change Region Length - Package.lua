@@ -1,5 +1,5 @@
 -- @description Change Region Length - Package
--- @version 2.0
+-- @version 2.1
 -- @author Joshnt
 -- @changelog
 --  - added Set nearest region edges to media item for only most overlapping region

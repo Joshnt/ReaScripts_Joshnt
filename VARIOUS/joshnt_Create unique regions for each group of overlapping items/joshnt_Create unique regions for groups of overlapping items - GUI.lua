@@ -88,8 +88,7 @@ GUI.x, GUI.y, GUI.w, GUI.h = 0, 0, 405, 675
 GUI.anchor, GUI.corner = "screen", "C"
 
 -- additional GUI variables
--- TODO adjust focus array content
-local focusArray, focusIndex = {"RegionName-TABNUM", "TimeBefore_Text-TABNUM","TimeAfter_Text-TABNUM", "TimeBetween_Text","TimeInclude_Text"}, 0
+local focusArray, focusIndex = {"everyX-TABNUM", "RegionName-TABNUM", "TimeBefore_Text-TABNUM","TimeAfter_Text-TABNUM", "TimeBetween_Text","TimeInclude_Text"}, 0
 local tabPressed, enterPressed = false, false
 local showRemoveWarning = true
 local pressedHelp = 0 -- just troll
@@ -236,10 +235,13 @@ end
 
 local function setSliderSize(SliderName_String, newSliderValue_Input, tabNum)
     local newSliderValue = newSliderValue_Input 
+    local sliderNameNeutral = "";
     if not tabNum then
-        reaper.ShowConsoleMsg("\n"..SliderName_String)
-        tabNum = tonumber(string.match(SliderName_String, "%d$"))
-        if tabNum then reaper.ShowConsoleMsg("\n"..tabNum) end
+        tabNum = tonumber(string.match(SliderName_String, "%d$"))        
+    end
+    if tabNum then 
+        if not timeSlidersVals.rgn[tabNum] then timeSlidersVals.rgn[tabNum] = joshnt.copyTable(timeSlidersVals.rgn_TEMPLATE) end 
+        sliderNameNeutral = SliderName_String:sub(1, -2) -- without number at end
     end
     if not newSliderValue_Input then 
         if string.find(SliderName_String, "TimeBefore") then newSliderValue = joshnt_UniqueRegions.allRgnArray[tabNum]["start_silence"]
@@ -256,7 +258,7 @@ local function setSliderSize(SliderName_String, newSliderValue_Input, tabNum)
             if tb_to_num > GUI.elms[SliderName_String]["max"] or GUI.elms[SliderName_String]["max"] > 10 then
                 local tempVal = math.max(tb_to_num,10)
                 if tabNum then
-                    timeSlidersVals["rgn"][tabNum][SliderName_String]["max"] = tempVal
+                    timeSlidersVals["rgn"][tabNum][sliderNameNeutral]["max"] = tempVal
                 else
                     timeSlidersVals["general"][SliderName_String]["max"] = tempVal
                 end
@@ -266,7 +268,7 @@ local function setSliderSize(SliderName_String, newSliderValue_Input, tabNum)
         else
             tb_to_num = math.abs(tb_to_num) * -1
             if tb_to_num < GUI.elms[SliderName_String]["min"] or GUI.elms[SliderName_String]["min"] < -10 then
-                timeSlidersVals["rgn"][tabNum][SliderName_String]["min"] = math.min(tb_to_num,-10)
+                timeSlidersVals["rgn"][tabNum][sliderNameNeutral]["min"] = math.min(tb_to_num,-10)
                 GUI.elms[SliderName_String]["min"] = timeSlidersVals["rgn"][tabNum][SliderName_String]
                 redraw = true
             end
@@ -274,7 +276,6 @@ local function setSliderSize(SliderName_String, newSliderValue_Input, tabNum)
         local newVal = (tb_to_num-GUI.elms[SliderName_String]["min"])/GUI.elms[SliderName_String]["inc"]
         if redraw == true then GUI.elms[SliderName_String]:init_handles() end
         if tabNum then
-            local sliderNameNeutral = SliderName_String:sub(1, -2) -- without number at end
             timeSlidersVals["rgn"][tabNum][sliderNameNeutral]["val"] = newVal
         else
             timeSlidersVals["general"][SliderName_String]["val"] = newVal
@@ -284,9 +285,7 @@ local function setSliderSize(SliderName_String, newSliderValue_Input, tabNum)
     end
 end
 
--- TODO adjust position
 local function redrawColFrames(tabInd)
-    reaper.ShowConsoleMsg("\nCol"..tabInd.." is "..GUI.colors["Col"..tabInd][1]..", "..GUI.colors["Col"..tabInd][2]..", "..GUI.colors["Col"..tabInd][3]..", "..GUI.colors["Col"..tabInd][4])
     GUI.New("ColSelFrame"..tabInd, "Frame", {
         z = 10+tabInd,
         x = 126,
@@ -354,6 +353,15 @@ local function redrawTabs()
     })
 
     GUI.elms.Tabs:update_sets(tabLayers)
+
+    -- VS Code dont show as bug
+---@diagnostic disable-next-line: duplicate-set-field 
+    function GUI.elms.Tabs:onmouseup()
+        GUI.Tabs.onmouseup(self)
+        local currTab = GUI.Val("Tabs")
+        if GUI.Val("isRgn"..currTab) == 2 then GUI.elms.RRM_Label.z = 5 
+        else GUI.elms.RRM_Label.z = currTab + 10 end
+    end
 end
 
 -- +/- tab only appear if not more/ less buttons than max/ min tabs exist
@@ -398,24 +406,21 @@ local function removeTab()
             elseif retval == 6 then showRemoveWarning = false
             end
         end
-        reaper.ShowConsoleMsg("\nPre get val")
         local prevSel = GUI.Val("Tabs")
-        reaper.ShowConsoleMsg("\nPre update")
         updateUserValues()
         -- move other regions one index down
         joshnt_UniqueRegions.allRgnArray[prevSel] = nil
         GUI.colors["Col"..numTabs] = nil
-        reaper.ShowConsoleMsg("\nPre move")
         for i = prevSel +1, numTabs do
             joshnt_UniqueRegions.allRgnArray[i-1] = joshnt.copyTable(joshnt_UniqueRegions.allRgnArray[i])
         end
         joshnt_UniqueRegions.allRgnArray[numTabs] = nil
         timeSlidersVals.rgn[numTabs] = nil
         numTabs = numTabs - 1
-        reaper.ShowConsoleMsg("\nPre redraw")
         redrawAll()
         refreshGUIValues()
-        GUI.Val("Tabs",prevSel)
+        if prevSel >= numTabs then GUI.Val("Tabs",prevSel-1)
+        else GUI.Val("Tabs",prevSel) end
     end
 end
 
@@ -434,8 +439,6 @@ function setFrameColors(tabInd, targetColor)
     redrawColFrames(tabInd)
 end
 
-
--- TODO adjust position
 function redrawTabContent(tabIndex)
     
     GUI.New("TimeBefore"..tabIndex, "Slider", {
@@ -541,7 +544,7 @@ function redrawTabContent(tabIndex)
         z = 10+tabIndex,
         x = 20,
         y = 153,
-        w = 155,
+        w = 90,
         h = 50,
         caption = "",
         optarray = {"Region", "Marker"},
@@ -716,11 +719,8 @@ local function redrawSubWindows()
 
 
     for i = 1, 5 do
-        reaper.ShowConsoleMsg("\nIn for loop")
         GUI.New("wildcardWnd"..i, "Window", i+55, 0, 0, GUI.w -80, GUI.h -80, "Custom Wildcard-Setting "..i, {50, 50 + i, 55 + i})
         GUI.New("wildcardTxt"..i, "TextEditor",  i+50,  20, 60,  GUI.w -120, GUI.h -210, "")
-       
-        reaper.ShowConsoleMsg("\nIn For loop post creation")
 
         local currWnd = GUI.elms["wildcardWnd"..i]
         local currTxt = GUI.elms["wildcardTxt"..i]
@@ -746,7 +746,6 @@ local function redrawSubWindows()
             currOpenWindow = 0
         end
     end
-    reaper.ShowConsoleMsg("\npost For-Loop")
 
     GUI.New("infoFrame",   "Frame",     7, 10, 10, GUI.w - 100, GUI.h - 150, false, false, "elm_frame", 5)
     GUI.elms["infoFrame"].txt_pad = 2;
@@ -767,7 +766,7 @@ local function redrawSubWindows()
                         .."\nTip: '/M' is especially useful for Sample Instrument Sample-Editing & Swobi."
                         .."\n \nUse '/O() to reference the name of an existing region at the corresponding spot. /O(ALTERNATIVE) will either use the original name (if existing) or the given 'ALTERNATIVE'."
                         .."\nWarning: /O() might lead to unwanted results in situations with a lot of unclear region overlaps by failing to get the original region."
-                        .."\n \n'/C(Custom Wildcard Table Number)': Refer to your own wildcard table created under the menu wildcards -> Table X. The wildcard table gets loops through that table starting from your first entry. Example Use would be '/C(4)'"
+                        .."\n \n'/C(Custom Wildcard Table Number)': Refer to your own wildcard table created under the menu wildcards -> Table X. The wildcard table gets loops through that table starting from your first entry. Example Use would be '/C(4)'. If the table at the given number is empty/ doesn't exist, the original symbol (e.g. /C(30)') get used."
 
         GUI.Val("infoFrame", newStr)
     end
@@ -789,7 +788,9 @@ local function redrawSubWindows()
                         .."\n\nSHIFT + RETURN --- Execute Script with current Settings"
                         .."\nTAB --- Cycle through available text-input fields."
                         .."\n0 - 9 [NUMBERS] --- Select corresponding tab, if available (0 = tab 10)."
-                        .."\nR --- Refresh timeselection preview (if active)."
+                        .."\nT --- Toggle Time-selection preview active."
+                        .."\n+ --- Add Tab"
+                        .."\n- --- Remove Tab"
         
         GUI.Val("infoFrame", newStr)
     end
@@ -808,7 +809,6 @@ local function redrawSubWindows()
 
 end
 
--- TODO position, evtl description
 -- global because called from various functions
 function redrawAll ()
     GUI.elms_hide[5] = true
@@ -845,7 +845,6 @@ function redrawAll ()
         func = addTab
     })
 
-    -- TODO removing tab fucks with sliders :((
     GUI.New("Button_RemoveTab", "Button", {
         z = 2,
         x = 16,
@@ -873,7 +872,6 @@ function redrawAll ()
         shadow = false
     })
 
-    -- TODO adjust position
     GUI.New("Preview", "Checklist", {
         z = 2,
         x = 56,
@@ -966,7 +964,6 @@ function redrawAll ()
         func = run_Button
     })
 
-    -- TODO adjust position
     GUI.New("TimeBetween", "Slider", {
         z = 2,
         x = 144,
@@ -1067,7 +1064,6 @@ function redrawAll ()
     })
 
     -- seperation frames - visualisation only
-    -- TODO adjust position
     GUI.New("Frame_hor1", "Frame", {
         z = 3,
         x = 12,
@@ -1139,12 +1135,6 @@ function redrawAll ()
         end
     end
 
-    function GUI.elms.Preview:onmouseup()
-        GUI.Checklist.onmouseup(self)
-        joshnt_UniqueRegions.previewTimeSelection = GUI.Val("Preview")
-        if joshnt_UniqueRegions.previewTimeSelection then adjustTimeselection() end
-    end
-
     function GUI.elms.RepositionToggle:onmouseup()
         GUI.Checklist.onmouseup(self)
         if GUI.Val("RepositionToggle") then 
@@ -1193,54 +1183,53 @@ end
 
 local function Loop()
     -- keyinput
-    if shortcutIsActive() then
-        if GUI.char == 9.0 and tabPressed == false then -- cycle focus with TAB Key
-            local currTabNum = GUI.Val("Tabs")
-            if type(focusIndex) == "number" and focusIndex ~= 0 then
-                local prevFocus = string.gsub(focusArray[focusIndex],"-TABNUM", currTabNum)
-                GUI.elms[prevFocus].focus = false
+    if GUI.char == 9.0 and tabPressed == false then -- cycle focus with TAB Key
+        local currTabNum = GUI.Val("Tabs")
+        if type(focusIndex) == "number" and focusIndex ~= 0 then
+            local prevFocus = string.gsub(focusArray[focusIndex],"-TABNUM", currTabNum) or focusIndex
+            GUI.elms[prevFocus].focus = false
 
-                local function getNextFocusIndex()
-                    if GUI.mouse.cap == 8 then
-                        focusIndex = ((focusIndex-2) % #focusArray) +1
-                    else
-                        focusIndex = (focusIndex % #focusArray) +1
-                    end
-                    local tempFocus = string.gsub(focusArray[focusIndex],"-TABNUM", currTabNum)
-                    if GUI.elms[focusArray[focusIndex]].z == 5 then getNextFocusIndex() end
+            local function getNextFocusIndex()
+                if GUI.mouse.cap == 8 then
+                    focusIndex = ((focusIndex-2) % #focusArray) +1
+                else
+                    focusIndex = (focusIndex % #focusArray) +1
                 end
+                local tempFocus = string.gsub(focusArray[focusIndex],"-TABNUM", currTabNum)
+                if GUI.elms[tempFocus].z == 5 then getNextFocusIndex() end
+            end
 
-                getNextFocusIndex()
-            else 
-                focusIndex = 1
-            end
-            local newFocus = string.gsub(focusArray[focusIndex],"-TABNUM", currTabNum)
-            GUI.elms[newFocus].focus = true
-            tabPressed = true
-        elseif GUI.char == 13.0 and GUI.mouse.cap == 8 and enterPressed == false then -- Shift Return pressed -> exectue
-            enterPressed = true
-            run_Button()
-        -- Number keys pressed -> select Tab
-        elseif GUI.char >= 48.0 and GUI.char <= 57.0 then
-            for i = 48, 57 do
-                if GUI.char == i then
-                    if (GUI.char == 48 and numTabs >= 10) then
-                        GUI.Val("Tabs", 10)
-                    elseif numTabs >= i - 48 then
-                        GUI.Val("Tabs", i - 48)
-                    end
-                    break
-                end
-            end
-        elseif GUI.char == 114 then -- R für refresh timeselection
-            for i = 1, #focusArray do
-                if GUI.elms[focusArray[i]].focus == true then return end
-            end
-            adjustTimeselection()
-        elseif GUI.char == 0.0 then
-            if tabPressed == true then tabPressed = false
-            elseif enterPressed == true then enterPressed = false end
+            getNextFocusIndex()
+        else 
+            focusIndex = 1
         end
+        local newFocus = string.gsub(focusArray[focusIndex],"-TABNUM", currTabNum)
+        GUI.elms[newFocus].focus = true
+        tabPressed = true
+    elseif GUI.char == 13.0 and GUI.mouse.cap == 8 and enterPressed == false then -- Shift Return pressed -> exectue
+        enterPressed = true
+        run_Button()
+    -- Number keys pressed -> select Tab
+    elseif GUI.char >= 48.0 and GUI.char <= 57.0 and shortcutIsActive() then
+        for i = 48, 57 do
+            if GUI.char == i then
+                if (GUI.char == 48 and numTabs >= 10) then
+                    GUI.Val("Tabs", 10)
+                elseif numTabs >= i - 48 then
+                    GUI.Val("Tabs", i - 48)
+                end
+                break
+            end
+        end
+    elseif GUI.char == 116 and shortcutIsActive() then -- t toggle time selection preview
+        menuFunctions.other.previewTimeSel()
+    elseif GUI.char == 43 and shortcutIsActive() then -- + add tab
+        addTab()
+    elseif GUI.char == 45 and shortcutIsActive() then -- - remove tab
+        removeTab()
+    elseif GUI.char == 0.0 then
+        if tabPressed == true then tabPressed = false
+        elseif enterPressed == true then enterPressed = false end
     end
 end
 
@@ -1249,7 +1238,7 @@ function refreshGUIValues()
     GUI.Val("isolateItems",joshnt_UniqueRegions.isolateItems)
     local sliderBetweenVal = math.abs(joshnt_UniqueRegions.space_in_between-timeSlidersVals.general.TimeBetween.min)/ 0.1
     GUI.Val("TimeBetween", sliderBetweenVal) GUI.Val("TimeBetween_Text",joshnt_UniqueRegions.space_in_between)
-    local sliderIncludeVal = math.abs(joshnt_UniqueRegions.groupToleranceTime-timeSlidersVals.general.TimeInclude.min)/ 0.1
+    local sliderIncludeVal = math.abs(joshnt_UniqueRegions.groupToleranceTime-timeSlidersVals.general.TimeInclude.min)/ 0.01
     GUI.Val("TimeInclude", sliderIncludeVal) GUI.Val("TimeInclude_Text",joshnt_UniqueRegions.groupToleranceTime)
     GUI.Val("RepositionToggle", joshnt_UniqueRegions.repositionToggle)
     GUI.Val("Preview",joshnt_UniqueRegions.previewTimeSelection)
@@ -1277,7 +1266,7 @@ function refreshGUIValues()
     end
 end
 
-local menuFunctions = {
+menuFunctions = {
     file = {
         initSettings = function()
             local retval = reaper.MB("Are you sure you want to initialize your current settings?\nThis action is irreversible and cannot be undone.", "Unique Regions Warning",4)
