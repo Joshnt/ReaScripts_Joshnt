@@ -653,7 +653,7 @@ function joshnt_UniqueRegions.wildcardsCheck_E(currName, currReplaceStr)
         if number1Num and number2Num and offsetNum then
             currReplaceStr[#currReplaceStr + 1] = {}  
             currReplaceStr[#currReplaceStr][1] = "/E%("..number1.."%%"..number2.."%"..offset.."%)"
-            currReplaceStr[#currReplaceStr][2] = number1Num % number2Num
+            currReplaceStr[#currReplaceStr][2] = number1Num % number2Num + offsetNum
             currReplaceStr[#currReplaceStr][3] = "%"
             currReplaceStr[#currReplaceStr][4] = number2Num
             currReplaceStr[#currReplaceStr][5] = offsetNum
@@ -744,11 +744,14 @@ function joshnt_UniqueRegions.updateRgnRename(allRgnArrIndex, oldName)
         if currReplaceStr[i][1]:find("/E") then
             newName = string.gsub(newName, currReplaceStr[i][1], joshnt.addLeadingZero(currReplaceStr[i][2],joshnt_UniqueRegions.leadingZero)) 
             if currReplaceStr[i][3] == "%" then -- modulu addition/ increment
-                currReplaceStr[i][2] = (currReplaceStr[i][2] + 1) % currReplaceStr[i][4]
                 -- offset for modulu, if set
                 if currReplaceStr[i][5] then 
+                    currReplaceStr[i][2] = (currReplaceStr[i][2] - currReplaceStr[i][5] + 1) % currReplaceStr[i][4]
                     currReplaceStr[i][2] = currReplaceStr[i][2] + currReplaceStr[i][5]
+                else 
+                    currReplaceStr[i][2] = (currReplaceStr[i][2] + 1) % currReplaceStr[i][4]
                 end
+                
             else -- normal addition/ increment
                 currReplaceStr[i][2] = currReplaceStr[i][2] + 1
             end
@@ -757,7 +760,7 @@ function joshnt_UniqueRegions.updateRgnRename(allRgnArrIndex, oldName)
             newName = string.gsub(newName, currReplaceStr[i][1], joshnt.midiNotes[currReplaceStr[i][2][1]]..currReplaceStr[i][2][2])
             local step = currReplaceStr[i][4] -- -1 wegen additional offset für modulo
             if step then step = step -1 else step = 0 end
-            if currReplaceStr[i][2][1] + step > 12 then
+            if currReplaceStr[i][2][1] + step+1 > 12 then
                 currReplaceStr[i][2][2] = currReplaceStr[i][2][2] + 1
             end
             currReplaceStr[i][2][1] = (currReplaceStr[i][2][1] + step) %12 + 1

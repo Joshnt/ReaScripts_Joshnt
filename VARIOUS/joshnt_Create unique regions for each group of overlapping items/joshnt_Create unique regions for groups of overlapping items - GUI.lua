@@ -133,7 +133,6 @@ local function updateUserValues()
     joshnt_UniqueRegions.space_in_between = GUI.Val("TimeBetween") -- Time in seconds
     joshnt_UniqueRegions.groupToleranceTime = GUI.Val("TimeInclude")  -- Time in seconds
     joshnt_UniqueRegions.isolateItems = GUI.Val("isolateItems") -- 1 = move selected, 2 = move others, 3 = dont move
-    joshnt_UniqueRegions.previewTimeSelection = GUI.Val("Preview")
 
     -- for loop with number of tabs
     for i = 1, numTabs do
@@ -212,7 +211,6 @@ local function adjustTimeselection()
     if joshnt_UniqueRegions.previewTimeSelection == true then
         if reaper.CountSelectedMediaItems(0) == 0 then 
             joshnt_UniqueRegions.previewTimeSelection = false
-            GUI.Val("Preview", false)
             joshnt.TooltipAtMouse("No selected media items to preview region/ marker length!")
         else
             local currSelTab = GUI.Val("Tabs")
@@ -237,11 +235,11 @@ local function setSliderSize(SliderName_String, newSliderValue_Input, tabNum)
     local newSliderValue = newSliderValue_Input 
     local sliderNameNeutral = "";
     if not tabNum then
-        tabNum = tonumber(string.match(SliderName_String, "%d$"))        
+        tabNum = tonumber(string.match(SliderName_String, "%d+$"))        
     end
     if tabNum then 
         if not timeSlidersVals.rgn[tabNum] then timeSlidersVals.rgn[tabNum] = joshnt.copyTable(timeSlidersVals.rgn_TEMPLATE) end 
-        sliderNameNeutral = SliderName_String:sub(1, -2) -- without number at end
+        sliderNameNeutral = string.gsub(SliderName_String, tabNum, "") -- without number at end
     end
     if not newSliderValue_Input then 
         if string.find(SliderName_String, "TimeBefore") then newSliderValue = joshnt_UniqueRegions.allRgnArray[tabNum]["start_silence"]
@@ -360,7 +358,9 @@ local function redrawTabs()
         GUI.Tabs.onmouseup(self)
         local currTab = GUI.Val("Tabs")
         if GUI.Val("isRgn"..currTab) == 2 then GUI.elms.RRM_Label.z = 5 
-        else GUI.elms.RRM_Label.z = currTab + 10 end
+        else GUI.elms.RRM_Label.z = 2 end
+        GUI.redraw_z[5] = true
+        GUI.redraw_z[2] = true
     end
 end
 
@@ -872,27 +872,6 @@ function redrawAll ()
         shadow = false
     })
 
-    GUI.New("Preview", "Checklist", {
-        z = 2,
-        x = 56,
-        y = 375,
-        w = 300,
-        h = 30,
-        caption = "",
-        optarray = {"Preview Before and After time as time-selection"},
-        dir = "v",
-        pad = 4,
-        font_a = 2,
-        font_b = 3,
-        col_txt = "txt",
-        col_fill = "elm_fill",
-        bg = "wnd_bg",
-        frame = false,
-        shadow = true,
-        swap = nil,
-        opt_size = 20
-    })
-
     -- Region creation
     GUI.New("Cat2", "Label", {
         z = 3,
@@ -1163,7 +1142,6 @@ function redrawAll ()
     -- Tooltips
     GUI.elms.TimeBetween_Text.tooltip = "Corresponding textinput to slider to the left.\nIf input is out of slider bounds, slider gets rescaled automatically.\nUse 'TAB' to cycle between all text-input boxes."
     GUI.elms.TimeInclude_Text.tooltip = "Corresponding textinput to slider to the left.\nIf input is out of slider bounds, slider gets rescaled automatically.\nUse 'TAB' to cycle between all text-input boxes."
-    GUI.elms.Preview.tooltip = "Use REAPER's 'Time-Selection' to visualize the first group's region bounds.\nRefreshes on time-value changes; to refresh after a item-selection change, press 'R'."
     GUI.elms.RepositionToggle.tooltip = "Toggle whether the selected items should get moved to ensure the region distance set with the slider to the left."
     GUI.elms.isolateItems.tooltip = "Sets if any and which items should be moved to avoid overlaps of the selected items with non-selected items.\nWARNING: Not using isolate but the reposition option if there are other items on the track with the selected items may result in deleting those items between."
     GUI.elms.Run.tooltip = "Execute the script with the current Settings.\nShortcut - 'Shift + RETURN'"
@@ -1241,7 +1219,8 @@ function refreshGUIValues()
     local sliderIncludeVal = math.abs(joshnt_UniqueRegions.groupToleranceTime-timeSlidersVals.general.TimeInclude.min)/ 0.01
     GUI.Val("TimeInclude", sliderIncludeVal) GUI.Val("TimeInclude_Text",joshnt_UniqueRegions.groupToleranceTime)
     GUI.Val("RepositionToggle", joshnt_UniqueRegions.repositionToggle)
-    GUI.Val("Preview",joshnt_UniqueRegions.previewTimeSelection)
+    joshnt_UniqueRegions.previewTimeSelection = not joshnt_UniqueRegions.previewTimeSelection -- invert, weil function inverted back
+    menuFunctions.other.previewTimeSel()
 
     -- only for visible tabs necessary - but should be equal to #allRgnArray
     for i = 1, numTabs do
@@ -1354,7 +1333,6 @@ menuFunctions = {
     other = {
         previewTimeSel = function()
             joshnt_UniqueRegions.previewTimeSelection = not joshnt_UniqueRegions.previewTimeSelection
-            GUI.Val("Preview", joshnt_UniqueRegions.previewTimeSelection)
             adjustTimeselection()
             refreshMenu()
         end,
@@ -1504,6 +1482,7 @@ local function init()
 end
 
 local function resize()
+    local prevSelTab = GUI.Val("Tabs")
     updateUserValues()
     redrawAll()
     refreshGUIValues()
@@ -1523,6 +1502,8 @@ local function resize()
     end
     setSliderSize("TimeBetween")
     setSliderSize("TimeInclude")
+
+    GUI.Val("Tabs",prevSelTab)
 end
 
 
