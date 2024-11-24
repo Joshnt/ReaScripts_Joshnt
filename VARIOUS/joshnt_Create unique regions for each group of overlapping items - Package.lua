@@ -1,5 +1,5 @@
 -- @description Unique Region per overlapping item bundle in selection (with Mother Region over them) - Game Audio/ SD Use
--- @version 3.1
+-- @version 3.2
 -- @changelog
 --  - fundamentally changed Script behaviour to have multiple "region-rules" as tabs instead of mother and child region
 --  - added naming wildcard /O(X) = Original name of region - if exisiting region exists, use its name; if no region name exists for overlapping item group, use name X

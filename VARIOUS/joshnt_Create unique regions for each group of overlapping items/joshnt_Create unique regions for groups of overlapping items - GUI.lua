@@ -170,7 +170,7 @@ local function setVisibilityRgnProperties(tabIndex)
         GUI.elms["TimeAfter_Text"..tabIndex].z = 10+tabIndex
         GUI.elms["TimeAfter"..tabIndex].z = 10+tabIndex
         GUI.elms["RRM"..tabIndex].z = 10+tabIndex
-        GUI.elms["RRM_Label"].z = 3
+        GUI.elms["RRM_Label"].z = 2
     else
         GUI.elms["TimeAfter_Text"..tabIndex].z = 5
         GUI.elms["TimeAfter"..tabIndex].z = 5
@@ -178,7 +178,7 @@ local function setVisibilityRgnProperties(tabIndex)
         GUI.elms["RRM_Label"].z = 5
     end
     GUI.redraw_z[5] = true
-    GUI.redraw_z[3] = true
+    GUI.redraw_z[2] = true
     GUI.redraw_z[10+tabIndex] = true
 end
 
@@ -201,8 +201,10 @@ local function setVisibilityRgn(tabIndex)
         GUI.elms["TimeBefore"..tabIndex].z = 5
         GUI.elms["ColSelFrame"..tabIndex].z = 5
         GUI.elms["everyX"..tabIndex].z = 5
+        GUI.elms.RRM_Label.z = 5 
     end
     GUI.redraw_z[5] = true
+    GUI.redraw_z[2] = true
     GUI.redraw_z[10+tabIndex] = true
 end
 
@@ -229,6 +231,17 @@ local function adjustTimeselection()
             end
         end
     end
+end
+
+local function setRRMLabelVisibility(tabIndex)
+    if GUI.Val("Create"..tabIndex) == true then
+        if GUI.Val("isRgn"..tabIndex) == 2 then GUI.elms.RRM_Label.z = 5 
+        else GUI.elms.RRM_Label.z = 2 end
+    else
+        GUI.elms.RRM_Label.z = 5 
+    end
+    GUI.redraw_z[5] = true
+    GUI.redraw_z[2] = true
 end
 
 local function setSliderSize(SliderName_String, newSliderValue_Input, tabNum)
@@ -357,12 +370,11 @@ local function redrawTabs()
     function GUI.elms.Tabs:onmouseup()
         GUI.Tabs.onmouseup(self)
         local currTab = GUI.Val("Tabs")
-        if GUI.Val("isRgn"..currTab) == 2 then GUI.elms.RRM_Label.z = 5 
-        else GUI.elms.RRM_Label.z = 2 end
-        GUI.redraw_z[5] = true
-        GUI.redraw_z[2] = true
+        setRRMLabelVisibility(currTab)
     end
 end
+
+
 
 -- +/- tab only appear if not more/ less buttons than max/ min tabs exist
 local function setTabNumButtonVisibility()
@@ -602,7 +614,7 @@ function redrawTabContent(tabIndex)
         w = 120,
         h = 20,
         caption = "",
-        optarray = {"Master", "Highest common Parent (all)", "First common Parent (all)", "First common parent (per item group)", "Parent (per item)", "Each Track", "None"},
+        optarray = {"Master", "Highest common Parent (all)", "First common Parent (all)", "First common Parent (per item group)", "Parent (per item)", "Each Track", "None"},
         retval = 2.0,
         font_a = 3,
         font_b = 4,
@@ -1048,7 +1060,7 @@ function redrawAll ()
         x = 12,
         y = 235,
         w = 376,
-        h = 2,
+        h = 1,
         shadow = false,
         fill = false,
         color = "elm_frame",
@@ -1369,6 +1381,12 @@ menuFunctions = {
         reportIssue = function()
             reaper.ClearConsole()
             reaper.ShowConsoleMsg("Wow you're really invested in trying to understand that weird thing here...")
+            pressedHelp = math.max(pressedHelp, 5)
+            refreshMenu()
+        end,
+        videoTutorial = function()
+            reaper.CF_SetClipboard("https://youtu.be/rMtf5WYZ8qQ")
+            reaper.MB("Here you can find an actual Video-Tutorial for this script - sorry for the trolling until now :)\n\n https://youtu.be/rMtf5WYZ8qQ \n\n(Copied to your clipboard)", "Video Tutorial", 0)
             refreshMenu()
         end
     }
@@ -1460,7 +1478,10 @@ function refreshMenu()
     if pressedHelp >= 4 then
         menuTableGUI[4].options[5][1] =  "#"..menuTableGUI[4].options[5][1]
         menuTableGUI[4].options[6] =  {"Report Issue", menuFunctions.help.reportIssue}
-        pressedHelp = 0
+    end
+    if pressedHelp >= 5 then
+        menuTableGUI[4].options[6][1] =  "#"..menuTableGUI[4].options[6][1]
+        menuTableGUI[4].options[7] =  {"Actual Video Tutorial", menuFunctions.help.videoTutorial}
     end
 
     GUI.Val("Menu", menuTableGUI)

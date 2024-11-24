@@ -529,6 +529,7 @@ function joshnt_UniqueRegions.createRRMLink(allRgnIndex,rgnIndex)
         reaper.SetRegionRenderMatrix(0, rgnIndex,joshnt_UniqueRegions.firstCom_Parent,1)
     elseif joshnt_UniqueRegions.allRgnArray[allRgnIndex]["RRMLink"] == 4 then -- parent per item group 
         local _, firstCommonParent = joshnt.getSpecificParentOfSelectedItems(joshnt_UniqueRegions.parentTracks)
+        if not firstCommonParent then firstCommonParent = reaper.GetMasterTrack(0) end
         reaper.SetRegionRenderMatrix(0, rgnIndex, firstCommonParent, 1)
     elseif joshnt_UniqueRegions.allRgnArray[allRgnIndex]["RRMLink"] == 5 then -- parent track per item
         local parentTracks = {}
