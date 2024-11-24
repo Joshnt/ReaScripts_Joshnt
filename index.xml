@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Joshnt_ReaScripts" commit="f259b47f15761f415de6af14db387010be1af96e">
+<index version="1" name="Joshnt_ReaScripts" commit="c7e6e54b2daeb60f06a0760e8e7b96730d81c64b">
   <category name="DEVELOPMENT">
     <reapack name="joshnt_LuaUtilities.lua" type="script" desc="Adding own functions and functionalities as lua-functions">
       <metadata>
@@ -552,6 +552,22 @@
         <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for groups of overlapping items - use Clipboard.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/f259b47f15761f415de6af14db387010be1af96e/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20groups%20of%20overlapping%20items%20-%20use%20Clipboard.lua</source>
         <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for groups of overlapping items - GUI.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/f259b47f15761f415de6af14db387010be1af96e/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20groups%20of%20overlapping%20items%20-%20GUI.lua</source>
         <source file="joshnt_Create unique regions for each group of overlapping items/joshnt_Unique Regions for overlapping items - CORE.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/f259b47f15761f415de6af14db387010be1af96e/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Unique%20Regions%20for%20overlapping%20items%20-%20CORE.lua</source>
+      </version>
+      <version name="3.2" author="Joshnt" time="2024-11-24T18:12:18Z">
+        <changelog><![CDATA[- fundamentally changed Script behaviour to have multiple "region-rules" as tabs instead of mother and child region
+- added naming wildcard /O(X) = Original name of region - if exisiting region exists, use its name; if no region name exists for overlapping item group, use name X
+- added naming wildcard /M(Midi-Note_Start: STEP-SIZE) = incremental MIDI-Note  - Starts from MIDI-Note set at 'Midi-Note_Start' and increments each following Midi-Note on a next region's name by 'STEP-SIZE'; e.g. using "Note_/M(C1,3)" would name the first region "Note_C1", the next region "Note_D#1", "Note_F#1", "Note_A1", "Note_C2", ...
+- adjusted naming wildcard /E to accept modulo operator in syntax like this "/E(0%4)"" -> resulting in 0, 1, 2, 3, 0, 1, ... (find out more about modulo here: https://en.wikipedia.org/wiki/Modulo)
+- removed naming wildcard calls without arguments = /E now doesn't work and /E(1) has to be used
+- added additional section for "Marker/ Region every X Item Groups"
+- 
+-> now allows bounces for Sample-Engines with Roundrobins and multiple playing techniques in one session
+- Thanks to Schlitzerluki for the idea and additional brainpower - and greetings to SONU]]></changelog>
+        <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for groups of overlapping items - use File....lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/c7e6e54b2daeb60f06a0760e8e7b96730d81c64b/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20groups%20of%20overlapping%20items%20-%20use%20File....lua</source>
+        <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for groups of overlapping items - use defaults.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/c7e6e54b2daeb60f06a0760e8e7b96730d81c64b/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20groups%20of%20overlapping%20items%20-%20use%20defaults.lua</source>
+        <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for groups of overlapping items - use Clipboard.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/c7e6e54b2daeb60f06a0760e8e7b96730d81c64b/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20groups%20of%20overlapping%20items%20-%20use%20Clipboard.lua</source>
+        <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for groups of overlapping items - GUI.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/c7e6e54b2daeb60f06a0760e8e7b96730d81c64b/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20groups%20of%20overlapping%20items%20-%20GUI.lua</source>
+        <source file="joshnt_Create unique regions for each group of overlapping items/joshnt_Unique Regions for overlapping items - CORE.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/c7e6e54b2daeb60f06a0760e8e7b96730d81c64b/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Unique%20Regions%20for%20overlapping%20items%20-%20CORE.lua</source>
       </version>
     </reapack>
     <reapack name="joshnt_Play only selected time (from time selection start or edit cursor).lua" type="script" desc="Play only selected Time">
