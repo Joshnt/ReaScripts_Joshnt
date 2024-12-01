@@ -1,15 +1,7 @@
 -- @description Unique Region per overlapping item bundle in selection (with Mother Region over them) - Game Audio/ SD Use
--- @version 3.2
+-- @version 3.3
 -- @changelog
---  - fundamentally changed Script behaviour to have multiple "region-rules" as tabs instead of mother and child region
---  - added naming wildcard /O(X) = Original name of region - if exisiting region exists, use its name; if no region name exists for overlapping item group, use name X
---  - added naming wildcard /M(Midi-Note_Start: STEP-SIZE) = incremental MIDI-Note  - Starts from MIDI-Note set at 'Midi-Note_Start' and increments each following Midi-Note on a next region's name by 'STEP-SIZE'; e.g. using "Note_/M(C1,3)" would name the first region "Note_C1", the next region "Note_D#1", "Note_F#1", "Note_A1", "Note_C2", ...
---  - adjusted naming wildcard /E to accept modulo operator in syntax like this "/E(0%4)"" -> resulting in 0, 1, 2, 3, 0, 1, ... (find out more about modulo here: https://en.wikipedia.org/wiki/Modulo)
---  - removed naming wildcard calls without arguments = /E now doesn't work and /E(1) has to be used
---  - added additional section for "Marker/ Region every X Item Groups"
---  - 
---  -> now allows bounces for Sample-Engines with Roundrobins and multiple playing techniques in one session
---  - Thanks to Schlitzerluki for the idea and additional brainpower - and greetings to SONU
+--  - brought back the "mother variants" from v2 to not mess up anybody's shortcuts for existing setups - as the new versions have different names now (thanks to Yannick W. for the feedback!)
 -- @author Joshnt
 -- @about 
 --    ## Unique Regions - Joshnt
@@ -24,4 +16,7 @@
 --   [main] joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for groups of overlapping items - use defaults.lua
 --   [main] joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for groups of overlapping items - use Clipboard.lua
 --   [main] joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for groups of overlapping items - GUI.lua
+--   [main] joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for each group of overlapping items of selected items (with mother region) - GUI.lua
+--   [main] joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for each group of overlapping items of the selected items + isolate (with mother region).lua
+--   [main] joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for each group of overlapping items of the selected items + isolate.lua
 --   [nomain] joshnt_Create unique regions for each group of overlapping items/joshnt_Unique Regions for overlapping items - CORE.lua
