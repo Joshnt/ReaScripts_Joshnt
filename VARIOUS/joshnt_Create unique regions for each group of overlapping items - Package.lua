@@ -1,5 +1,5 @@
 -- @description Unique Region per overlapping item bundle in selection (with Mother Region over them) - Game Audio/ SD Use
--- @version 3.3
+-- @version 3.3.1
 -- @changelog
 --  - brought back the "mother variants" from v2 to not mess up anybody's shortcuts for existing setups - as the new versions have different names now (thanks to Yannick W. for the feedback!)
 -- @author Joshnt
@@ -20,3 +20,4 @@
 --   [main] joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for each group of overlapping items of the selected items + isolate (with mother region).lua
 --   [main] joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for each group of overlapping items of the selected items + isolate.lua
 --   [nomain] joshnt_Create unique regions for each group of overlapping items/joshnt_Unique Regions for overlapping items - CORE.lua
+--   [nomain] joshnt_Create unique regions for each group of overlapping items/joshnt_Unique Regions for overlapping items - CORE Mother.lua
