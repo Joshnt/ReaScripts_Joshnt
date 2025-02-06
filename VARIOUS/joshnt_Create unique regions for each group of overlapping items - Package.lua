@@ -1,7 +1,7 @@
 -- @description Unique Region per overlapping item bundle in selection (with Mother Region over them) - Game Audio/ SD Use
--- @version 3.3.1
+-- @version 3.4
 -- @changelog
---  - brought back the "mother variants" from v2 to not mess up anybody's shortcuts for existing setups - as the new versions have different names now (thanks to Yannick W. for the feedback!)
+--  - added menu option under "Other", if exisiting regions should be overwritten/ "Reused" (thanks for swob for the idea!)
 -- @author Joshnt
 -- @about 
 --    ## Unique Regions - Joshnt

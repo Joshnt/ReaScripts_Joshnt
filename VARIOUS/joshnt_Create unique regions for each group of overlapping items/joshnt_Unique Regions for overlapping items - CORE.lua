@@ -36,6 +36,7 @@ function joshnt_UniqueRegions.Init()
         [5] = {}
     } -- for /C; so far fixed length of 5 in GUI; code should be flexible for increase
 
+    joshnt_UniqueRegions.overwriteExistingRegions = false -- bool to overwrite/ "reuse" existing regions
     joshnt_UniqueRegions.isolateItems = 1 -- 1 = move selected, 2 = move others, 3 = dont move
     joshnt_UniqueRegions.lockBoolUser = false -- bool to lock items after movement
     joshnt_UniqueRegions.leadingZero = 2 -- use leading zero up to digit number x -> 2 = 10, 3 = 100
@@ -98,6 +99,7 @@ function joshnt_UniqueRegions.getDefaults()
         joshnt_UniqueRegions.groupToleranceTime = tonumber(tempArray[4])
         joshnt_UniqueRegions.repositionToggle = tempArray[5] == "true"
         joshnt_UniqueRegions.leadingZero = tonumber(tempArray[6])
+        joshnt_UniqueRegions.overwriteExistingRegions = tempArray[7] == "true"
     end
 
     local counter = 1
@@ -128,7 +130,7 @@ end
 
 function joshnt_UniqueRegions.saveDefaults()
     -- General Settings
-    reaper.SetExtState("joshnt_UniqueRegions", "GeneralSettings", joshnt_UniqueRegions.isolateItems..","..joshnt_UniqueRegions.space_in_between..","..tostring(joshnt_UniqueRegions.lockBoolUser)..","..joshnt_UniqueRegions.groupToleranceTime..","..tostring(joshnt_UniqueRegions.repositionToggle..","..joshnt_UniqueRegions.leadingZero), true)
+    reaper.SetExtState("joshnt_UniqueRegions", "GeneralSettings", joshnt_UniqueRegions.isolateItems..","..joshnt_UniqueRegions.space_in_between..","..tostring(joshnt_UniqueRegions.lockBoolUser)..","..joshnt_UniqueRegions.groupToleranceTime..","..tostring(joshnt_UniqueRegions.repositionToggle..","..joshnt_UniqueRegions.leadingZero..","..joshnt_UniqueRegions.overwriteExistingRegions), true)
     
     -- region specific settings
     for i = 1, #joshnt_UniqueRegions.allRgnArray do
@@ -179,7 +181,7 @@ end
 -- get String of all Settings
 function joshnt_UniqueRegions.getSettingsString()
     local str = ""
-    -- general Settings - adding more settings here will change the index of regions and wildcards array!
+    -- general Settings - adding more settings here will change the index of regions and wildcards array! so add then afterwards, see below
     local general = {
         joshnt_UniqueRegions.isolateItems,
         joshnt_UniqueRegions.space_in_between,
@@ -205,6 +207,7 @@ function joshnt_UniqueRegions.getSettingsString()
     str = str..",".."{"..joshnt.tableToCSVString(joshnt_UniqueRegions.customWildCard).."}"
     
     str = str..","..joshnt_UniqueRegions.leadingZero
+    str = str..","..joshnt_UniqueRegions.overwriteExistingRegions
 
     return str
 end
@@ -221,6 +224,7 @@ function joshnt_UniqueRegions.setSettingsByString(str)
         joshnt_UniqueRegions.groupToleranceTime = tonumber(settingsArray[4])
         joshnt_UniqueRegions.repositionToggle = settingsArray[5] == "true"
         joshnt_UniqueRegions.leadingZero = tonumber(settingsArray[8])
+        joshnt_UniqueRegions.overwriteExistingRegions = settingsArray[9] == "true"
 
         -- regions
         for i = 1, #settingsArray[6] do
@@ -279,7 +283,8 @@ function joshnt_UniqueRegions.verifySettings()
     not type(joshnt_UniqueRegions.space_in_between) == "number" or
     not type(joshnt_UniqueRegions.groupToleranceTime) == "number" or
     not type(joshnt_UniqueRegions.isolateItems) == "number" or
-    not type(joshnt_UniqueRegions.leadingZero) == "number" 
+    not type(joshnt_UniqueRegions.leadingZero) == "number" or
+    not type(joshnt_UniqueRegions.overwriteExistingRegions) == "boolean" 
     then foundError = true end
 
     if not foundError then
@@ -560,7 +565,8 @@ function joshnt_UniqueRegions.setSubRegions(allRgnArrayIndex, newRgnTable)
         local currSelStart_TEMP, currSelEnd_TEMP = joshnt.startAndEndOfSelectedItems()
         local regionIndex_TEMP = nil
 
-        if joshnt.checkOverlapWithRegions(currSelStart_TEMP, currSelEnd_TEMP, newRgnTable) then regionIndex_TEMP = joshnt_UniqueRegions.setRegionLength(allRgnArrayIndex, currSelStart_TEMP, currSelEnd_TEMP, newRgnTable)
+        if joshnt_UniqueRegions.overwriteExistingRegions and joshnt.checkOverlapWithRegions(currSelStart_TEMP, currSelEnd_TEMP, newRgnTable) then 
+            regionIndex_TEMP = joshnt_UniqueRegions.setRegionLength(allRgnArrayIndex, currSelStart_TEMP, currSelEnd_TEMP, newRgnTable)
         else regionIndex_TEMP = joshnt_UniqueRegions.createRegionOverItems(allRgnArrayIndex, currSelStart_TEMP, currSelEnd_TEMP)
         end
         
@@ -606,7 +612,9 @@ function joshnt_UniqueRegions.setSubMarkers(allRgnArrayIndex, newMarkerTable)
         local currSelStart_TEMP, _ = joshnt.startAndEndOfSelectedItems()
         local mrkIndex_TEMP = nil
 
-        mrkIndex_TEMP = joshnt_UniqueRegions.repositionMarker(allRgnArrayIndex, currSelStart_TEMP, newMarkerTable)
+        if joshnt_UniqueRegions.overwriteExistingRegions then
+            mrkIndex_TEMP = joshnt_UniqueRegions.repositionMarker(allRgnArrayIndex, currSelStart_TEMP, newMarkerTable)
+        end
         if mrkIndex_TEMP == nil then
             mrkIndex_TEMP = joshnt_UniqueRegions.createMarker(allRgnArrayIndex, currSelStart_TEMP)
         end
@@ -882,8 +890,6 @@ function joshnt_UniqueRegions.main()
         end
     end
 
-    
-
     -- isolate
     joshnt_UniqueRegions.maxStartSilence, joshnt_UniqueRegions.maxEndSilence = 0, 0
     for i, rgn in ipairs(joshnt_UniqueRegions.allRgnArray) do
@@ -925,8 +931,6 @@ function joshnt_UniqueRegions.main()
             end
         end
     end  
-
-    -- add cleanup (alle nicht region spezifischen settings reseten)
 
     reaper.Undo_EndBlock("joshnt Create Regions", -1)
     reaper.PreventUIRefresh(-1)

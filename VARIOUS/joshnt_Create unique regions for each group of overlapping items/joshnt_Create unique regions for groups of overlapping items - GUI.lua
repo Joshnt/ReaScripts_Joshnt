@@ -1355,6 +1355,10 @@ menuFunctions = {
         closeGUI = function()
             joshnt_UniqueRegions.closeGUI = not joshnt_UniqueRegions.closeGUI
             refreshMenu()
+        end,
+        overwriteExisiting = function()
+            joshnt_UniqueRegions.overwriteExistingRegions = not joshnt_UniqueRegions.overwriteExistingRegions
+            refreshMenu()
         end
     },
     help = {
@@ -1437,7 +1441,8 @@ function refreshMenu()
             -- Menu item            Function to run when clicked
             {"Preview Time-Settings with Time-Selection",               menuFunctions.other.previewTimeSel},
             {"Lock items after execution",                              menuFunctions.other.lockItems},
-            {"Close GUI after execution",                               menuFunctions.other.closeGUI}
+            {"Close GUI after execution",                               menuFunctions.other.closeGUI},
+            {"Overwrite existing Regions/ Markers",                     menuFunctions.other.overwriteExisiting}
         }},
         -- Index 4
         {title = "Help", options = {
@@ -1462,6 +1467,7 @@ function refreshMenu()
     if joshnt_UniqueRegions.previewTimeSelection then menuTableGUI[3].options[1][1] =  "!"..menuTableGUI[3].options[1][1] end
     if joshnt_UniqueRegions.lockBoolUser then menuTableGUI[3].options[2][1] =  "!"..menuTableGUI[3].options[2][1] end
     if joshnt_UniqueRegions.closeGUI then menuTableGUI[3].options[3][1] =  "!"..menuTableGUI[3].options[3][1] end
+    if joshnt_UniqueRegions.overwriteExistingRegions then menuTableGUI[3].options[4][1] =  "!"..menuTableGUI[3].options[4][1] end
 
     if pressedHelp >= 1 then
         menuTableGUI[4].options[2][1] =  "#"..menuTableGUI[4].options[2][1]

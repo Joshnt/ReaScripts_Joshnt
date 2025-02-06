@@ -1,0 +1,13 @@
+-- @description Create new (non-overwriting) Regions - Package
+-- @version 1.0
+-- @changelog
+--  - Init
+-- @author Joshnt
+-- @about 
+--    different Region creation scripts, which don't overwrite existing regions
+--    as I am a big fan of acendan's scripts, Credits to him and his wonderful work - I just felt the need to have a script which creates new regions and doesn't reuse existing ones
+--    Thanks to Swob for pointing out the need for it!
+-- @metapackage
+-- @provides
+--   [main] joshnt_Create new non-overwriting Regions/joshnt_Create new Region(s) per overlapping item group of items on selected tracks.lua
+--   [main] joshnt_Create new non-overwriting Regions/joshnt_Create new Region(s) per overlapping item group of selected items.lua
