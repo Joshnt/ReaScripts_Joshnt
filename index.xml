@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Joshnt_ReaScripts" commit="cfd9d21d707eb00c5adb52b6cf4708b1ba33b2ec">
+<index version="1" name="Joshnt_ReaScripts" commit="4f2310cb71f1076ffee64ddcc66588a9b8bdf731">
   <category name="DEVELOPMENT">
     <reapack name="joshnt_LuaUtilities.lua" type="script" desc="Adding own functions and functionalities as lua-functions">
       <metadata>
@@ -40,6 +40,9 @@
       </version>
       <version name="3.1" author="Joshnt" time="2024-11-12T15:20:04Z">
         <source>https://github.com/Joshnt/ReaScripts_Joshnt/raw/f259b47f15761f415de6af14db387010be1af96e/DEVELOPMENT/joshnt_LuaUtilities.lua</source>
+      </version>
+      <version name="3.2" author="Joshnt" time="2025-02-07T00:28:46Z">
+        <source>https://github.com/Joshnt/ReaScripts_Joshnt/raw/fc518850ebfff8226650511ca78753182b654e97/DEVELOPMENT/joshnt_LuaUtilities.lua</source>
       </version>
     </reapack>
   </category>
@@ -434,6 +437,42 @@
         <source main="main" file="joshnt_Change Region Length/joshnt-acendan_Set nearest region edges of most overlapping region to selected media items - per overlapping item group.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/f259b47f15761f415de6af14db387010be1af96e/REGIONS/joshnt_Change%20Region%20Length/joshnt-acendan_Set%20nearest%20region%20edges%20of%20most%20overlapping%20region%20to%20selected%20media%20items%20-%20per%20overlapping%20item%20group.lua</source>
       </version>
     </reapack>
+    <reapack name="joshnt_Convert Regions into Start End Markers (FMOD Timeline preparation) - package.lua" type="script" desc="Convert Regions into Start End Markers (FMOD Timeline preparation)">
+      <metadata>
+        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 as the FMOD integration allows for exporting markers but not regions into an FMOD event, I thought it might be useful to have all your regions as markers for potential regions in FMOD.\par}
+}
+]]></description>
+      </metadata>
+      <version name="1.0" author="Joshnt" time="2025-02-07T00:40:26Z">
+        <changelog><![CDATA[- init]]></changelog>
+        <source main="main" file="joshnt_Convert Regions into Start End Markers (FMOD Timeline preparation)/joshnt_Add Start End Markers to All Regions (FMOD Timeline preparation).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/4f2310cb71f1076ffee64ddcc66588a9b8bdf731/REGIONS/joshnt_Convert%20Regions%20into%20Start%20End%20Markers%20(FMOD%20Timeline%20preparation)/joshnt_Add%20Start%20End%20Markers%20to%20All%20Regions%20(FMOD%20Timeline%20preparation).lua</source>
+        <source main="main" file="joshnt_Convert Regions into Start End Markers (FMOD Timeline preparation)/joshnt_Add Start End Markers to Regions in timeselection (FMOD Timeline preparation).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/4f2310cb71f1076ffee64ddcc66588a9b8bdf731/REGIONS/joshnt_Convert%20Regions%20into%20Start%20End%20Markers%20(FMOD%20Timeline%20preparation)/joshnt_Add%20Start%20End%20Markers%20to%20Regions%20in%20timeselection%20(FMOD%20Timeline%20preparation).lua</source>
+        <source main="main" file="joshnt_Convert Regions into Start End Markers (FMOD Timeline preparation)/joshnt_Add Start End Markers to selected Regions (FMOD Timeline preparation).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/4f2310cb71f1076ffee64ddcc66588a9b8bdf731/REGIONS/joshnt_Convert%20Regions%20into%20Start%20End%20Markers%20(FMOD%20Timeline%20preparation)/joshnt_Add%20Start%20End%20Markers%20to%20selected%20Regions%20(FMOD%20Timeline%20preparation).lua</source>
+        <source main="main" file="joshnt_Convert Regions into Start End Markers (FMOD Timeline preparation)/joshnt_Convert All Regions into Start End Markers (FMOD Timeline preparation).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/4f2310cb71f1076ffee64ddcc66588a9b8bdf731/REGIONS/joshnt_Convert%20Regions%20into%20Start%20End%20Markers%20(FMOD%20Timeline%20preparation)/joshnt_Convert%20All%20Regions%20into%20Start%20End%20Markers%20(FMOD%20Timeline%20preparation).lua</source>
+        <source main="main" file="joshnt_Convert Regions into Start End Markers (FMOD Timeline preparation)/joshnt_Convert Regions in timeselection into Start End Markers (FMOD Timeline preparation).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/4f2310cb71f1076ffee64ddcc66588a9b8bdf731/REGIONS/joshnt_Convert%20Regions%20into%20Start%20End%20Markers%20(FMOD%20Timeline%20preparation)/joshnt_Convert%20Regions%20in%20timeselection%20into%20Start%20End%20Markers%20(FMOD%20Timeline%20preparation).lua</source>
+        <source main="main" file="joshnt_Convert Regions into Start End Markers (FMOD Timeline preparation)/joshnt_Convert selected Regions into Start End Markers (FMOD Timeline preparation).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/4f2310cb71f1076ffee64ddcc66588a9b8bdf731/REGIONS/joshnt_Convert%20Regions%20into%20Start%20End%20Markers%20(FMOD%20Timeline%20preparation)/joshnt_Convert%20selected%20Regions%20into%20Start%20End%20Markers%20(FMOD%20Timeline%20preparation).lua</source>
+      </version>
+    </reapack>
+    <reapack name="joshnt_Create new non-overwriting Regions - Package.lua" type="script" desc="Create new (non-overwriting) Regions - Package">
+      <metadata>
+        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 different Region creation scripts, which don't overwrite existing regions as I am a big fan of acendan's scripts, Credits to him and his wonderful work - I just felt the need to have a script which creates new regions and doesn't reuse existing ones Thanks to Swob for pointing out the need for it!\par}
+}
+]]></description>
+      </metadata>
+      <version name="1.0" author="Joshnt" time="2025-02-06T20:07:38Z">
+        <changelog><![CDATA[- Init]]></changelog>
+        <source main="main" file="joshnt_Create new non-overwriting Regions/joshnt_Create new Region(s) per overlapping item group of items on selected tracks.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/f811c6f3a3c82c0a72e5b6a19fec4b4fedf51a5c/REGIONS/joshnt_Create%20new%20non-overwriting%20Regions/joshnt_Create%20new%20Region(s)%20per%20overlapping%20item%20group%20of%20items%20on%20selected%20tracks.lua</source>
+        <source main="main" file="joshnt_Create new non-overwriting Regions/joshnt_Create new Region(s) per overlapping item group of selected items.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/f811c6f3a3c82c0a72e5b6a19fec4b4fedf51a5c/REGIONS/joshnt_Create%20new%20non-overwriting%20Regions/joshnt_Create%20new%20Region(s)%20per%20overlapping%20item%20group%20of%20selected%20items.lua</source>
+      </version>
+    </reapack>
     <reapack name="joshnt_Select Regions - Package.lua" type="script" desc="Various Actions for selecting regions (in the region marker manager)">
       <version name="1.0" author="Joshnt" time="2024-08-09T05:52:53Z">
         <changelog><![CDATA[+ init]]></changelog>
@@ -591,6 +630,18 @@
         <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for each group of overlapping items of the selected items + isolate.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/cfd9d21d707eb00c5adb52b6cf4708b1ba33b2ec/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items%20of%20the%20selected%20items%20+%20isolate.lua</source>
         <source file="joshnt_Create unique regions for each group of overlapping items/joshnt_Unique Regions for overlapping items - CORE.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/cfd9d21d707eb00c5adb52b6cf4708b1ba33b2ec/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Unique%20Regions%20for%20overlapping%20items%20-%20CORE.lua</source>
         <source file="joshnt_Create unique regions for each group of overlapping items/joshnt_Unique Regions for overlapping items - CORE Mother.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/cfd9d21d707eb00c5adb52b6cf4708b1ba33b2ec/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Unique%20Regions%20for%20overlapping%20items%20-%20CORE%20Mother.lua</source>
+      </version>
+      <version name="3.4" author="Joshnt" time="2025-02-06T20:07:38Z">
+        <changelog><![CDATA[- added menu option under "Other", if exisiting regions should be overwritten/ "Reused" (thanks for swob for the idea!)]]></changelog>
+        <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for groups of overlapping items - use File....lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/f811c6f3a3c82c0a72e5b6a19fec4b4fedf51a5c/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20groups%20of%20overlapping%20items%20-%20use%20File....lua</source>
+        <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for groups of overlapping items - use defaults.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/f811c6f3a3c82c0a72e5b6a19fec4b4fedf51a5c/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20groups%20of%20overlapping%20items%20-%20use%20defaults.lua</source>
+        <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for groups of overlapping items - use Clipboard.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/f811c6f3a3c82c0a72e5b6a19fec4b4fedf51a5c/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20groups%20of%20overlapping%20items%20-%20use%20Clipboard.lua</source>
+        <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for groups of overlapping items - GUI.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/f811c6f3a3c82c0a72e5b6a19fec4b4fedf51a5c/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20groups%20of%20overlapping%20items%20-%20GUI.lua</source>
+        <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for each group of overlapping items of selected items (with mother region) - GUI.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/f811c6f3a3c82c0a72e5b6a19fec4b4fedf51a5c/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items%20of%20selected%20items%20(with%20mother%20region)%20-%20GUI.lua</source>
+        <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for each group of overlapping items of the selected items + isolate (with mother region).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/f811c6f3a3c82c0a72e5b6a19fec4b4fedf51a5c/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items%20of%20the%20selected%20items%20+%20isolate%20(with%20mother%20region).lua</source>
+        <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for each group of overlapping items of the selected items + isolate.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/f811c6f3a3c82c0a72e5b6a19fec4b4fedf51a5c/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items%20of%20the%20selected%20items%20+%20isolate.lua</source>
+        <source file="joshnt_Create unique regions for each group of overlapping items/joshnt_Unique Regions for overlapping items - CORE.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/f811c6f3a3c82c0a72e5b6a19fec4b4fedf51a5c/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Unique%20Regions%20for%20overlapping%20items%20-%20CORE.lua</source>
+        <source file="joshnt_Create unique regions for each group of overlapping items/joshnt_Unique Regions for overlapping items - CORE Mother.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/f811c6f3a3c82c0a72e5b6a19fec4b4fedf51a5c/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Unique%20Regions%20for%20overlapping%20items%20-%20CORE%20Mother.lua</source>
       </version>
     </reapack>
     <reapack name="joshnt_Play only selected time (from time selection start or edit cursor).lua" type="script" desc="Play only selected Time">
