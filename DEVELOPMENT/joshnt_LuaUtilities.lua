@@ -1,5 +1,5 @@
 -- @description Adding own functions and functionalities as lua-functions
--- @version 3.1
+-- @version 3.2
 -- @author Joshnt
 -- @provides [nomain] .
 -- @about
@@ -1253,6 +1253,7 @@ function joshnt.getAllOverlappingRegion(startTimeInput, endTimeInput)
   local targetRegion = {}
   local reg_Start = {}
   local reg_End = {}
+  local reg_Name = {}
   local reg_Start_total = math.huge
   local reg_End_total = 0
   for j=0, num_total - 1 do
@@ -1262,12 +1263,13 @@ function joshnt.getAllOverlappingRegion(startTimeInput, endTimeInput)
         targetRegion[#targetRegion+1] = markrgnindexnumber
         reg_Start[#reg_Start+1] = pos
         reg_End[#reg_End+1] = rgnend
+        reg_Name[#reg_Name+1] = name
         reg_Start_total = math.min(reg_Start_total,pos)
         reg_End_total = math.max(reg_End_total, rgnend)
       end
     end
   end
-  return targetRegion, reg_Start, reg_End, reg_Start_total, reg_End_total
+  return targetRegion, reg_Start, reg_End, reg_Start_total, reg_End_total, reg_Name
 end
 
 -- Function to get most overlapping region, returns region number, reg start, end and name
