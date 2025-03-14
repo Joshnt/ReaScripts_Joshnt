@@ -1,5 +1,5 @@
 -- @description PowerReaName - Find and Replace in Track, Items, Regions or Marker Names
--- @version 1.2.1
+-- @version 1.2.2
 -- @author Joshnt
 -- @about
 --      Various possibilities to reliable rename most things in REAPER
@@ -156,7 +156,7 @@ local function searchReplaceTrackName(track)
   if not track or not reaper.ValidatePtr(track, "MediaTrack") == false then return end
   local _,trackName = reaper.GetTrackName(track)
   if trackName == "Track "..math.floor(reaper.GetMediaTrackInfo_Value(track, "IP_TRACKNUMBER")) then trackName = "" end
-  if caseSensetiveFind(caseSensetiveFind) then
+  if caseSensetiveFind(trackName) then
     local newName = getNewName(trackName)
     if boolJustReturn == true then 
       oldNameString = oldNameString .. "\n"..trackName
