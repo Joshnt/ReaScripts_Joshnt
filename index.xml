@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Joshnt_ReaScripts" commit="4f2310cb71f1076ffee64ddcc66588a9b8bdf731">
+<index version="1" name="Joshnt_ReaScripts" commit="0a0a06513a6dc428a5d56ecad4f86f38cdb31706">
   <category name="DEVELOPMENT">
     <reapack name="joshnt_LuaUtilities.lua" type="script" desc="Adding own functions and functionalities as lua-functions">
       <metadata>
@@ -688,6 +688,12 @@
 - Bug fix for special characters in searchbar
 - added option to toggle replace (offers option to add or truncate only on matching names without replacing)]]></changelog>
         <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/7f86deda5e88b5b1b9e99c5ee527cb514e8b093b/VARIOUS/joshnt_PowerReaName%20-%20Find%20and%20replace%20in%20region%20marker%20track%20item%20names.lua</source>
+      </version>
+      <version name="1.2.2" author="Joshnt" time="2025-03-14T15:16:53Z">
+        <changelog><![CDATA[- added case-sensetive search
+- Bug fix for special characters in searchbar
+- added option to toggle replace (offers option to add or truncate only on matching names without replacing)]]></changelog>
+        <source main="main">https://github.com/Joshnt/ReaScripts_Joshnt/raw/0a0a06513a6dc428a5d56ecad4f86f38cdb31706/VARIOUS/joshnt_PowerReaName%20-%20Find%20and%20replace%20in%20region%20marker%20track%20item%20names.lua</source>
       </version>
     </reapack>
     <reapack name="joshnt_ReaGlue Regions - Regions for Variation Files - Package.lua" type="script" desc="ReaGlue adaption to Regions (with user input)">
