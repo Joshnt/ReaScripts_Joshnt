@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Joshnt_ReaScripts" commit="0a0a06513a6dc428a5d56ecad4f86f38cdb31706">
+<index version="1" name="Joshnt_ReaScripts" commit="d166d21c9ad26f1a24d02be0fc8e132da039f5e9">
   <category name="DEVELOPMENT">
     <reapack name="joshnt_LuaUtilities.lua" type="script" desc="Adding own functions and functionalities as lua-functions">
       <metadata>
@@ -511,6 +511,24 @@
     </reapack>
   </category>
   <category name="VARIOUS">
+    <reapack name="joshnt_Create seamless loop in item.lua" type="script" desc="Create seamless loop in items">
+      <metadata>
+        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Create seamless loops in items\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 different sub-scripts\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 CREDITS TO X-RAYM\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 This is mostly an adaption of X-Raym's script "Script: X-Raym_Create seamless loops from selected items sections inside time selection.lua".\par}
+}
+]]></description>
+      </metadata>
+      <version name="1.0" author="Joshnt" time="2025-04-11T15:05:45Z">
+        <changelog><![CDATA[- init (idea @swob)]]></changelog>
+        <source main="main" file="joshnt_Create seamless loop in item/joshnt_Create seamless loop in selected item at timeselection, re-extend and create '#' region over loop.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/d166d21c9ad26f1a24d02be0fc8e132da039f5e9/VARIOUS/joshnt_Create%20seamless%20loop%20in%20item/joshnt_Create%20seamless%20loop%20in%20selected%20item%20at%20timeselection,%20re-extend%20and%20create%20'%23'%20region%20over%20loop.lua</source>
+      </version>
+    </reapack>
     <reapack name="joshnt_Create unique regions for each group of overlapping items - Package.lua" type="script" desc="Unique Region per overlapping item bundle in selection (with Mother Region over them) - Game Audio/ SD Use">
       <metadata>
         <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
