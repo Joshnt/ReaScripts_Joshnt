@@ -1,5 +1,5 @@
 -- @description Adding own functions and functionalities as lua-functions
--- @version 3.2
+-- @version 3.3
 -- @author Joshnt
 -- @provides [nomain] .
 -- @about
@@ -1530,6 +1530,40 @@ function joshnt.tableContainsVal(table, val)
   return false
 end
 
+-- Check if a table contains another table (no subtable support yet)
+-- returns bool
+function joshnt.tableContainsTable(inputTable, compareTable)
+  if joshnt.subtablesBool(compareTable) then 
+    reaper.ShowConsoleMsg("\njoshnt.tableContainsTable Error: function was called with a sub-table!")
+    return false
+  end
+  local isIncluded = false
+  if joshnt.subtablesBool(inputTable) then
+    for _, inputSubTable in ipairs(inputTable) do
+      isIncluded = joshnt.tableContainsTable(inputSubTable, compareTable)
+      if isIncluded then return true end
+    end
+  else 
+    for index, value in ipairs(inputTable) do
+      value = tostring(value)
+      local compareValue = tostring(compareTable[index])
+      if value:find(compareValue) then
+        return true
+      end
+    end
+  end
+  return false
+end
+
+function joshnt.subtablesBool(table)
+  local boolSubtables = false
+  for key, keyvalue in pairs(table) do
+    if type(keyvalue) == "table" then boolSubtables = true end
+    break
+  end
+  return boolSubtables
+end
+
 -- Function to find the index of a value in a table
 function joshnt.findIndex(tbl, value)
   for index, val in ipairs(tbl) do
@@ -1925,10 +1959,16 @@ end
 --DEBUG function
 function joshnt.pauseForUserInput(prompt, debugBool)
   if debugBool then
+    reaper.UpdateArrange()
+    reaper.PreventUIRefresh(-1)
+
     local ok, input = reaper.GetUserInputs(prompt, 1, "Press OK to continue", "")
     if not ok then
-        reaper.ShowConsoleMsg("Script paused, user canceled the input.\n")
+        reaper.ShowConsoleMsg("Script paused, user canceled with input: "+ input + "\n")
     end
+
+    joshnt.pauseForUserInput("stop", true)
+    reaper.PreventUIRefresh(1)
   end
 end
 

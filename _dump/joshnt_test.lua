@@ -1,1 +1,3 @@
-reaper.AddProjectMarker(0, true, 0, 10, "#", -1)
+local item = reaper.GetSelectedMediaItem(0,1)
+reaper.SetMediaItemSelected(item, false)
+reaper.UpdateArrange()

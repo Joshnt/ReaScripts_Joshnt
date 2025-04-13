@@ -1,5 +1,5 @@
 -- @description Create seamless loop in items
--- @version 1.0
+-- @version 1.1
 -- @changelog
 --  - init (idea @swob)
 -- @author Joshnt
@@ -12,3 +12,4 @@
 -- @metapackage
 -- @provides
 --  [main] joshnt_Create seamless loop in item/joshnt_Create seamless loop in selected item at timeselection, re-extend and create '#' region over loop.lua
+-- [main] joshnt_Create seamless loop in item/joshnt_Create seamless loop in selected item, re-extend and create '#' region over loop - use timeselection over first selected item as reference
