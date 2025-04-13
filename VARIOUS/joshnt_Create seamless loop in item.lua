@@ -1,5 +1,5 @@
 -- @description Create seamless loop in items
--- @version 1.1
+-- @version 1.1.1
 -- @changelog
 --  - init (idea @swob)
 -- @author Joshnt
@@ -11,5 +11,5 @@
 --    This is mostly an adaption of X-Raym's script "Script: X-Raym_Create seamless loops from selected items sections inside time selection.lua".
 -- @metapackage
 -- @provides
---  [main] joshnt_Create seamless loop in item/joshnt_Create seamless loop in selected item at timeselection, re-extend and create '#' region over loop.lua
--- [main] joshnt_Create seamless loop in item/joshnt_Create seamless loop in selected item, re-extend and create '#' region over loop - use timeselection over first selected item as reference
+--  [main] joshnt_Create seamless loop in item/joshnt_Create seamless loop in selected items at timeselection, re-extend and create '#' region over loop.lua
+--  [main] joshnt_Create seamless loop in item/joshnt_Create seamless loop in selected items, re-extend and create '#' region over loop - use timeselection over first selected item as reference.lua
