@@ -1,5 +1,5 @@
 -- @description Create seamless loop in items
--- @version 1.1.2
+-- @version 1.1.3
 -- @changelog
 --  - bugfix on multiselected items (time-select for later items now references time-selection beginning point for both offsets)
 --  -> the so called "SwobugHunter" was on duty again
