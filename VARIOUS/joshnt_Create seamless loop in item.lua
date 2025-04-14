@@ -2,6 +2,7 @@
 -- @version 1.1.2
 -- @changelog
 --  - bugfix on multiselected items (time-select for later items now references time-selection beginning point for both offsets)
+--  -> the so called "SwobugHunter" was on duty again
 -- @author Joshnt
 -- @about 
 --    ## Create seamless loops in items
