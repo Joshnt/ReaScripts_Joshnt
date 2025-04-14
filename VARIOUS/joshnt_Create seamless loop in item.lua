@@ -1,7 +1,7 @@
 -- @description Create seamless loop in items
--- @version 1.1.1
+-- @version 1.1.2
 -- @changelog
---  - init (idea @swob)
+--  - bugfix on multiselected items (time-select for later items now references time-selection beginning point for both offsets)
 -- @author Joshnt
 -- @about 
 --    ## Create seamless loops in items

@@ -32,8 +32,8 @@ function SplitItemAtSection(item, start_time, end_time)
 
   local last_item = reaper.SplitMediaItem(middle_item, end_time)
 
-  DeleteItem(item)
-  DeleteItem(last_item)
+  if item then DeleteItem(item) end
+  if last_item then DeleteItem(last_item) end
 
   reaper.SetMediaItemInfo_Value(middle_item, "D_FADEINLEN", 0)
   reaper.SetMediaItemInfo_Value(middle_item, "D_FADEOUTLEN", 0)
@@ -44,6 +44,8 @@ end
 
 --------------------------------------------------------- END OF UTILITIES
 
+local firstItem_notExtended = false
+local otherItems_notLoopable = {}
 
 -- Main function
 function main(item)
@@ -53,7 +55,12 @@ function main(item)
 
   -- Set new, adapted time selection per item
   local start_time = original_pos + start_time_Offset
-  local end_time = original_endpos + end_time_Offset
+  local end_time = original_pos + end_time_Offset
+
+  if original_endpos < end_time then
+    otherItems_notLoopable[#otherItems_notLoopable + 1] = item
+    return
+  end
 
   -- Split at Time Selection Edges
   item = SplitItemAtSection(item, start_time, end_time)
@@ -79,7 +86,12 @@ function main(item)
   local item_pos_temp = reaper.GetMediaItemInfo_Value(new_item, "D_POSITION")
   local item_len_temp = reaper.GetMediaItemInfo_Value(new_item, "D_LENGTH")
   local item_end_temp = item_pos_temp + item_len_temp
-  reaper.BR_SetItemEdges(new_item, original_pos - ((end_time-start_time)/2), item_end_temp) -- left item
+  if original_pos - ((end_time-start_time)/2) < 0 then
+    reaper.BR_SetItemEdges(new_item, 0, item_end_temp) -- left item
+    firstItem_notExtended = true
+  else
+    reaper.BR_SetItemEdges(new_item, original_pos - ((end_time-start_time)/2), item_end_temp) -- left item
+  end
   item_pos_temp = reaper.GetMediaItemInfo_Value(item, "D_POSITION")
   reaper.BR_SetItemEdges(item, item_pos_temp, original_endpos + ((end_time-start_time)/2)) -- right item
 
@@ -116,7 +128,7 @@ if start_time_loop ~= end_time_loop then
 
     if item_pos_Ref <= start_time_loop and end_time_loop <= item_end_Ref then
       start_time_Offset = start_time_loop - item_pos_Ref
-      end_time_Offset = end_time_loop - item_end_Ref
+      end_time_Offset = end_time_loop - item_pos_Ref
     else 
       reaper.ShowMessageBox("No time-selection over first selected item to use as reference\nor time selection larger than first item", "Error - Seamless loop", 0)
       return
@@ -138,11 +150,20 @@ if start_time_loop ~= end_time_loop then
     -- set original time selection
     reaper.GetSet_LoopTimeRange2(0, true, false, start_time_loop, end_time_loop, false)
 
+    if firstItem_notExtended then
+      reaper.ShowMessageBox("The first item was not extended to it's orginal starting point to the left, because it would have been negative.\nPlease extend it manually.","Error - Seamless loop",0)
+    end
+
     reaper.Undo_EndBlock("Create seamless loops from selected items sections inside time selection", -1) -- End of the undo block. Leave it at the bottom of your main function.
 
     reaper.UpdateArrange()
 
     reaper.PreventUIRefresh(-1)
+
+    if otherItems_notLoopable[1] then
+      joshnt.reselectItems(otherItems_notLoopable)
+      reaper.ShowMessageBox("The now selected items could not be looped, because they were too short for the offset of the timeselection to be applied.\n\nConsider undoing and either extend those items or choose a shorter or earlier time selection.","Error - Seamless loop",0)
+    end
 
 
   end -- if item selected
