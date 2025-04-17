@@ -31,7 +31,7 @@ end
 
 local sectionName = "joshnt_SnapshotItems_Loop"
 if not reaper.EnumProjExtState(0, sectionName, 0) then
-    joshnt.msg("No items have been saved to be restored now!\n\nPlease run the action joshnt_Create seamless loop in selected items, re-extend and create '#' region over loop - use timeselection over first selected item as reference - single region revert possible.lua\n\nbefore.")
+    joshnt.msg("No items have been saved to be restored now!\n\nPlease run the action \njoshnt_Create seamless loop in selected items, re-extend and create '#' region over loop - use timeselection over first selected item as reference - single region revert possible.lua\n\nbefore.")
     return
 end
 
