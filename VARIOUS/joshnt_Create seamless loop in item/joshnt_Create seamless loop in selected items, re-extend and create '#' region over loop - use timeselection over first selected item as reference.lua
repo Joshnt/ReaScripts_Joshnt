@@ -6,7 +6,7 @@
 local joshnt_LuaUtils = reaper.GetResourcePath()..'/Scripts/Joshnt_ReaScripts/DEVELOPMENT/joshnt_LuaUtilities.lua'
 if reaper.file_exists( joshnt_LuaUtils ) then 
   dofile( joshnt_LuaUtils ) 
-  if not joshnt or joshnt.version() < 3.3 then 
+  if not joshnt or joshnt.version() < 3.4 then 
     reaper.MB("This script requires a newer version of joshnt Lua Utilities. Please run:\n\nExtensions > ReaPack > Synchronize Packages, 'joshnt_LuaUtilities.lua'","Error",0); 
     return 
   end
@@ -120,7 +120,7 @@ if start_time_loop ~= end_time_loop then
     reaper.PreventUIRefresh(1)
     reaper.Undo_BeginBlock() -- Begining of the undo block. Leave it at the top of your main function.
 
-    local itemReference = reaper.GetSelectedMediaItem(0, 0)
+    local itemReference = joshnt.findEarliestSelectedItem()
 
     local item_pos_Ref = reaper.GetMediaItemInfo_Value(itemReference, "D_POSITION")
     local item_len_Ref = reaper.GetMediaItemInfo_Value(itemReference, "D_LENGTH")
@@ -162,6 +162,7 @@ if start_time_loop ~= end_time_loop then
 
     if otherItems_notLoopable[1] then
       joshnt.reselectItems(otherItems_notLoopable)
+      reaper.UpdateArrange()
       reaper.ShowMessageBox("The now selected items could not be looped, because they were too short for the offset of the timeselection to be applied.\n\nConsider undoing and either extend those items or choose a shorter or earlier time selection.","Error - Seamless loop",0)
     end
 

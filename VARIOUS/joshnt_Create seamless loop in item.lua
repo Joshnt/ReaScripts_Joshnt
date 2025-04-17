@@ -1,8 +1,8 @@
 -- @description Create seamless loop in items
--- @version 1.1.3
+-- @version 2.0
 -- @changelog
---  - bugfix on multiselected items (time-select for later items now references time-selection beginning point for both offsets)
---  -> the so called "SwobugHunter" was on duty again
+--  - now includes option to revert selected loops back to their edit states (can potentially bloat the project file)
+--  - requires "Save Item Snapshots in project" script package (installed via ReaPack)
 -- @author Joshnt
 -- @about 
 --    ## Create seamless loops in items
@@ -14,3 +14,6 @@
 -- @provides
 --  [main] joshnt_Create seamless loop in item/joshnt_Create seamless loop in selected items at timeselection, re-extend and create '#' region over loop.lua
 --  [main] joshnt_Create seamless loop in item/joshnt_Create seamless loop in selected items, re-extend and create '#' region over loop - use timeselection over first selected item as reference.lua
+--  [main] joshnt_Create seamless loop in item/joshnt_Create seamless loop in selected items, re-extend and create '#' region over loop - use timeselection over first selected item as reference - single region revert possible.lua
+--  [main] joshnt_Create seamless loop in item/joshnt_Revert seamless loop at timeselection - restore on absolute track index.lua
+--  [main] joshnt_Create seamless loop in item/joshnt_Revert seamless loop at timeselection - restore on identical track name if possible.lua

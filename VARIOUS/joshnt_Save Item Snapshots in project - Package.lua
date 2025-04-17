@@ -1,0 +1,50 @@
+-- @description Save/ Restore Snapshots of item edits
+-- @version 1.0
+-- @changelog
+--  - init
+-- @author Joshnt
+-- @about 
+--    ## Create Save-States for your item editing!
+--    Be able to restore your edits at any time by saving them in a slot. This is especially useful for complex edits, where you want to try out different things and be able to revert back to a previous state.
+--    See as well my seamless loop bundle which uses this package to revert to edit states of single loops
+--
+--    ## CREDITS TO ACENDAN
+--    For general file management and slot scripts like Script: acendan_Load render directory from slot 1.lua
+-- @metapackage
+-- @provides
+--  [nomain] joshnt_Save Item Snapshots in project/joshnt_Item Snapshots - CORE.lua
+--  [main] joshnt_Save Item Snapshots in project/joshnt_Clear Item Snapshot Slot 1.lua
+--  [main] joshnt_Save Item Snapshots in project/joshnt_Clear Item Snapshot Slot 2.lua
+--  [main] joshnt_Save Item Snapshots in project/joshnt_Clear Item Snapshot Slot 3.lua
+--  [main] joshnt_Save Item Snapshots in project/joshnt_Clear Item Snapshot Slot 4.lua
+--  [main] joshnt_Save Item Snapshots in project/joshnt_Clear Item Snapshot Slot 5.lua
+--  [main] joshnt_Save Item Snapshots in project/joshnt_Restore All Items (Snapshot) from Slot 1 - on absolute track index.lua
+--  [main] joshnt_Save Item Snapshots in project/joshnt_Restore All Items (Snapshot) from Slot 1 - on identical named tracks if possible.lua
+--  [main] joshnt_Save Item Snapshots in project/joshnt_Restore All Items (Snapshot) from Slot 2 - on absolute track index.lua
+--  [main] joshnt_Save Item Snapshots in project/joshnt_Restore All Items (Snapshot) from Slot 2 - on identical named tracks if possible.lua
+--  [main] joshnt_Save Item Snapshots in project/joshnt_Restore All Items (Snapshot) from Slot 3 - on absolute track index.lua
+--  [main] joshnt_Save Item Snapshots in project/joshnt_Restore All Items (Snapshot) from Slot 3 - on identical named tracks if possible.lua
+--  [main] joshnt_Save Item Snapshots in project/joshnt_Restore All Items (Snapshot) from Slot 4 - on absolute track index.lua
+--  [main] joshnt_Save Item Snapshots in project/joshnt_Restore All Items (Snapshot) from Slot 4 - on identical named tracks if possible.lua
+--  [main] joshnt_Save Item Snapshots in project/joshnt_Restore All Items (Snapshot) from Slot 5 - on absolute track index.lua
+--  [main] joshnt_Save Item Snapshots in project/joshnt_Restore All Items (Snapshot) from Slot 5 - on identical named tracks if possible.lua
+--  [main] joshnt_Save Item Snapshots in project/joshnt_Restore Items in Time-Selection (Snapshot) from Slot 1 - on identical named tracks if possible.lua
+--  [main] joshnt_Save Item Snapshots in project/joshnt_Restore Items in Time-Selection (Snapshot) from Slot 1 - on absolute track index.lua
+--  [main] joshnt_Save Item Snapshots in project/joshnt_Restore Items in Time-Selection (Snapshot) from Slot 2 - on identical named tracks if possible.lua
+--  [main] joshnt_Save Item Snapshots in project/joshnt_Restore Items in Time-Selection (Snapshot) from Slot 2 - on absolute track index.lua
+--  [main] joshnt_Save Item Snapshots in project/joshnt_Restore Items in Time-Selection (Snapshot) from Slot 3 - on identical named tracks if possible.lua
+--  [main] joshnt_Save Item Snapshots in project/joshnt_Restore Items in Time-Selection (Snapshot) from Slot 3 - on absolute track index.lua
+--  [main] joshnt_Save Item Snapshots in project/joshnt_Restore Items in Time-Selection (Snapshot) from Slot 4 - on identical named tracks if possible.lua
+--  [main] joshnt_Save Item Snapshots in project/joshnt_Restore Items in Time-Selection (Snapshot) from Slot 4 - on absolute track index.lua
+--  [main] joshnt_Save Item Snapshots in project/joshnt_Restore Items in Time-Selection (Snapshot) from Slot 5 - on identical named tracks if possible.lua
+--  [main] joshnt_Save Item Snapshots in project/joshnt_Restore Items in Time-Selection (Snapshot) from Slot 5 - on absolute track index.lua
+--  [main] joshnt_Save Item Snapshots in project/joshnt_Save All Items (Snapshot) to Slot 1.lua
+--  [main] joshnt_Save Item Snapshots in project/joshnt_Save All Items (Snapshot) to Slot 2.lua
+--  [main] joshnt_Save Item Snapshots in project/joshnt_Save All Items (Snapshot) to Slot 3.lua
+--  [main] joshnt_Save Item Snapshots in project/joshnt_Save All Items (Snapshot) to Slot 4.lua
+--  [main] joshnt_Save Item Snapshots in project/joshnt_Save All Items (Snapshot) to Slot 5.lua
+--  [main] joshnt_Save Item Snapshots in project/joshnt_Save selected Items (Snapshot) to Slot 1.lua
+--  [main] joshnt_Save Item Snapshots in project/joshnt_Save selected Items (Snapshot) to Slot 2.lua
+--  [main] joshnt_Save Item Snapshots in project/joshnt_Save selected Items (Snapshot) to Slot 3.lua
+--  [main] joshnt_Save Item Snapshots in project/joshnt_Save selected Items (Snapshot) to Slot 4.lua
+--  [main] joshnt_Save Item Snapshots in project/joshnt_Save selected Items (Snapshot) to Slot 5.lua

@@ -1,5 +1,5 @@
 -- @description Adding own functions and functionalities as lua-functions
--- @version 3.3
+-- @version 3.4
 -- @author Joshnt
 -- @provides [nomain] .
 -- @about
@@ -111,6 +111,42 @@ function joshnt.startAndEndOfSelectedItems()
         end
     end
     return selItemsStart, selItemsEnd
+end
+
+function joshnt.findEarliestItem()
+  local numItems = reaper.CountMediaItems(0)
+
+  local earliestItem = nil
+  local earliestPos = math.huge
+
+  for i = 0, numItems - 1 do
+      local item = reaper.GetMediaItem(0, i)
+      local pos = reaper.GetMediaItemInfo_Value(item, "D_POSITION")
+      if pos < earliestPos then
+          earliestPos = pos
+          earliestItem = item
+      end
+  end
+
+  return earliestItem, earliestPos
+end
+
+function joshnt.findEarliestSelectedItem()
+  local numItems = reaper.CountSelectedMediaItems(0)
+
+  local earliestItem = nil
+  local earliestPos = math.huge
+
+  for i = 0, numItems - 1 do
+      local item = reaper.GetSelectedMediaItem(0, i)
+      local pos = reaper.GetMediaItemInfo_Value(item, "D_POSITION")
+      if pos < earliestPos then
+          earliestPos = pos
+          earliestItem = item
+      end
+  end
+
+  return earliestItem, earliestPos
 end
 
 -- save selected items in a table to recall later (see reselectItems)
@@ -1075,7 +1111,20 @@ function joshnt.getOnlyTopLevelTracksAndParents(tracks)
   return result
 end
 
+-- returns nil if not found
+function joshnt.findTrackByName(targetName)
+  local numTracks = reaper.CountTracks(0)
 
+  for i = 0, numTracks - 1 do
+      local track = reaper.GetTrack(0, i)
+      local _, name = reaper.GetTrackName(track, "")
+      if name == targetName then
+          return track, i -- return the track and its index
+      end
+  end
+
+  return nil -- not found
+end
 
 
 -- boolean to check if selected items are on child tracks of given track
@@ -1952,6 +2001,15 @@ function joshnt.addLeadingZero(input, digits)
   return input
 end
 
+-- Copied from Acendan
+function joshnt.getScriptName()
+  return ({reaper.get_action_context()})[2]:match("([^/\\_]+)%.lua$")
+end
+
+function joshnt.getNumberInScriptName()
+  return string.match(joshnt.getScriptName(), "%d+")
+end
+
 -----------------
 ----- DEBUG -----
 -----------------
@@ -1976,6 +2034,11 @@ function joshnt.debugMSG(string, debugBool)
   if debugBool then
     reaper.ShowConsoleMsg(string)
   end
+end
+
+-- simpler messagebox
+function joshnt.msg(string)
+  reaper.MB(string, joshnt.getScriptName(), 0)
 end
 
 -- check if JS Extension is installed
