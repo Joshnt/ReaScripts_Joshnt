@@ -2,7 +2,6 @@
 -- @version 2.0.2
 -- @changelog
 --  - added option to clear manually
---  - automatically add item snapshot package
 -- @author Joshnt
 -- @about 
 --    ## Create seamless loops in items
@@ -19,4 +18,3 @@
 --  [main] joshnt_Create seamless loop in item/joshnt_Revert seamless loop at timeselection - restore on identical track name if possible.lua
 --  [main] joshnt_Create seamless loop in item/joshnt_Clear saved item edits for seamless loop (reduce project size).lua
 --  [main] joshnt_Create seamless loop in item/joshnt_Save item edits for seamless loop manually.lua
---  [nomain] joshnt_Save Item Snapshots in project/joshnt_Item Snapshots - CORE.lua
