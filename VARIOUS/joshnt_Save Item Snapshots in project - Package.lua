@@ -1,7 +1,7 @@
 -- @description Save/ Restore Snapshots of item edits
--- @version 1.0
+-- @version 1.1
 -- @changelog
---  - init
+--  - optimize restore items in time selection
 -- @author Joshnt
 -- @about 
 --    ## Create Save-States for your item editing!
