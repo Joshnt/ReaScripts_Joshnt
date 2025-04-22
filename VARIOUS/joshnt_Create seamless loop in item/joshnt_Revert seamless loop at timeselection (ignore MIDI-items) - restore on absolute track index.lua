@@ -43,6 +43,7 @@ reaper.PreventUIRefresh(1)
 reaper.Undo_BeginBlock() -- Begining of the undo block. Leave it at the top of your main function.
 
 reaper.Main_OnCommand(40717 ,0) -- select items in time selection
+joshnt.unselectMidiItems()
 reaper.Main_OnCommand(40309, 0) -- Ripple editing off
 reaper.Main_OnCommand(40006,0) -- delete selected Items
 

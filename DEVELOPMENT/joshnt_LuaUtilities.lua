@@ -1,5 +1,5 @@
 -- @description Adding own functions and functionalities as lua-functions
--- @version 3.4
+-- @version 3.5
 -- @author Joshnt
 -- @provides [nomain] .
 -- @about
@@ -8,8 +8,12 @@
 
 joshnt = {}
 
-function joshnt.version()
-    local file = io.open((reaper.GetResourcePath()..'/Scripts/Joshnt_ReaScripts/DEVELOPMENT/joshnt_LuaUtilities.lua'):gsub('\\','/'),"r")
+-- defaults to lua utils
+function joshnt.version(path)
+    if not path then
+      path = reaper.GetResourcePath()..'/Scripts/Joshnt_ReaScripts/DEVELOPMENT/joshnt_LuaUtilities.lua'
+    end
+    local file = io.open((path):gsub('\\','/'),"r")
     if not file then
       return 0
     end
@@ -273,6 +277,22 @@ function joshnt.sortSelectedItemsByTrack()
     end
 
     return trackTable
+end
+
+-- Unselect all MIDI items of selected items
+function joshnt.unselectMidiItems()
+  local selItems = joshnt.saveItemSelection()
+
+  for _, item in pairs(selItems) do
+    if item then
+      local take = reaper.GetActiveTake(item)
+      if take and reaper.TakeIsMIDI(take) then
+          reaper.SetMediaItemSelected(item, false)
+      end
+    end
+  end
+
+  reaper.UpdateArrange()
 end
 
 -- Function to get overlapping item groups
@@ -2022,7 +2042,7 @@ function joshnt.pauseForUserInput(prompt, debugBool)
 
     local ok, input = reaper.GetUserInputs(prompt, 1, "Press OK to continue", "")
     if not ok then
-        reaper.ShowConsoleMsg("Script paused, user canceled with input: "+ input + "\n")
+        reaper.ShowConsoleMsg("Script paused, user canceled with input: ".. input .. "\n")
     end
 
     joshnt.pauseForUserInput("stop", true)

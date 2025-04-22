@@ -26,40 +26,38 @@ else
   return
 end 
 
-local start_time_loop, end_time_loop = reaper.GetSet_LoopTimeRange2(0, false, false, 0, 0, false)
-
-if start_time_loop == end_time_loop then 
-    joshnt.msg("No time selection found!\n\nPlease create a time selection over the loop(s) you want to revert.")
-    return
+-- execute main function
+local seamlessLoop = reaper.GetResourcePath().."/Scripts/Joshnt_ReaScripts/VARIOUS/joshnt_Create seamless loop in item/joshnt_Create seamless loop in selected items, re-extend and create '#' region over loop - use timeselection over first selected item as reference.lua"
+if not reaper.file_exists( seamlessLoop ) then 
+  reaper.MB("The package seems to be corrupted ('joshnt_Create seamless loop in selected items, re-extend and create '#' region over loop - use timeselection over first selected item as reference.lua' could not be found.)\nPlease reinstall it here:\n\nExtensions > ReaPack > Browse Packages > 'joshnt_Create seamless loop in item","Error",0)
+  return
 end
 
+
 local sectionName = "joshnt_SnapshotItems_Loop"
-if not reaper.EnumProjExtState(0, sectionName, 0) then
-    joshnt.msg("No items have been saved to be restored now!\n\nPlease run the action \njoshnt_Create seamless loop in selected items, re-extend and create '#' region over loop - use timeselection over first selected item as reference - single region revert possible.lua\n\nbefore.")
-    return
+
+local function saveSlot()
+  if reaper.EnumProjExtState(0, sectionName, 0) then
+    local response = reaper.MB("The item saving slot for Loop-Restoring already exists!\n\nWould you like to overwrite it?\nPress 'Yes' to overwrite it and 'No' to run the script without saving the currently selected items.", "joshnt_Error", 3)
+    if response == 6 then
+      joshnt_savedItems.clearSnapshotForSection(sectionName)
+    elseif response == 7 then
+    else return end
+  end
+  joshnt_savedItems.saveSelectedItemsToSection(sectionName)
 end
 
 reaper.PreventUIRefresh(1)
 reaper.Undo_BeginBlock() -- Begining of the undo block. Leave it at the top of your main function.
 
-reaper.Main_OnCommand(40717 ,0) -- select items in time selection
-reaper.Main_OnCommand(40309, 0) -- Ripple editing off
-reaper.Main_OnCommand(40006,0) -- delete selected Items
+reaper.SelectAllMediaItems(0, true)
 
-local indexTable, _, _, _, _, nameTable = joshnt.getAllOverlappingRegion(start_time_loop-0.01, end_time_loop+0.01)
+saveSlot()
 
-if #indexTable > 0 then 
-    for i = 1, #indexTable do 
-        if tostring(nameTable[i]) == "#" then 
-            reaper.DeleteProjectMarker(0, indexTable[i], true)
-        end
-    end
-end
-
-joshnt_savedItems.restoreInTimeSelection(sectionName, true, false)
-
-reaper.Undo_EndBlock("Revert seamless loop at time-selection", -1) -- End of the undo block. Leave it at the bottom of your main function.
-
+reaper.Undo_EndBlock("Save Items pre seamless loop", -1) -- End of the undo block. Leave it at the bottom of your main function.
 reaper.UpdateArrange()
-
 reaper.PreventUIRefresh(-1)
+
+dofile(seamlessLoop)
+
+

@@ -1,4 +1,5 @@
 -- @noindex
+-- @version 1.0
 
 joshnt_savedItems = {}
 
@@ -19,6 +20,7 @@ function joshnt_savedItems.saveItemToSection(i, section)
     local fadeOutLen = reaper.GetMediaItemInfo_Value(item, "D_FADEOUTLEN")
     local fadeInShape = reaper.GetMediaItemInfo_Value(item, "C_FADEINSHAPE")
     local fadeOutShape = reaper.GetMediaItemInfo_Value(item, "C_FADEOUTSHAPE")
+    local itemGroup = reaper.GetMediaItemInfo_Value(item, "I_GROUPID")
 
     if string.find(tostring(trackName), "||") or string.find(tostring(trackName), "~") then
         joshnt_savedItems.abortedSave(section, "Track Name", trackName)
@@ -54,7 +56,7 @@ function joshnt_savedItems.saveItemToSection(i, section)
     local entry = table.concat({
         pos, length, trackIdx, trackName,
         fadeInLen, fadeOutLen,
-        fadeInShape, fadeOutShape,
+        fadeInShape, fadeOutShape, itemGroup,
         activeTakeIdx,
         table.concat(takeData, "||")
     }, "|||")
@@ -125,13 +127,14 @@ function joshnt_savedItems.restoreItemsFromSection(section, boolAddTracks, boolS
             local fadeOutLen = tonumber(parts[6])
             local fadeInShape = tonumber(parts[7])
             local fadeOutShape = tonumber(parts[8])
-            local activeTakeIdx = tonumber(parts[9])
-            -- local takeListStr = parts[10]
+            local itemGroup = tonumber(parts[9])
+            local activeTakeIdx = tonumber(parts[10])
+            -- local takeListStr = parts[11]
 
-            if (timeStart and timeEnd and pos < timeStart and (pos + length) > timeEnd) or not timeStart then -- in TS oder keine Angabe
+            if (timeStart and timeEnd and (pos < timeEnd and (pos + length) > timeStart)) or not timeStart then -- in TS oder keine Angabe
 
                 local takeList = {}
-                for tStr in string.gmatch(parts[10] .. "||", "(.-)||") do
+                for tStr in string.gmatch(parts[11] .. "||", "(.-)||") do
                     local takeParts = {}
                     for p in string.gmatch(tStr, "([^~]+)") do
                         table.insert(takeParts, p)
@@ -166,6 +169,7 @@ function joshnt_savedItems.restoreItemsFromSection(section, boolAddTracks, boolS
                 reaper.SetMediaItemInfo_Value(item, "D_FADEOUTLEN", fadeOutLen)
                 reaper.SetMediaItemInfo_Value(item, "C_FADEINSHAPE", fadeInShape)
                 reaper.SetMediaItemInfo_Value(item, "C_FADEOUTSHAPE", fadeOutShape)
+                reaper.SetMediaItemInfo_Value(item, "I_GROUPID", itemGroup)
 
                 -- Add and set each take
                 local lastTake

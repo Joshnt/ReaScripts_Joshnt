@@ -1,7 +1,8 @@
 -- @description Save/ Restore Snapshots of item edits
--- @version 1.1
+-- @version 1.2
 -- @changelog
---  - optimize restore items in time selection
+--  - timeselection restore: item can now overlap with item in any way
+--  - now stores grouping information as well
 -- @author Joshnt
 -- @about 
 --    ## Create Save-States for your item editing!

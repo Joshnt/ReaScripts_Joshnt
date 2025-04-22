@@ -1,7 +1,8 @@
 -- @description Create seamless loop in items
--- @version 2.0.2
+-- @version 2.1
 -- @changelog
---  - added option to clear manually
+--  - actions to create loop for all items
+--  - revert and create actions with ignore midi option
 -- @author Joshnt
 -- @about 
 --    ## Create seamless loops in items
@@ -18,3 +19,11 @@
 --  [main] joshnt_Create seamless loop in item/joshnt_Revert seamless loop at timeselection - restore on identical track name if possible.lua
 --  [main] joshnt_Create seamless loop in item/joshnt_Clear saved item edits for seamless loop (reduce project size).lua
 --  [main] joshnt_Create seamless loop in item/joshnt_Save item edits for seamless loop manually.lua
+--  [main] joshnt_Create seamless loop in item/joshnt_Create seamless loop in all items, re-extend and create '#' region over loop - use timeselection over first item as reference - single region revert possible.lua
+--  [main] joshnt_Create seamless loop in item/joshnt_Create seamless loop in all items, re-extend and create '#' region over loop - use timeselection over first item as reference.lua
+--  [main] joshnt_Create seamless loop in item/joshnt_Create seamless loop in all items, re-extend and create '#' region over loop (ignore MIDI-items) - use timeselection over first item as reference - single region revert possible.lua
+--  [main] joshnt_Create seamless loop in item/joshnt_Create seamless loop in all items, re-extend and create '#' region over loop (ignore MIDI-items) - use timeselection over first item as reference.lua
+--  [main] joshnt_Create seamless loop in item/joshnt_Revert seamless loop at timeselection (ignore MIDI-items) - restore on absolute track index.lua
+--  [main] joshnt_Create seamless loop in item/joshnt_Revert seamless loop at timeselection (ignore MIDI-items) - restore on identical track name if possible.lua
+
+
