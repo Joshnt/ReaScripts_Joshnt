@@ -1,8 +1,9 @@
 -- @description Create seamless loop in items
--- @version 2.1
+-- @version 2.1.1
 -- @changelog
 --  - actions to create loop for all items
 --  - revert and create actions with ignore midi option
+--  - bugfix
 -- @author Joshnt
 -- @about 
 --    ## Create seamless loops in items
