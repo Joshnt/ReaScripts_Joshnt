@@ -42,7 +42,7 @@ function SplitItemAtSection(item, start_time, end_time)
 end
 
 --------------------------------------------------------- END OF UTILITIES
-
+local firstItem_notExtended = false
 
 -- Main function
 function main(item)
@@ -74,7 +74,12 @@ function main(item)
   local item_pos_temp = reaper.GetMediaItemInfo_Value(new_item, "D_POSITION")
   local item_len_temp = reaper.GetMediaItemInfo_Value(new_item, "D_LENGTH")
   local item_end_temp = item_pos_temp + item_len_temp
-  reaper.BR_SetItemEdges(new_item, original_pos - ((end_time-start_time)/2), item_end_temp) -- left item
+  if original_pos - ((end_time-start_time)/2) < 0 then
+    reaper.BR_SetItemEdges(new_item, 0, item_end_temp) -- left item
+    firstItem_notExtended = true
+  else
+    reaper.BR_SetItemEdges(new_item, original_pos - ((end_time-start_time)/2), item_end_temp) -- left item
+  end
   item_pos_temp = reaper.GetMediaItemInfo_Value(item, "D_POSITION")
   reaper.BR_SetItemEdges(item, item_pos_temp, original_endpos + ((end_time-start_time)/2)) -- right item
 
@@ -128,6 +133,10 @@ if start_time ~= end_time then
       reaper.SelectAllMediaItems(0, false)
     else
       reaper.ShowMessageBox("No item item in time-selection! (No item changed)", "Error - Seamless loop", 0)
+    end
+
+    if firstItem_notExtended then
+      reaper.ShowMessageBox("The first item was not extended to it's orginal starting point to the left, because it would have been before the start of the session.\nPlease extend it manually.","Error - Seamless loop",0)
     end
 
     reaper.Undo_EndBlock("Create seamless loops from selected items sections inside time selection", -1) -- End of the undo block. Leave it at the bottom of your main function.

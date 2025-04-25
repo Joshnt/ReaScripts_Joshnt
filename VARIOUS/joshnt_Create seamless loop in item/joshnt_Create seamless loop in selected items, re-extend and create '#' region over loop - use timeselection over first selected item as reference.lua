@@ -151,7 +151,7 @@ if start_time_loop ~= end_time_loop then
     reaper.GetSet_LoopTimeRange2(0, true, false, start_time_loop, end_time_loop, false)
 
     if firstItem_notExtended then
-      reaper.ShowMessageBox("The first item was not extended to it's orginal starting point to the left, because it would have been negative.\nPlease extend it manually.","Error - Seamless loop",0)
+      reaper.ShowMessageBox("The first item was not extended to it's orginal starting point to the left, because it would have been before the start of the session.\nPlease extend it manually.","Error - Seamless loop",0)
     end
 
     reaper.Undo_EndBlock("Create seamless loops from selected items sections inside time selection", -1) -- End of the undo block. Leave it at the bottom of your main function.

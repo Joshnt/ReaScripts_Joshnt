@@ -1,11 +1,13 @@
 -- @description Create seamless loop in items
--- @version 2.1.2
+-- @version 2.1.3
 -- @changelog
---  - added single region create over time selection without selection
+--  - minor bugfixes
 -- @author Joshnt
 -- @about 
 --    ## Create seamless loops in items
---      different sub-scripts
+--      different sub-scripts with modifier:
+--      - create seamless loop in selected items at time selection, re-extend and create '#' region over loop -> only selected items in time selection will be looped
+--      - create seamless loop in selected items at time selection, re-extend and create '#' region over loop - use time selection as reference -> selected items in time selection will be looped and later selected items will be looped according to offset of first item to time selection
 --
 --    ## CREDITS TO X-RAYM
 --    This is mostly an adaption of X-Raym's script "Script: X-Raym_Create seamless loops from selected items sections inside time selection.lua".
