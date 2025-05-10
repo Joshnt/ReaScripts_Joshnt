@@ -7,7 +7,7 @@
 local selectTracks = true -- if false, actions regarding tracks won't work
 local selectTime = true -- if false, actions regarding time won't work
 local selectEnvelopePoints = true -- if false, actions regarding Envelopes won't work
-local promptAfterEachRegion = true -- allows what happend after each execution
+local promptAfterEachRegion = false -- allows what happend after each execution
 
 ---------------------------------------
 ---------- USER CONFIG END ------------
