@@ -1,5 +1,5 @@
 -- @description Adding own functions and functionalities as lua-functions
--- @version 3.5
+-- @version 3.6
 -- @author Joshnt
 -- @provides [nomain] .
 -- @about
@@ -178,6 +178,61 @@ function joshnt.reselectItems(itemTable)
         end
       end
     end
+end
+
+-- use for unique identifing of items
+function joshnt.AppendToNoteItem(item, stringKey, boolIncrement)
+  local boolIncrement = boolIncrement or true
+  if item then
+    local _, originalNote = reaper.GetSetMediaItemInfo_String(item, "P_NOTES", "", false)
+    originalNote = originalNote or ""
+    local newNote = ""
+    if boolIncrement then
+      newNote = originalNote .. stringKey .. " " .. tostring(i)
+    else
+      newNote = originalNote .. stringKey
+    end
+    reaper.GetSetMediaItemInfo_String(item, "P_NOTES", newNote, true)
+  end
+end
+
+-- remove stringKey from note of item
+function joshnt.RemoveFromNoteItem(item, stringKey,  boolIncrement)
+  if not item then return end
+  local _, originalNote = reaper.GetSetMediaItemInfo_String(item, "P_NOTES", "", false)
+  originalNote = originalNote or ""
+  local boolIncrement = boolIncrement or true
+  if boolIncrement then
+    local number = originalNote:match(stringKey .. " (%d+)")
+    if number then
+      originalNote = originalNote:gsub(stringKey .. " " .. number, "")
+    end
+  end
+  local newNote = originalNote:gsub(stringKey .. " %d*", "")
+  reaper.GetSetMediaItemInfo_String(item, "P_NOTES", newNote, true)
+end
+
+-- returns if stringKey is in the note of the item, if boolIncrement then as well the number after the stringKey
+function joshnt.CheckNoteofItem(item, stringKey, boolIncrement)
+  if not item then return end
+  local boolIncrement = boolIncrement or true
+  if item then
+    local _, originalNote = reaper.GetSetMediaItemInfo_String(item, "P_NOTES", "", false)
+    originalNote = originalNote or ""
+    if originalNote:find(stringKey) then
+      if boolIncrement then
+        local number = originalNote:match(stringKey .. " (%d+)")
+        if number then
+          return tonumber(number)
+        else
+          return true
+        end
+      else
+        return true
+      end
+    end
+  end
+  return false
 end
 
 -- unselect Items given in a table (to have e.g. everything but items x selected)

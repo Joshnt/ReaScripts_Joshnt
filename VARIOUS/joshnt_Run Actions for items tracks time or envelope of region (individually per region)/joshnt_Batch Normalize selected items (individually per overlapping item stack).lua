@@ -5,7 +5,6 @@
 ---------------------------------------
 
 local promptAfterEachRegion = false -- allows what happend after each execution
-
 ---------------------------------------
 ---------- USER CONFIG END ------------
 ---------------------------------------
@@ -41,7 +40,9 @@ end
 
 local function runAction()
   local actionName = "normalize selected items - TruePeak -6dB loudest item"
-      reaper.Undo_BeginBlock()
+  reaper.Undo_BeginBlock()
+  reaper.ShowConsoleMsg("Number item groups: "..#itemGroups.."\n")
+
   for j=1, #itemGroups do
 
     reaper.Main_OnCommand(40769,0) -- unselect everything
@@ -49,36 +50,11 @@ local function runAction()
     -- select Items
     joshnt.reselectItems(itemGroups[j])
 
-    local numItems = reaper.CountSelectedMediaItems(0)
-    local maxVal = math.huge
-
-    -- find loudness
-    for i=0, numItems-1 do
-      local it = reaper.GetSelectedMediaItem(0, i)
-      if not it then return end
-      local take = reaper.GetActiveTake(it)
-      if not take then return end
-      local src = reaper.GetMediaItemTake_Source( take )
-      if not src then return end
-      local value = reaper.CalculateNormalization( src, 
-                                      loudtype, 
-                                      loudvalue, 
-                                      0,--normalizeStart, 
-                                      0)--normalizeEnd )
-      maxVal = math.min(maxVal, value)
-    end  
-
-    -- apply loudness
-    for i=0, numItems-1 do
-      local it = reaper.GetSelectedMediaItem(0, i)
-      if not it then return end
-      local take = reaper.GetActiveTake(it)
-      if not take then return end
-      local src = reaper.GetMediaItemTake_Source( take )
-      if not src then return end
-      reaper.SetMediaItemTakeInfo_Value( take, 'D_VOL',maxVal )
-      reaper.UpdateItemInProject( it )
-    end  
+    if j == 1 then 
+      reaper.Main_OnCommand(42460,0) -- normalize with dialog
+    else 
+      reaper.Main_OnCommand(42461,0) -- normalize with recent settings
+    end
 
   end
   reaper.Undo_EndBlock("Run '"..actionName.."' for overlapping items of selected items", -1)
