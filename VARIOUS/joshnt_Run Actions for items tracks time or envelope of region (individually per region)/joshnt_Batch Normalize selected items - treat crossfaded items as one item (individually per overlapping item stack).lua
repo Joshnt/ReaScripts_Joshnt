@@ -32,16 +32,15 @@ else
 end
 
 -- para-Global variables
-local selected_action_id = 0
 if reaper.CountSelectedMediaItems(0) == 0 then
   reaper.MB("No items selected. Please select at least one item.","Error",0)
   return
 end
-local itemGroups, itemStarts, itemEnds = joshnt.getOverlappingItemGroupsOfSelectedItems()
-if #itemGroups == 0 or itemGroups == nil or itemStarts == nil or itemEnds == nil then
-  reaper.MB("No overlapping items found. Please select at least one item.","Error",0)
-  return
-end
+
+local itemGroups, itemStarts, itemEnds;
+local trackName;
+
+local failedItems = {}
 
 local function runAction()
   reaper.Undo_BeginBlock()
@@ -58,7 +57,7 @@ local function runAction()
       end
     end
   end
-  reaper.Undo_EndBlock("write in Notes", -1)
+  reaper.Undo_EndBlock("joshnt-Internal: write in Notes for items on track "..trackName, -1)
 
   reaper.Undo_BeginBlock()
   local gainArray = {}
@@ -113,9 +112,10 @@ local function runAction()
   end
 
   
-  reaper.Undo_EndBlock("get gain for item groups", -1)
+  reaper.Undo_EndBlock("get gain for item groups on track "..trackName, -1)
   reaper.Undo_DoUndo2(0)
   reaper.Undo_BeginBlock()
+
   for j=1, #itemGroups do
     reaper.Main_OnCommand(40769,0) -- unselect everything
     reaper.UpdateArrange()
@@ -137,7 +137,13 @@ local function runAction()
           joshnt.RemoveFromNoteItem(item, "itemGroup"..j, false)
           local take = reaper.GetActiveTake(item)
           if take then 
-            reaper.SetMediaItemTakeInfo_Value( take, 'D_VOL',gainArray[j][track])
+            if not gainArray[j][track] then
+              local _, name = reaper.GetTrackName(track)
+              reaper.ShowConsoleMsg("Failed to set/ get gain for item Group "..j.." on track "..name)
+              failedItems[#failedItems] = item
+            else
+              reaper.SetMediaItemTakeInfo_Value(take, 'D_VOL', gainArray[j][track])
+            end
           end
         end
       end
@@ -146,16 +152,41 @@ local function runAction()
 
   end
 
-  reaper.Undo_EndBlock("Run '"..actionName.."' for overlapping items of selected items", -1)
+  reaper.Undo_EndBlock("Normalized (overlapping) items on track "..trackName, -1)
   
 end
+
+
 
 reaper.PreventUIRefresh(1)
 reaper.Main_OnCommand(42460,0) -- normalize with dialog
 reaper.Main_OnCommand(40938,0) -- un normalize all
 
+local itemByTrackTable = joshnt.sortSelectedItemsByTrack()
 
-runAction()
+
+
+for tracks, items in pairs(itemByTrackTable) do
+  reaper.Main_OnCommand(40769,0) -- unselect everything
+  joshnt.reselectItems(items)
+  itemGroups, itemStarts, itemEnds = joshnt.getOverlappingItemGroupsOfSelectedItems()
+  _, trackName = reaper.GetTrackName(tracks)
+  if #itemGroups == 0 or itemGroups == nil or itemStarts == nil or itemEnds == nil then
+    reaper.ShowConsoleMsg("Failed to get items for Track "..trackName)
+  else
+    runAction()
+  end
+  
+end
+
+
+
+if failedItems[1] then
+    joshnt.reselectItems(failedItems)
+    reaper.UpdateArrange()
+    reaper.ShowMessageBox("The now selected items could not be normalized.","Debug/Error - Normalize",0)
+end
+
 if not successDelete then
   reaper.MB("Failed to delete glued files to calculate loudness - consider doing that manually", "Error", 0)
 end

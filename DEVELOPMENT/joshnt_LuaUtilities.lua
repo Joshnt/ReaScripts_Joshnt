@@ -1,5 +1,5 @@
 -- @description Adding own functions and functionalities as lua-functions
--- @version 3.6
+-- @version 3.6.1
 -- @author Joshnt
 -- @provides [nomain] .
 -- @about
@@ -188,7 +188,7 @@ function joshnt.AppendToNoteItem(item, stringKey, boolIncrement)
     originalNote = originalNote or ""
     local newNote = ""
     if boolIncrement then
-      newNote = originalNote .. stringKey .. " " .. tostring(i)
+      newNote = originalNote .. stringKey
     else
       newNote = originalNote .. stringKey
     end
