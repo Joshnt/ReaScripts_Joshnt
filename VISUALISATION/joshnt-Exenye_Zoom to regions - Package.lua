@@ -1,5 +1,5 @@
 -- @description Zoom to selected regions
--- @version 1.01
+-- @version 1.02
 -- @author Joshnt, Exenye
 -- @about
 --    Various actions for zooming/ scrolling to selected/ next/ previous region(s)

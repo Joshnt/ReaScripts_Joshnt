@@ -1,5 +1,5 @@
 -- @description Various Actions for selecting regions (in the region marker manager)
--- @version 1.01
+-- @version 1.02
 -- @author Joshnt
 -- @changelog
 --  + init

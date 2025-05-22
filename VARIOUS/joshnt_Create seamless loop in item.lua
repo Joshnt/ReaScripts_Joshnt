@@ -1,5 +1,5 @@
 -- @description Create seamless loop in items
--- @version 2.1.3
+-- @version 2.1.4
 -- @changelog
 --  - minor bugfixes
 -- @author Joshnt

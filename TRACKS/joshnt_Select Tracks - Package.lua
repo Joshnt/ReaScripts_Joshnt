@@ -1,5 +1,5 @@
 -- @description Various Actions for conditional Track-selecting
--- @version 1.01
+-- @version 1.02
 -- @author Joshnt
 -- @changelog
 --  + init

@@ -1,6 +1,8 @@
 -- @description Adding own functions and functionalities as lua-functions
--- @version 3.6.1
+-- @version 3.07
 -- @author Joshnt
+-- @changelog 
+--  fixed version check
 -- @provides [nomain] .
 -- @about
 --    Credits to Aaron Cendan https://aaroncendan.me - I partly straight up copied code from him; as well thanks for the awesome work in the scripting domain of reaper!
@@ -27,7 +29,8 @@ function joshnt.version(path)
         end
     end
     io.close(file)
-    return tonumber(t)
+    local ver = tonumber(t)
+    return ver or 0
 end
 
 local r = reaper

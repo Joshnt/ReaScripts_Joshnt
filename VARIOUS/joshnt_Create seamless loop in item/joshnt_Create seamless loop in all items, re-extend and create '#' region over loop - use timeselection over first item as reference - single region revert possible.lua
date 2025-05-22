@@ -4,7 +4,7 @@
 local joshnt_LuaUtils = reaper.GetResourcePath()..'/Scripts/Joshnt_ReaScripts/DEVELOPMENT/joshnt_LuaUtilities.lua'
 if reaper.file_exists( joshnt_LuaUtils ) then 
   dofile( joshnt_LuaUtils ) 
-  if not joshnt or joshnt.version() < 3.5 then 
+  if not joshnt or not joshnt.version or joshnt.version() < 3.7 then 
     reaper.MB("This script requires a newer version of joshnt Lua Utilities. Please run:\n\nExtensions > ReaPack > Synchronize Packages, 'joshnt_LuaUtilities.lua'","Error",0); 
     return 
   end
@@ -17,7 +17,7 @@ end
 local joshnt_SnapshotCore = reaper.GetResourcePath()..'/Scripts/Joshnt_ReaScripts/VARIOUS/joshnt_Save Item Snapshots in project/joshnt_Item Snapshots - CORE.lua'
 if reaper.file_exists( joshnt_SnapshotCore ) then 
   dofile( joshnt_SnapshotCore ) 
-  if not joshnt_SnapshotCore or joshnt.version() < 1.0 then 
+  if not joshnt_SnapshotCore or joshnt.version() < 3.7 then 
     reaper.MB("This script requires a newer version of the 'Item Snapshots' Pack. Please run:\n\nExtensions > ReaPack > Browse Packages > 'joshnt_Save Item Snapshots in project'","Error",0); 
     return 
   end

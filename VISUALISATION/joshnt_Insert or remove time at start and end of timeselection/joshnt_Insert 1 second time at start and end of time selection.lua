@@ -16,7 +16,7 @@ local ignoreItemsAtBounds_USER = 1 -- if items are found at start or end of time
 local joshnt_LuaUtils = reaper.GetResourcePath()..'/Scripts/Joshnt_ReaScripts/DEVELOPMENT/joshnt_LuaUtilities.lua'
 if reaper.file_exists( joshnt_LuaUtils ) then 
   dofile( joshnt_LuaUtils ) 
-  if not joshnt or joshnt.version() < 1.0 then 
+  if not joshnt or joshnt.version() < 3.7 then 
     reaper.MB("This script requires a newer version of joshnt Lua Utilities. Please run:\n\nExtensions > ReaPack > Synchronize Packages, 'joshnt_LuaUtilities.lua'","Error",0); 
     return 
   end

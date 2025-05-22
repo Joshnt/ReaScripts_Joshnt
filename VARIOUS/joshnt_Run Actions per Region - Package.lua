@@ -1,5 +1,5 @@
 -- @description Run Action over over items/tracks/time on region (individually per region)
--- @version 1.06
+-- @version 1.07
 -- @author Joshnt
 -- @about
 --    Run Action over items/tracks/time on region (individually per region) - script selects items, tracks, time and envelope points per region

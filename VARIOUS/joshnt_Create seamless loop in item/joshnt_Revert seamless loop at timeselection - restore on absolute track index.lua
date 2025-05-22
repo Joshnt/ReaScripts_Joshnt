@@ -17,7 +17,7 @@ end
 local joshnt_SnapshotCore = reaper.GetResourcePath()..'/Scripts/Joshnt_ReaScripts/VARIOUS/joshnt_Save Item Snapshots in project/joshnt_Item Snapshots - CORE.lua'
 if reaper.file_exists( joshnt_SnapshotCore ) then 
   dofile( joshnt_SnapshotCore ) 
-  if not joshnt_SnapshotCore or joshnt.version() < 1.0 then 
+  if not joshnt_SnapshotCore or joshnt.version() < 3.7 then 
     reaper.MB("This script requires a newer version of the 'Item Snapshots' Pack. Please run:\n\nExtensions > ReaPack > Browse Packages > 'joshnt_Save Item Snapshots in project'","Error",0); 
     return 
   end

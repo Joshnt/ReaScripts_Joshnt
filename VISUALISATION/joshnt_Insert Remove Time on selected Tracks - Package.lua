@@ -1,5 +1,5 @@
 -- @description Remove Time on selected Tracks
--- @version 1.02
+-- @version 1.03
 -- @author Joshnt
 -- @about
 --    Various actions for zooming/ scrolling to overlapping item group at cursor
