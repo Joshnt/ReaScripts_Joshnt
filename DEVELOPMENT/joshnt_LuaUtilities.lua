@@ -1,8 +1,8 @@
 -- @description Adding own functions and functionalities as lua-functions
--- @version 3.07
+-- @version 4.0
 -- @author Joshnt
 -- @changelog 
---  fixed version check
+--  VERSIONING IS A FREAKING NIGHTMARE
 -- @provides [nomain] .
 -- @about
 --    Credits to Aaron Cendan https://aaroncendan.me - I partly straight up copied code from him; as well thanks for the awesome work in the scripting domain of reaper!
