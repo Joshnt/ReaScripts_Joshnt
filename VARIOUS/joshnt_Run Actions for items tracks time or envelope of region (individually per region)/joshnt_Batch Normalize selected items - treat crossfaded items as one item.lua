@@ -45,6 +45,7 @@ local failedItems = {}
 local function runAction()
   reaper.Undo_BeginBlock()
   -- write in note to identify the item group - before glue to not undo
+  local prevJ = 0
   for j=1, #itemGroups do
     reaper.Main_OnCommand(40769,0) -- unselect everything
     joshnt.reselectItems(itemGroups[j])
@@ -53,7 +54,8 @@ local function runAction()
       -- Glue items to get gain
       local item = reaper.GetSelectedMediaItem(0,i)
       if item then 
-        joshnt.AppendToNoteItem(item, "itemGroup"..j, false)
+        if not j then reaper.ShowConsoleMsg("Failed to get item group for "..prevJ+1)
+        else joshnt.AppendToNoteItem(item, "itemGroup"..j, false) end
       end
     end
   end
@@ -70,19 +72,9 @@ local function runAction()
     -- select Items
     joshnt.reselectItems(itemGroups[j])
 
-    -- write in note to identify the item group
-    local selItems_temp = reaper.CountSelectedMediaItems(0)
-    for i = 0, selItems_temp-1 do
-      -- Glue items to get gain
-      local item = reaper.GetSelectedMediaItem(0,i)
-      if item then 
-        joshnt.AppendToNoteItem(item, "itemGroup"..j, false)
-      end
-    end
-
     reaper.Main_OnCommand(40362,0) -- glue
     reaper.UpdateArrange()
-    selItems_temp = reaper.CountSelectedMediaItems(0)
+    local selItems_temp = reaper.CountSelectedMediaItems(0)
     local track_gain_map = {} -- Table to hold take gains grouped by track
     reaper.Main_OnCommand(42461,0) -- normalize with recent settings
     for i = 0, selItems_temp-1 do
