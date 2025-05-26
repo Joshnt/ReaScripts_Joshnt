@@ -1,3 +1,5 @@
+-- @noindex
+
 -- Colors
 local bg_r, bg_g, bg_b = 176 / 255, 176 / 255, 176 / 255
 local active_box_r, active_box_g, active_box_b = 136 / 255, 193 / 255, 208 / 255
