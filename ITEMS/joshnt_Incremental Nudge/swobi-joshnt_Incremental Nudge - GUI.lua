@@ -6,8 +6,20 @@ local inactive_box_r, inactive_box_g, inactive_box_b = 96 / 255, 153 / 255, 168 
 -- UI State
 local unit_options = {"grid", "beat", "seconds"}
 local selected_index = 1
+if reaper.HasExtState("joshnt_reposition_GUI", "unitIndex") then
+  selected_index = tonumber(reaper.GetExtState("joshnt_reposition_GUI", "unitIndex")) or 1
+end
+
 local input1 = "2"
+if reaper.HasExtState("joshnt_reposition_GUI", "num_tracks") then
+  input1 = reaper.GetExtState("joshnt_reposition_GUI", "num_tracks")
+end
+
 local input2 = "1"
+if reaper.HasExtState("joshnt_reposition_GUI", "offset") then
+  input2 = reaper.GetExtState("joshnt_reposition_GUI", "offset")
+end
+
 local focus_field = 0
 local dropdown_focused = false
 local running = true
@@ -23,7 +35,7 @@ local win_h = 150
 -- Center the window
 gfx.init("joshnt_reposition", win_w, win_h)
 
-function mouse_in(x, y, w, h)
+local function mouse_in(x, y, w, h)
   return gfx.mouse_x >= x and gfx.mouse_x <= x + w and gfx.mouse_y >= y and gfx.mouse_y <= y + h
 end
 
@@ -133,7 +145,8 @@ function run()
   end
 
   local char = gfx.getchar()
-  if char == 27 or char == 13 then running = false return end
+  if char == 27 or char == -1 then running = false return end -- cancel function
+  if char == 13 then running = false end -- call function
 
   if focus_field > 0 and char >= 32 and char <= 126 then
     local field = focus_field == 1 and input1 or input2
@@ -146,7 +159,7 @@ function run()
   end
 
   gfx.update()
-  last_mouse_state = gfx.mouse_cap & 1 == 1
+  local last_mouse_state = gfx.mouse_cap & 1 == 1
 
   if running then
     reaper.defer(run)
@@ -160,18 +173,42 @@ function finalize()
   local num2 = tonumber(input2)
   local unit = unit_options[selected_index]
 
-  if not (num1 and num2) then
+  if not num1 or not num2 then
     reaper.ShowMessageBox("Invalid number inputs.", "Error", 0)
     return
   end
 
+  reaper.SetExtState("joshnt_reposition_GUI", "num_tracks", input1, true)
+  reaper.SetExtState("joshnt_reposition_GUI", "offset", input2, true)
+  reaper.SetExtState("joshnt_reposition_GUI", "unitIndex", tostring(selected_index), true)
+
   gfx.quit()
 
-  -- Output result
-  reaper.ShowConsoleMsg("Selected unit: " .. unit .. "\n")
-  reaper.ShowConsoleMsg("No. Tracks: " .. num1 .. "\n")
-  reaper.ShowConsoleMsg("Offset: " .. num2 .. "\n")
+  joshnt_repostion.main(num1, unit, num2)
 end
 
-run()
 
+-- @noindex
+
+local joshnt_LuaUtils = reaper.GetResourcePath()..'/Scripts/Joshnt_ReaScripts/DEVELOPMENT/joshnt_LuaUtilities.lua'
+if reaper.file_exists( joshnt_LuaUtils ) then 
+  dofile( joshnt_LuaUtils ) 
+  if not joshnt or joshnt.version() < 3.7 then 
+    reaper.MB("This script requires a newer version of joshnt Lua Utilities. Please run:\n\nExtensions > ReaPack > Synchronize Packages, 'joshnt_LuaUtilities.lua'","Error",0); 
+    return 
+  end
+else 
+  reaper.MB("This script requires joshnt Lua Utilities! Please install them here:\n\nExtensions > ReaPack > Browse Packages > 'joshnt Lua Utilities'","Error",0)
+  return
+end
+
+-- Load core script
+local joshnt_repostionCORE = reaper.GetResourcePath()..'/Scripts/Joshnt_ReaScripts/ITEMS/joshnt_Incremental Nudge/swobi-joshnt_Incremental Nudge - CORE.lua'
+if reaper.file_exists( joshnt_repostionCORE ) then 
+  dofile( joshnt_repostionCORE ) 
+else 
+  reaper.MB("This script requires an additional script, which gets installed over ReaPack as well. Please re-install the whole 'Incremental Nudge' Pack here:\n\nExtensions > ReaPack > Browse Packages > 'joshnt_Incremental Nudge'","Error",0)
+  return
+end 
+
+run()
