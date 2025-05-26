@@ -1,0 +1,17 @@
+-- @description Incremental Nudge - Package
+-- @version 1.0
+-- @author Joshnt
+-- @about
+--      Incremental Nudge items every X tracks by Y units - to fastly space them in your session
+-- @changelog
+--  - Alternative zu swobi macht scripts die langsamer als händisch editen sind
+-- @metapackage
+-- @provides
+--   [main] joshnt_Incremental Nudge/swobi-joshnt_Incremental Nudge selected items on every 2 tracks by +1 grid.lua
+--   [main] joshnt_Incremental Nudge/swobi-joshnt_Incremental Nudge selected items on every 2 tracks by +2 grid.lua
+--   [main] joshnt_Incremental Nudge/swobi-joshnt_Incremental Nudge selected items on every 2 tracks by +1 second.lua
+--   [main] joshnt_Incremental Nudge/swobi-joshnt_Incremental Nudge selected items on every X tracks by Y beats.lua
+--   [main] joshnt_Incremental Nudge/swobi-joshnt_Incremental Nudge selected items on every X tracks by Y grid.lua
+--   [main] joshnt_Incremental Nudge/swobi-joshnt_Incremental Nudge selected items on every X tracks by Y seconds.lua
+--   [main] joshnt_Incremental Nudge/swobi-joshnt_Incremental Nudge - GUI.lua
+--   [nomain] joshnt_Incremental Nudge/swobi-joshnt_Incremental Nudge - CORE.lua
