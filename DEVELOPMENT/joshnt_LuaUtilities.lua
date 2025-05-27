@@ -1,5 +1,5 @@
 -- @description Adding own functions and functionalities as lua-functions
--- @version 4.0
+-- @version 4.01
 -- @author Joshnt
 -- @changelog 
 --  VERSIONING IS A FREAKING NIGHTMARE
@@ -684,6 +684,46 @@ function joshnt.isolate_MoveOtherItems_ToEndOfSelectedItems(minSilenceAtStart, m
   reaper.UpdateArrange()
 
   return 1
+end
+
+function joshnt.isAnySelectedItemsGrouped()
+  local num_selected = reaper.CountSelectedMediaItems(0)
+  local group_ids = {}
+
+  for i = 0, num_selected - 1 do
+    local item = reaper.GetSelectedMediaItem(0, i)
+    local group_id = reaper.GetMediaItemInfo_Value(item, "I_GROUPID")
+    
+    if group_id ~= 0 then
+      if group_ids[group_id] then
+        -- Found at least two items with same group ID => grouped
+        return true
+      else
+        group_ids[group_id] = true
+      end
+    end
+  end
+
+  return false
+end
+
+function joshnt.getSelectedItemsByGroup(boolStoreNonGroupedItems)
+  local num_selected = reaper.CountSelectedMediaItems(0)
+  local itemArray = {}
+
+  for i = 0, num_selected - 1 do
+    local item = reaper.GetSelectedMediaItem(0, i)
+    local group_id = reaper.GetMediaItemInfo_Value(item, "I_GROUPID")
+    
+    if boolStoreNonGroupedItems or group_id ~= 0 then
+      if not itemArray[group_id] then
+        itemArray[group_id] = {}
+      end
+      itemArray[group_id][#itemArray[group_id] + 1] = item
+    end
+  end
+
+  return itemArray
 end
 
 -- move selected items to the end of overlapping other items - USE RETURNED ITEM-TABLE AS LINKS GET LOST BY CUT AND PASTE

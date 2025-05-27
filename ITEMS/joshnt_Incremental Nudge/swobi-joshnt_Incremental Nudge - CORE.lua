@@ -4,7 +4,7 @@ joshnt_repostion = {}
 
 function joshnt_repostion.main(num_tracks, unit, num)
   if reaper.CountSelectedMediaItems(0) == 0 then
-    reaper.MB("Please select at least one item to reposition.", "No Items Selected", 0)
+    reaper.MB("Please select at least one item to incremental nudge.", "No Items Selected", 0)
     return
   end
 
@@ -13,16 +13,25 @@ function joshnt_repostion.main(num_tracks, unit, num)
     return
   end
 
+  -- Check if item grouping is enabled
+  if reaper.GetToggleCommandState(1156) == 1 then -- 1156 is the command ID for "Item grouping enabled"
+    if joshnt.isAnySelectedItemsGrouped() then
+      local retval = reaper.MB("Item grouping is enabled and some items are grouped. This script may not work as expected with grouped items.\nDo you want to proceed anyway?", "joshnt_incremental nudge - Warning", 4)
+      if retval == 7 then return end
+    end
+  end
+
+
   local continue = true;
   local s;
   local usedInput = false;
   if num ~= "X" and num_tracks == "X" then 
     usedInput = true;
-    continue, s = reaper.GetUserInputs("joshnt_Reposition - "..unit, 1,
+    continue, s = reaper.GetUserInputs("joshnt_incremental nudge - "..unit, 1,
       "Number of tracks to move together", "2");
   elseif num == "X" and num_tracks == "X" then 
     usedInput = true;
-    continue, s = reaper.GetUserInputs("joshnt_Reposition - "..unit, 2,
+    continue, s = reaper.GetUserInputs("joshnt_incremental nudge - "..unit, 2,
       "Number of tracks to move together,Units ("..unit..")", "2, 1");
   end
 
@@ -95,7 +104,7 @@ function joshnt_repostion.main(num_tracks, unit, num)
   joshnt.reselectItems(originalSelection)
 
   if not couldFinish then
-    reaper.MB("Your number of selected items was not dividable by the given number of tracks of "..num_tracks..".\nThis means the last nudged tracks are less then "..num_tracks..".", "joshnt_Reposition - Warning", 0)
+    reaper.MB("Your number of selected items was not dividable by the given number of tracks of "..num_tracks..".\nThis means the last nudged tracks are less then "..num_tracks..".", "joshnt_incremental nudge - Warning", 0)
   end
 
   reaper.Undo_EndBlock("Reposition items on " .. num_tracks .. " tracks vertically by " .. num .. " " .. unit, -1)

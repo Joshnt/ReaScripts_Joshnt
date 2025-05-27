@@ -1,10 +1,11 @@
 -- @description Incremental Nudge - Package
--- @version 1.0
+-- @version 1.1
 -- @author Joshnt
 -- @about
 --      Incremental Nudge items every X tracks by Y units - to fastly space them in your session
 -- @changelog
---  - Alternative zu swobi macht scripts die langsamer als händisch editen sind
+--  - warning for grouping active 
+--  - You can copy any script and rename it to represent the tracks, units and offset you need as seperate action (except the GUI and CORE)
 -- @metapackage
 -- @provides
 --   [main] joshnt_Incremental Nudge/swobi-joshnt_Incremental Nudge selected items on every 2 tracks by +1 grid.lua
