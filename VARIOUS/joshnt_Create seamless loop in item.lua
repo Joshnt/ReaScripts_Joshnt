@@ -1,7 +1,7 @@
 -- @description Create seamless loop in items
--- @version 2.1.4
+-- @version 2.1.5
 -- @changelog
---  - minor bugfixes
+--  - Swobi macht tolle bugreports: "DaS gEhT nIcHt BiTtE fiXen WeIl SoNsT CoDe IcH SeLbSt"
 -- @author Joshnt
 -- @about 
 --    ## Create seamless loops in items
