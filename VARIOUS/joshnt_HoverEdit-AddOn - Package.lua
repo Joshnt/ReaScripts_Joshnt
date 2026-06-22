@@ -1,0 +1,14 @@
+-- @description Hover edit (add on)
+-- @version 1.0
+-- @changelog
+--  - added hover play, hover solo and hover mute
+-- @author Joshnt
+-- @about 
+--    additional scripts to LKC's awesome hover edit package
+-- @metapackage
+-- @provides
+--   [main] joshnt_HoverEdit-AddOn/joshnt_Hover-Solo.lua
+--   [main] joshnt_HoverEdit-AddOn/joshnt_Hover-Exclusive Solo.lua
+--   [main] joshnt_HoverEdit-AddOn/joshnt_Hover-Mute.lua
+--   [main] joshnt_HoverEdit-AddOn/joshnt_Hover-Mute item or track (depending on focus).lua
+--   [main] joshnt_HoverEdit-AddOn/joshnt_Hover-Play.lua
