@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Joshnt_ReaScripts" commit="49d5329bca49191dc259f29c140dfbdf0c7bc4cf">
+<index version="1" name="Joshnt_ReaScripts" commit="e7253c0233057458d2e237bc43ba3b66f7ac92c3">
   <category name="DEVELOPMENT">
     <reapack name="joshnt_LuaUtilities.lua" type="script" desc="Adding own functions and functionalities as lua-functions">
       <metadata>
@@ -877,6 +877,37 @@
         <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for each group of overlapping items of the selected items + isolate.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/f811c6f3a3c82c0a72e5b6a19fec4b4fedf51a5c/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items%20of%20the%20selected%20items%20+%20isolate.lua</source>
         <source file="joshnt_Create unique regions for each group of overlapping items/joshnt_Unique Regions for overlapping items - CORE.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/f811c6f3a3c82c0a72e5b6a19fec4b4fedf51a5c/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Unique%20Regions%20for%20overlapping%20items%20-%20CORE.lua</source>
         <source file="joshnt_Create unique regions for each group of overlapping items/joshnt_Unique Regions for overlapping items - CORE Mother.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/f811c6f3a3c82c0a72e5b6a19fec4b4fedf51a5c/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Unique%20Regions%20for%20overlapping%20items%20-%20CORE%20Mother.lua</source>
+      </version>
+      <version name="3.5" author="Joshnt" time="2026-06-22T16:01:31Z">
+        <changelog><![CDATA[- added get color and name from parent option]]></changelog>
+        <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for groups of overlapping items - use File....lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/7dc918c93f360b6e02431103b64c2df8190ab33e/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20groups%20of%20overlapping%20items%20-%20use%20File....lua</source>
+        <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for groups of overlapping items - use defaults.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/7dc918c93f360b6e02431103b64c2df8190ab33e/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20groups%20of%20overlapping%20items%20-%20use%20defaults.lua</source>
+        <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for groups of overlapping items - use Clipboard.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/7dc918c93f360b6e02431103b64c2df8190ab33e/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20groups%20of%20overlapping%20items%20-%20use%20Clipboard.lua</source>
+        <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for groups of overlapping items - GUI.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/7dc918c93f360b6e02431103b64c2df8190ab33e/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20groups%20of%20overlapping%20items%20-%20GUI.lua</source>
+        <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for each group of overlapping items of selected items (with mother region) - GUI.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/7dc918c93f360b6e02431103b64c2df8190ab33e/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items%20of%20selected%20items%20(with%20mother%20region)%20-%20GUI.lua</source>
+        <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for each group of overlapping items of the selected items + isolate (with mother region).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/7dc918c93f360b6e02431103b64c2df8190ab33e/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items%20of%20the%20selected%20items%20+%20isolate%20(with%20mother%20region).lua</source>
+        <source main="main" file="joshnt_Create unique regions for each group of overlapping items/joshnt_Create unique regions for each group of overlapping items of the selected items + isolate.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/7dc918c93f360b6e02431103b64c2df8190ab33e/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items%20of%20the%20selected%20items%20+%20isolate.lua</source>
+        <source file="joshnt_Create unique regions for each group of overlapping items/joshnt_Unique Regions for overlapping items - CORE.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/7dc918c93f360b6e02431103b64c2df8190ab33e/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Unique%20Regions%20for%20overlapping%20items%20-%20CORE.lua</source>
+        <source file="joshnt_Create unique regions for each group of overlapping items/joshnt_Unique Regions for overlapping items - CORE Mother.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/7dc918c93f360b6e02431103b64c2df8190ab33e/VARIOUS/joshnt_Create%20unique%20regions%20for%20each%20group%20of%20overlapping%20items/joshnt_Unique%20Regions%20for%20overlapping%20items%20-%20CORE%20Mother.lua</source>
+      </version>
+    </reapack>
+    <reapack name="joshnt_HoverEdit-AddOn - Package.lua" type="script" desc="Hover edit (add on)">
+      <metadata>
+        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 additional scripts to LKC's awesome hover edit package\par}
+}
+]]></description>
+      </metadata>
+      <version name="1.0" author="Joshnt" time="2026-06-22T17:17:10Z">
+        <changelog><![CDATA[- added hover play, hover solo and hover mute]]></changelog>
+        <source main="main" file="joshnt_HoverEdit-AddOn/joshnt_Hover-Solo.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/e7253c0233057458d2e237bc43ba3b66f7ac92c3/VARIOUS/joshnt_HoverEdit-AddOn/joshnt_Hover-Solo.lua</source>
+        <source main="main" file="joshnt_HoverEdit-AddOn/joshnt_Hover-Exclusive Solo.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/e7253c0233057458d2e237bc43ba3b66f7ac92c3/VARIOUS/joshnt_HoverEdit-AddOn/joshnt_Hover-Exclusive%20Solo.lua</source>
+        <source main="main" file="joshnt_HoverEdit-AddOn/joshnt_Hover-Mute.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/e7253c0233057458d2e237bc43ba3b66f7ac92c3/VARIOUS/joshnt_HoverEdit-AddOn/joshnt_Hover-Mute.lua</source>
+        <source main="main" file="joshnt_HoverEdit-AddOn/joshnt_Hover-Mute item or track (depending on focus).lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/e7253c0233057458d2e237bc43ba3b66f7ac92c3/VARIOUS/joshnt_HoverEdit-AddOn/joshnt_Hover-Mute%20item%20or%20track%20(depending%20on%20focus).lua</source>
+        <source main="main" file="joshnt_HoverEdit-AddOn/joshnt_Hover-Play.lua">https://github.com/Joshnt/ReaScripts_Joshnt/raw/e7253c0233057458d2e237bc43ba3b66f7ac92c3/VARIOUS/joshnt_HoverEdit-AddOn/joshnt_Hover-Play.lua</source>
       </version>
     </reapack>
     <reapack name="joshnt_Play only selected time (from time selection start or edit cursor).lua" type="script" desc="Play only selected Time">
