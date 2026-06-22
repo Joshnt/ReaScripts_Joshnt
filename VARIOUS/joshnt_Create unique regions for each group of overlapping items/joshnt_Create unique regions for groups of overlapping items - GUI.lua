@@ -146,6 +146,7 @@ local function updateUserValues()
         joshnt_UniqueRegions.allRgnArray[i].end_silence = GUI.Val("TimeAfter"..i)
         joshnt_UniqueRegions.allRgnArray[i].isRgn = GUI.Val("isRgn"..i) == 1
         joshnt_UniqueRegions.allRgnArray[i].everyX = GUI.Val("everyX"..i)
+        joshnt_UniqueRegions.allRgnArray[i].colorFromRRMLink = GUI.Val("RRMColor"..i)
     end
     -- mehr gespeicherte regionen als momentan tabs -> delete speicher
     if numTabs < #joshnt_UniqueRegions.allRgnArray then
@@ -170,11 +171,13 @@ local function setVisibilityRgnProperties(tabIndex)
         GUI.elms["TimeAfter_Text"..tabIndex].z = 10+tabIndex
         GUI.elms["TimeAfter"..tabIndex].z = 10+tabIndex
         GUI.elms["RRM"..tabIndex].z = 10+tabIndex
+        GUI.elms["RRMColor"..tabIndex].z = 10+tabIndex
         GUI.elms["RRM_Label"].z = 2
     else
         GUI.elms["TimeAfter_Text"..tabIndex].z = 5
         GUI.elms["TimeAfter"..tabIndex].z = 5
         GUI.elms["RRM"..tabIndex].z = 5
+        GUI.elms["RRMColor"..tabIndex].z = 5
         GUI.elms["RRM_Label"].z = 5
     end
     GUI.redraw_z[5] = true
@@ -190,6 +193,7 @@ local function setVisibilityRgn(tabIndex)
         GUI.elms["TimeBefore"..tabIndex].z = 10+tabIndex
         GUI.elms["ColSelFrame"..tabIndex].z = 10+tabIndex
         GUI.elms["everyX"..tabIndex].z = 10+tabIndex
+        GUI.elms["RRMColor"..tabIndex].z = 10+tabIndex
         setVisibilityRgnProperties(tabIndex)
     else
         GUI.elms["TimeAfter_Text"..tabIndex].z = 5
@@ -201,6 +205,7 @@ local function setVisibilityRgn(tabIndex)
         GUI.elms["TimeBefore"..tabIndex].z = 5
         GUI.elms["ColSelFrame"..tabIndex].z = 5
         GUI.elms["everyX"..tabIndex].z = 5
+        GUI.elms["RRMColor"..tabIndex].z = 5
         GUI.elms.RRM_Label.z = 5 
     end
     GUI.redraw_z[5] = true
@@ -452,7 +457,6 @@ function setFrameColors(tabInd, targetColor)
 end
 
 function redrawTabContent(tabIndex)
-    
     GUI.New("TimeBefore"..tabIndex, "Slider", {
         z = 10+tabIndex,
         x = 144,
@@ -552,6 +556,27 @@ function redrawTabContent(tabIndex)
         opt_size = 20
     })
 
+    GUI.New("RRMColor"..tabIndex, "Checklist", {
+        z = 10+tabIndex,
+        x = 241,
+        y = 183,
+        w = 50,
+        h = 20,
+        caption = "",
+        optarray = {"use Parent Color"},
+        dir = "v",
+        pad = 4,
+        font_a = 2,
+        font_b = 3,
+        col_txt = "txt",
+        col_fill = "elm_fill",
+        bg = "wnd_bg",
+        frame = false,
+        shadow = true,
+        swap = nil,
+        opt_size = 20
+    })
+
     GUI.New("isRgn"..tabIndex, "Radio", {
         z = 10+tabIndex,
         x = 20,
@@ -610,7 +635,7 @@ function redrawTabContent(tabIndex)
     GUI.New("RRM"..tabIndex, "Menubox", {
         z = 10+tabIndex,
         x = 246,
-        y = 173,
+        y = 158,
         w = 120,
         h = 20,
         caption = "",
@@ -697,6 +722,7 @@ function redrawTabContent(tabIndex)
     GUI.elms["Create"..tabIndex].tooltip = "Toogle if the region tab should even be created."
     GUI.elms["everyX"..tabIndex].tooltip = "Create the region/ marker over/ before every X item groups.\nInsert 0 to only insert one region/ marker over/ before all item groups."
     GUI.elms["isRgn"..tabIndex].tooltip = "Select, if to create regions or markers."
+    GUI.elms["RRMColor"..tabIndex].tooltip = "Try to apply the color of the selected Parent in the Region Render Matrix.\n(Only works for the 'common parents' variants.)\nIf not applicable, uses set color to the left."
 
     redrawColFrames(tabIndex)
 end
@@ -779,6 +805,7 @@ local function redrawSubWindows()
                         .."\n \nUse '/O() to reference the name of an existing region at the corresponding spot. /O(ALTERNATIVE) will either use the original name (if existing) or the given 'ALTERNATIVE'."
                         .."\nWarning: /O() might lead to unwanted results in situations with a lot of unclear region overlaps by failing to get the original region."
                         .."\n \n'/C(Custom Wildcard Table Number)': Refer to your own wildcard table created under the menu wildcards -> Table X. The wildcard table gets loops through that table starting from your first entry. Example Use would be '/C(4)'. If the table at the given number is empty/ doesn't exist, the original symbol (e.g. /C(30)') get used."
+                        .."\n \n'/P(ParentIndex)': Use the name of a certain parent track, similar to the RRM Link (1 = Highest common parent, 2 = first common parent (all), 3 = first common parent (per item Group)). /P() defaults to the set RRM Link or - if not applicable - first common parent per item group."
 
         GUI.Val("infoFrame", newStr)
     end
@@ -876,7 +903,7 @@ function redrawAll ()
     GUI.New("RRM_Label", "Label", {
         z = 5,
         x = 270,
-        y = 153,
+        y = 138,
         caption = "Link to RRM",
         font = 4,
         color = "txt",
@@ -1239,6 +1266,7 @@ function refreshGUIValues()
         GUI.Val("Create"..i, joshnt_UniqueRegions.allRgnArray[i].create)
         GUI.Val("RegionName"..i, joshnt_UniqueRegions.allRgnArray[i].name)
         GUI.Val("RRM"..i, joshnt_UniqueRegions.allRgnArray[i].RRMLink or 0)
+        GUI.Val("RRMColor"..i, joshnt_UniqueRegions.allRgnArray[i].colorFromRRMLink or false)
 
         local sliderValBefore = math.abs(joshnt_UniqueRegions.allRgnArray[i].start_silence-timeSlidersVals.rgn[i].TimeBefore.min)/ 0.1
         GUI.Val("TimeBefore"..i, sliderValBefore)

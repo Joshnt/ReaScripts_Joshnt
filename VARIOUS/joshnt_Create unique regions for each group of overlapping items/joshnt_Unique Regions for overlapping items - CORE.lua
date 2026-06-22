@@ -21,7 +21,8 @@ function joshnt_UniqueRegions.Init()
         replaceString = { },
         rename = "",
         isRgn = true, -- RMX only: rgn or marker
-        everyX = 1 -- RMX only: after x item groups
+        everyX = 1, -- RMX only: after x item groups
+        colorFromRRMLink = true
     }
 
     -- use joshnt_UniqueRegions.allRgnArray[#joshnt_UniqueRegions.allRgnArray] = joshnt.copyTable(joshnt_UniqueRegions.rgnProperties) for each new rgn rule set
@@ -174,6 +175,7 @@ function joshnt_UniqueRegions.setRgnSettingsFromTable(i, rgnSettingTable)
         elseif j == 6 then joshnt_UniqueRegions.allRgnArray[i]["end_silence"] = tonumber(value)
         elseif j == 7 then joshnt_UniqueRegions.allRgnArray[i]["isRgn"] = value == "true"
         elseif j == 8 then joshnt_UniqueRegions.allRgnArray[i]["everyX"] = tonumber(value)
+        elseif j == 9 then joshnt_UniqueRegions.allRgnArray[i]["colorFromRRMLink"] = value == "true"
         end
     end
 end
@@ -445,7 +447,19 @@ function joshnt_UniqueRegions.repositionMarker(allRgnArrayIndex, startTime, igno
     if not mrkIndex then return end
     joshnt_UniqueRegions.updateRgnRename(allRgnArrayIndex, name)
     local mrkNameReference = joshnt_UniqueRegions.allRgnArray[allRgnArrayIndex]["rename"]
-    local mrkColor = joshnt_UniqueRegions.allRgnArray[allRgnArrayIndex]["color"]
+    local mrkColor = -1
+    if joshnt_UniqueRegions.allRgnArray[allRgnArrayIndex]["colorFromRRMLink"] == true then
+        local linkType = joshnt_UniqueRegions.allRgnArray[allRgnArrayIndex]["RRMLink"]
+        if linkType == 2 then
+            colorTEMP = reaper.GetTrackColor(joshnt_UniqueRegions.highCom_Parent)
+        elseif linkType == 3 then
+            colorTEMP = reaper.GetTrackColor(joshnt_UniqueRegions.firstCom_Parent)
+        elseif linkType == 4 then
+            local _, firstCommonParent = joshnt.getSpecificParentOfSelectedItems(joshnt_UniqueRegions.parentTracks)       
+            colorTEMP = reaper.GetTrackColor(firstCommonParent)
+        end
+    end
+    if mrkColor == -1 then mrkColor = joshnt_UniqueRegions.allRgnArray[allRgnArrayIndex]["color"] end
 
     if startTime - startTimeOffset < 0 then
         startTime = 0
@@ -479,7 +493,20 @@ function joshnt_UniqueRegions.setRegionLength(allRgnArrayIndex, start_time, end_
     end
   
     local rgnNameReference = joshnt_UniqueRegions.allRgnArray[allRgnArrayIndex]["rename"]
-    local rgnColor = joshnt_UniqueRegions.allRgnArray[allRgnArrayIndex]["color"]
+
+    local rgnColor = -1
+    if joshnt_UniqueRegions.allRgnArray[allRgnArrayIndex]["colorFromRRMLink"] == true then
+        local linkType = joshnt_UniqueRegions.allRgnArray[allRgnArrayIndex]["RRMLink"]
+        if linkType == 2 then
+            rgnColor = reaper.GetTrackColor(joshnt_UniqueRegions.highCom_Parent)
+        elseif linkType == 3 then
+            rgnColor = reaper.GetTrackColor(joshnt_UniqueRegions.firstCom_Parent)
+        elseif linkType == 4 then
+            local _, firstCommonParent = joshnt.getSpecificParentOfSelectedItems(joshnt_UniqueRegions.parentTracks)       
+            rgnColor = reaper.GetTrackColor(firstCommonParent)
+        end
+    end
+    if rgnColor == -1 then rgnColor = joshnt_UniqueRegions.allRgnArray[allRgnArrayIndex]["color"] end
 
     -- Move overlapping region
     if rgnColor ~= -1 then
@@ -503,7 +530,18 @@ function joshnt_UniqueRegions.createMarker(allRgnArrayIndex, startTime)
     joshnt_UniqueRegions.updateRgnRename(allRgnArrayIndex)
     -- Create the region
     local colorTEMP = 0;
-    if joshnt_UniqueRegions.allRgnArray[allRgnArrayIndex]["color"] ~= -1 then colorTEMP = joshnt_UniqueRegions.allRgnArray[allRgnArrayIndex]["color"] | 0x1000000 end
+    if joshnt_UniqueRegions.allRgnArray[allRgnArrayIndex]["colorFromRRMLink"] == true then
+        local linkType = joshnt_UniqueRegions.allRgnArray[allRgnArrayIndex]["RRMLink"]
+        if linkType == 2 then
+            colorTEMP = reaper.GetTrackColor(joshnt_UniqueRegions.highCom_Parent)
+        elseif linkType == 3 then
+            colorTEMP = reaper.GetTrackColor(joshnt_UniqueRegions.firstCom_Parent)
+        elseif linkType == 4 then
+            local _, firstCommonParent = joshnt.getSpecificParentOfSelectedItems(joshnt_UniqueRegions.parentTracks)       
+            colorTEMP = reaper.GetTrackColor(firstCommonParent)
+        end
+    end
+    if joshnt_UniqueRegions.allRgnArray[allRgnArrayIndex]["color"] ~= -1 and colorTEMP == 0 then colorTEMP = joshnt_UniqueRegions.allRgnArray[allRgnArrayIndex]["color"] | 0x1000000 end
     return reaper.AddProjectMarker2(0, false, startTime, 0, joshnt_UniqueRegions.allRgnArray[allRgnArrayIndex]["rename"], -1, colorTEMP)
 end
 
@@ -521,9 +559,21 @@ function joshnt_UniqueRegions.createRegionOverItems(allRgnArrayIndex,startTime, 
     end
 
     joshnt_UniqueRegions.updateRgnRename(allRgnArrayIndex)
-    -- Create the region
+    -- get color 
     local colorTEMP = 0;
-    if joshnt_UniqueRegions.allRgnArray[allRgnArrayIndex]["color"] ~= -1 then colorTEMP = joshnt_UniqueRegions.allRgnArray[allRgnArrayIndex]["color"] | 0x1000000 end
+    if joshnt_UniqueRegions.allRgnArray[allRgnArrayIndex]["colorFromRRMLink"] == true then
+        local linkType = joshnt_UniqueRegions.allRgnArray[allRgnArrayIndex]["RRMLink"]
+        if linkType == 2 then
+            colorTEMP = reaper.GetTrackColor(joshnt_UniqueRegions.highCom_Parent)
+        elseif linkType == 3 then
+            colorTEMP = reaper.GetTrackColor(joshnt_UniqueRegions.firstCom_Parent)
+        elseif linkType == 4 then
+            local _, firstCommonParent = joshnt.getSpecificParentOfSelectedItems(joshnt_UniqueRegions.parentTracks)       
+            colorTEMP = reaper.GetTrackColor(firstCommonParent)
+        end
+    end
+    if joshnt_UniqueRegions.allRgnArray[allRgnArrayIndex]["color"] ~= -1 and colorTEMP == 0 then colorTEMP = joshnt_UniqueRegions.allRgnArray[allRgnArrayIndex]["color"] | 0x1000000 end
+    -- Create the region
     return reaper.AddProjectMarker2(0, true, startTime, endTime, joshnt_UniqueRegions.allRgnArray[allRgnArrayIndex]["rename"], -1, colorTEMP)
 end
 
@@ -730,6 +780,36 @@ function joshnt_UniqueRegions.wildcardsCheck_C(currName, currReplaceStr)
     return currReplaceStr
 end
 
+-- check for /P's in region name
+function joshnt_UniqueRegions.wildcardsCheck_P(currName, currReplaceStr, RegionRRMLink)
+    -- Check for "/P()"
+    -- 1 = Highest common parent, 2 = first common parent (all), 3 = first common parent (per item Group)
+    local linkType = 3
+    for parentNumber in currName:gmatch("/P%((.-)%)") do
+        local parentIndex = tonumber(parentNumber)
+        currReplaceStr[#currReplaceStr + 1] = {}
+        currReplaceStr[#currReplaceStr][1] = "/P%("..parentNumber.."%)"
+        if parentIndex and parentIndex>0 and parentIndex<4 then --first common parent per item Group is fallback
+            if parentIndex == 1 then
+                linkType = 1
+            elseif parentIndex == 2 then
+                linkType = 2
+            end
+        elseif RegionRRMLink then --check RRM link
+            if RegionRRMLink == 2 then -- highest common parent
+                linkType = 1
+            elseif RegionRRMLink == 3 then -- first common parent
+                linkType = 2
+            elseif RegionRRMLink == 4 then -- parent per item group 
+                linkType = 3
+            end
+        end
+        currReplaceStr[#currReplaceStr][2] = linkType -- type of Parent to find
+    end
+
+    return currReplaceStr
+end
+
 function joshnt_UniqueRegions.wildcardsCheck(rgnIndex) 
     if joshnt_UniqueRegions.allRgnArray[rgnIndex]["create"] == true then
         local currName = joshnt_UniqueRegions.allRgnArray[rgnIndex]["name"]
@@ -737,6 +817,7 @@ function joshnt_UniqueRegions.wildcardsCheck(rgnIndex)
         currReplaceStr = joshnt_UniqueRegions.wildcardsCheck_E(currName, currReplaceStr)
         currReplaceStr = joshnt_UniqueRegions.wildcardsCheck_M(currName, currReplaceStr)
         currReplaceStr = joshnt_UniqueRegions.wildcardsCheck_O(currName, currReplaceStr)
+        currReplaceStr = joshnt_UniqueRegions.wildcardsCheck_P(currName, currReplaceStr, joshnt_UniqueRegions.allRgnArray[rgnIndex]["RRMLink"])
         currReplaceStr = joshnt_UniqueRegions.wildcardsCheck_C(currName, currReplaceStr)
     end
 end
@@ -784,6 +865,19 @@ function joshnt_UniqueRegions.updateRgnRename(allRgnArrIndex, oldName)
             local IndexInWildCardTable = currReplaceStr[i][2]
             newName = string.gsub(newName, currReplaceStr[i][1], whichWildcardTable[IndexInWildCardTable])
             currReplaceStr[i][2] = (IndexInWildCardTable%(#whichWildcardTable))+1
+        elseif currReplaceStr[i][1]:find("/P") then
+            local linkType = currReplaceStr[i][2]
+            if linkType == 1 then
+                local _, trackName = reaper.GetTrackName(joshnt_UniqueRegions.highCom_Parent)
+                newName = string.gsub(newName, currReplaceStr[i][1], trackName)
+            elseif linkType == 2 then
+                local _, trackName = reaper.GetTrackName(joshnt_UniqueRegions.firstCom_Parent)
+                newName = string.gsub(newName, currReplaceStr[i][1], trackName)
+            elseif linkType == 3 then
+                local _, firstCommonParent = joshnt.getSpecificParentOfSelectedItems(joshnt_UniqueRegions.parentTracks)       
+                local _, trackName = reaper.GetTrackName(firstCommonParent)
+                newName = string.gsub(newName, currReplaceStr[i][1], trackName)
+            end
         end
     end
     joshnt_UniqueRegions.allRgnArray[allRgnArrIndex]["rename"] = newName
@@ -824,7 +918,6 @@ function joshnt_UniqueRegions.main()
         joshnt_UniqueRegions.allRgnArray[i]["rename"] = joshnt_UniqueRegions.allRgnArray[i]["name"]
     end
 
-    reaper.PreventUIRefresh(1) 
     reaper.Undo_BeginBlock()  
     local originalRippleEditState = joshnt.getRippleEditingMode()
     if joshnt_UniqueRegions.boolNeedActivateEnvelopeOption then
@@ -933,7 +1026,6 @@ function joshnt_UniqueRegions.main()
     end  
 
     reaper.Undo_EndBlock("joshnt Create Regions", -1)
-    reaper.PreventUIRefresh(-1)
     reaper.UpdateArrange()
 end
 

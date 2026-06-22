@@ -1,7 +1,7 @@
 -- @description Unique Region per overlapping item bundle in selection (with Mother Region over them) - Game Audio/ SD Use
--- @version 3.4
+-- @version 3.5
 -- @changelog
---  - added menu option under "Other", if exisiting regions should be overwritten/ "Reused" (thanks for swob for the idea!)
+--  - added get color and name from parent option
 -- @author Joshnt
 -- @about 
 --    ## Unique Regions - Joshnt
