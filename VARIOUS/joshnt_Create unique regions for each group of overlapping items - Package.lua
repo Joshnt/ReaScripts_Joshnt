@@ -1,7 +1,7 @@
 -- @description Unique Region per overlapping item bundle in selection (with Mother Region over them) - Game Audio/ SD Use
--- @version 3.5
+-- @version 3.5.1
 -- @changelog
---  - added get color and name from parent option
+--  - catch non valid item reselect
 -- @author Joshnt
 -- @about 
 --    ## Unique Regions - Joshnt

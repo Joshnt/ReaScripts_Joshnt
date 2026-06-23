@@ -356,7 +356,9 @@ end
 function joshnt_UniqueRegions.selectOriginalSelection(boolSelect)
   for track, items in pairs(joshnt_UniqueRegions.t) do
     for index, _ in ipairs(items) do
-      reaper.SetMediaItemSelected(items[index][1], boolSelect)
+        if items[index][1] and reaper.ValidatePtr2(0, item, "MediaItem*") then
+            reaper.SetMediaItemSelected(items[index][1], boolSelect)
+        end
     end
   end
 
